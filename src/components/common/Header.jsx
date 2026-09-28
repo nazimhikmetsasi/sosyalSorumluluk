@@ -128,42 +128,13 @@ export const Header = () => {
             <span>{language.toUpperCase()}</span>
           </button>
 
-          {/* Role Selector */}
-          <div className="relative">
-            <button
-              onClick={() => setIsRoleMenuOpen(!isRoleMenuOpen)}
-              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl border text-[11px] font-semibold transition ${roleLabels[currentRole]?.color}`}
-            >
-              <span>{roleLabels[currentRole]?.icon}</span>
-              <span className="hidden xl:inline">{roleLabels[currentRole]?.name}</span>
-              <ChevronDown className="w-3 h-3 opacity-70" />
-            </button>
-
-            {isRoleMenuOpen && (
-              <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 animate-in fade-in">
-                <div className="px-3 py-1 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                  {t('switchRole')}
-                </div>
-                {Object.entries(roleLabels).map(([roleKey, item]) => (
-                  <button
-                    key={roleKey}
-                    onClick={() => {
-                      handleRoleChange(roleKey);
-                      setIsRoleMenuOpen(false);
-                    }}
-                    className={`w-full flex items-center justify-between px-3 py-2 text-xs text-left transition hover:bg-[#F0FFF4] ${
-                      currentRole === roleKey ? 'font-bold text-[#0F5238] bg-[#E8FFF0]' : 'text-gray-700'
-                    }`}
-                  >
-                    <span className="flex items-center gap-1.5">
-                      <span>{item.icon}</span>
-                      <span>{item.name}</span>
-                    </span>
-                    {currentRole === roleKey && <span className="w-1.5 h-1.5 rounded-full bg-[#2D6A4F]"></span>}
-                  </button>
-                ))}
-              </div>
-            )}
+          {/* Role Authority Badge (Fixed / Secure) */}
+          <div
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[11px] font-bold ${roleLabels[currentRole]?.color}`}
+            title={`Yetki Alanı: ${roleLabels[currentRole]?.name}`}
+          >
+            <span>{roleLabels[currentRole]?.icon}</span>
+            <span className="hidden sm:inline">{roleLabels[currentRole]?.name}</span>
           </div>
 
           {/* View Mode Toggle (Mobile / Web) */}
