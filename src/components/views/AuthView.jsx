@@ -26,8 +26,15 @@ const ADMIN_PORTAL_ENABLED = Boolean(ADMIN_EMAIL && ADMIN_PASSCODE);
 const OTP_TTL_MS = 3 * 60 * 1000;
 const OTP_MAX_ATTEMPTS = 5;
 
+const ORG_REJECTION_MESSAGE = {
+  invalid: 'Lütfen geçerli bir kurum adı girin.',
+  registered: 'Başvurunuz alındı. Yönetici onayından sonra giriş yapabilirsiniz.',
+  pending: 'Bu kurum hesabı henüz yönetici onayı bekliyor.',
+  suspended: 'Bu kurum hesabı askıya alınmış. Lütfen yönetici ile iletişime geçin.',
+};
+
 export const AuthView = () => {
-  const { login, showToast } = useApp();
+  const { login, showToast, resolveOrganisation } = useApp();
   
   // Auth Mode: 'standard' | 'admin'
   const [authMode, setAuthMode] = useState('standard');
@@ -132,13 +139,23 @@ export const AuthView = () => {
       return;
     }
 
+    let organisation = null;
+    if (selectedRole === 'business' || selectedRole === 'ngo') {
+      const outcome = resolveOrganisation(selectedRole, entityName);
+      if (!outcome.ok) {
+        setOtpChallenge(null);
+        setStep('input');
+        showToast(ORG_REJECTION_MESSAGE[outcome.reason], 'error');
+        return;
+      }
+      organisation = outcome.organisation;
+    }
+
     setOtpChallenge(null);
 
     let displayName = fullName.trim();
-    if (selectedRole === 'business') {
-      displayName = entityName.trim() || 'Moda Fırını & Ekmek Atölyesi';
-    } else if (selectedRole === 'ngo') {
-      displayName = entityName.trim() || 'TİDER Temel İhtiyaç Aşevi';
+    if (organisation) {
+      displayName = organisation.name;
     } else {
       if (!displayName && identifier.includes('@')) {
         const prefix = identifier.split('@')[0].replace(/[._-]/g, ' ');
@@ -154,11 +171,8 @@ export const AuthView = () => {
       name: displayName,
       email: identifier.includes('@') ? identifier : `${displayName.toLowerCase().replace(/[^a-z0-9]/g, '')}@gmail.com`,
       phone: !identifier.includes('@') ? identifier : '0532 555 0199',
-      avatar: selectedRole === 'business'
-        ? 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=150&auto=format&fit=crop&q=80'
-        : selectedRole === 'ngo'
-        ? 'https://images.unsplash.com/photo-1593113598332-cd288d649433?w=150&auto=format&fit=crop&q=80'
-        : `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(displayName)}`,
+      avatar: organisation?.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(displayName)}`,
+      organisationId: organisation?.id || null,
       role: selectedRole,
       level: selectedRole === 'buyer' ? 4 : 5,
       savedKg: selectedRole === 'buyer' ? 18.5 : 420.0,

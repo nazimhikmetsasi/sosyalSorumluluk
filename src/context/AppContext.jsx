@@ -12,7 +12,7 @@ import {
   MOCK_LEADERBOARD,
   PLATFORM_STATS
 } from '../data/mockData';
-import { sanitizeText, sanitizeNumber, getHomeTab } from '../utils/security';
+import { sanitizeText, sanitizeNumber, getHomeTab, randomDigits, ownsRecord } from '../utils/security';
 
 const AppContext = createContext();
 
@@ -43,7 +43,22 @@ const removeStorage = (key) => {
   }
 };
 
+// Only this app's own keys. localStorage is shared per origin, so clear() would also
+// wipe anything else served from the same host.
+const clearAppStorage = () => {
+  try {
+    Object.keys(localStorage)
+      .filter(key => key.startsWith('GK_'))
+      .forEach(key => localStorage.removeItem(key));
+  } catch (e) {
+    console.warn('Storage clear failed', e);
+  }
+};
+
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
+
+const normalizeOrgName = (name) =>
+  (name || '').trim().toLocaleLowerCase('tr').replace(/\s+/g, ' ');
 
 // The session record is the only place a granted role is stored, so identity and
 // privilege cannot drift apart, and it counts only inside its window so a shared
@@ -60,9 +75,17 @@ const loadSession = () => {
 };
 
 export const AppProvider = ({ children }) => {
-  const restoredSession = loadSession();
+  const storedUser = loadStorage('USER', INITIAL_USER);
+  const candidateSession = loadSession();
 
-  const [currentUser, setCurrentUser] = useState(() => loadStorage('USER', INITIAL_USER));
+  // The stored profile and the session must agree on the role. If they do not, one of
+  // the two was edited independently, so the session is discarded rather than letting
+  // the badge and the enforced privilege describe different accounts.
+  const restoredSession = candidateSession && storedUser?.role === candidateSession.role
+    ? candidateSession
+    : null;
+
+  const [currentUser, setCurrentUser] = useState(storedUser);
   const [currentRole, setCurrentRole] = useState(restoredSession?.role || 'buyer');
   const [isAuthenticated, setIsAuthenticated] = useState(Boolean(restoredSession));
 
@@ -73,8 +96,9 @@ export const AppProvider = ({ children }) => {
   const [language, setLanguage] = useState(() => loadStorage('LANG', 'tr'));
   const [isDarkMode, setIsDarkMode] = useState(() => loadStorage('DARK_MODE', false));
 
-  // Navigation tab state
-  const [activeTab, setActiveTab] = useState('explore');
+  // Navigation tab state. A restored session lands on its role's home tab, otherwise a
+  // reload would drop an admin or business account onto the buyer's explore view.
+  const [activeTab, setActiveTab] = useState(() => getHomeTab(restoredSession?.role));
 
   // Selected item states for modals / detailed views
   const [selectedListing, setSelectedListing] = useState(null);
@@ -129,6 +153,12 @@ export const AppProvider = ({ children }) => {
   useEffect(() => saveStorage('NOTIFICATIONS', notifications), [notifications]);
   useEffect(() => saveStorage('FAVORITES', favorites), [favorites]);
 
+  // Organisation-scoped views. Panels read these instead of the global arrays so one
+  // tenant's dashboard cannot surface another tenant's listings or orders.
+  const myOrganisationId = currentUser.organisationId || null;
+  const myListings = myOrganisationId ? listings.filter(l => l.businessId === myOrganisationId) : [];
+  const myReservations = myOrganisationId ? reservations.filter(r => r.businessId === myOrganisationId) : [];
+
   // Translation Helper
   const t = (key) => {
     return translations[language]?.[key] || translations['tr']?.[key] || key;
@@ -181,6 +211,44 @@ export const AppProvider = ({ children }) => {
     setIsAuthenticated(true);
   };
 
+  // Business and NGO sign-ins resolve against the organisation registry. An unknown
+  // name is filed as a pending application rather than being granted the role, so a
+  // visitor cannot become an organisation just by picking one on the login screen.
+  const resolveOrganisation = (kind, name) => {
+    const wanted = normalizeOrgName(name);
+    if (!wanted) return { ok: false, reason: 'invalid' };
+
+    const existing = businesses.find(b => b.kind === kind && normalizeOrgName(b.name) === wanted);
+    if (existing) {
+      return existing.status === 'active'
+        ? { ok: true, organisation: existing }
+        : { ok: false, reason: existing.status === 'suspended' ? 'suspended' : 'pending' };
+    }
+
+    setBusinesses(prev => [
+      ...prev,
+      {
+        id: `${kind}_${Date.now().toString().slice(-6)}`,
+        name: name.trim(),
+        type: kind === 'ngo' ? 'STK & Aşevi' : 'Yeni Başvuru',
+        rating: 0,
+        reviewCount: 0,
+        avatar: 'https://api.dicebear.com/7.x/shapes/svg?seed=' + encodeURIComponent(wanted),
+        cover: '',
+        address: '',
+        lat: 41.0082,
+        lng: 28.9784,
+        distanceKm: 0,
+        trustScore: 50,
+        kind,
+        status: 'pending',
+        totalDonatedKg: 0,
+        phone: '',
+      },
+    ]);
+    return { ok: false, reason: 'registered' };
+  };
+
   const logout = () => {
     removeStorage('SESSION');
     setIsAuthenticated(false);
@@ -195,11 +263,18 @@ export const AppProvider = ({ children }) => {
       return false;
     }
 
-    const newCode = `GK-${Math.floor(1000 + Math.random() * 9000)}`;
+    // Six digits collide often enough to matter across a busy day, and a duplicate
+    // inside one business would let the wrong order be handed over.
+    const openCodes = new Set(
+      reservations.filter(r => r.businessId === listing.businessId).map(r => r.pickupCode)
+    );
+    let newCode = `GK-${randomDigits(6)}`;
+    while (openCodes.has(newCode)) newCode = `GK-${randomDigits(6)}`;
     const newRes = {
       id: `res_${Date.now().toString().slice(-4)}`,
       listingId: listing.id,
       listingTitle: listing.title,
+      businessId: listing.businessId,
       businessName: listing.businessName,
       businessAddress: 'Moda Cad. No:44, Caferağa, Kadıköy / İstanbul',
       businessPhone: '+90 216 333 1122',
@@ -211,7 +286,7 @@ export const AppProvider = ({ children }) => {
       pickupEndTime: listing.pickupEndTime,
       pickupDate: 'Bugün',
       pickupCode: newCode,
-      qrToken: `GK_AUTH_${newCode}_${Date.now()}`,
+      qrToken: `GK_AUTH_${randomDigits(16)}`,
       createdAt: 'Az önce',
     };
 
@@ -284,8 +359,16 @@ export const AppProvider = ({ children }) => {
     showToast('Rezervasyon iptal edildi ve paket iade edildi.', 'info');
   };
 
+  // A business may only touch its own listings; every mutation routes through here.
+  const ownsListing = (listingId) =>
+    ownsRecord(currentRole, myOrganisationId, listings.find(l => l.id === listingId));
+
   // Business: Quick portion increment/decrement
   const updateListingPortions = (listingId, delta) => {
+    if (!ownsListing(listingId)) {
+      showToast('Bu ilan üzerinde yetkiniz yok.', 'error');
+      return;
+    }
     setListings(prev => prev.map(item => {
       if (item.id === listingId) {
         const nextCount = Math.max(0, item.portionsAvailable + delta);
@@ -299,6 +382,10 @@ export const AppProvider = ({ children }) => {
 
   // Business: Remove listing
   const deleteListing = (listingId) => {
+    if (!ownsListing(listingId)) {
+      showToast('Bu ilan üzerinde yetkiniz yok.', 'error');
+      return;
+    }
     setListings(prev => prev.filter(item => item.id !== listingId));
     playSoundEffect('pop');
     showToast('İlan başarıyla kaldırıldı.', 'info');
@@ -306,6 +393,11 @@ export const AppProvider = ({ children }) => {
 
   // Business: Add new Listing (with security sanitization)
   const addNewListing = (listingData) => {
+    if (currentRole !== 'business' || !myOrganisationId) {
+      showToast('İlan yayınlamak için onaylı bir işletme hesabı gerekiyor.', 'error');
+      return;
+    }
+
     const cleanTitle = sanitizeText(listingData.title || '', 100);
     const cleanDesc = sanitizeText(listingData.description || '', 500);
     const cleanCategory = sanitizeText(listingData.category || 'Unlu Mamüller', 50);
@@ -316,8 +408,8 @@ export const AppProvider = ({ children }) => {
 
     const newListing = {
       id: `lst_${Date.now().toString().slice(-4)}`,
-      businessId: 'biz_01',
-      businessName: currentUser.name || 'Moda Fırını',
+      businessId: myOrganisationId,
+      businessName: currentUser.name,
       businessAvatar: currentUser.avatar,
       title: cleanTitle || 'Günün Kurtarma Paketi',
       description: cleanDesc,
@@ -355,7 +447,12 @@ export const AppProvider = ({ children }) => {
       return false;
     }
     const cleanCode = sanitizeText(pickupCode, 30).toUpperCase().replace(/[^A-Z0-9-]/g, '');
-    const target = reservations.find(r => r.pickupCode.toUpperCase() === cleanCode);
+
+    // Only the business the order belongs to may confirm it. Admins are deliberately
+    // excluded: confirming a handover is an operational act, not a moderation one.
+    const target = reservations.find(
+      r => r.pickupCode.toUpperCase() === cleanCode && ownsRecord(currentRole, myOrganisationId, r)
+    );
     if (!target) {
       playSoundEffect('error');
       showToast('Geçersiz veya bulunamayan teslimat kodu!', 'error');
@@ -384,12 +481,20 @@ export const AppProvider = ({ children }) => {
 
   // Admin: Toggle business status
   const updateBusinessStatus = (id, newStatus) => {
+    if (currentRole !== 'admin') {
+      showToast('Bu işlem için yönetici yetkisi gerekiyor.', 'error');
+      return;
+    }
     setBusinesses(prev => prev.map(b => b.id === id ? { ...b, status: newStatus } : b));
     showToast(`İşletme durumu güncellendi: ${newStatus.toUpperCase()}`);
   };
 
   // Admin: Update business trust score
   const updateBusinessTrustScore = (id, delta) => {
+    if (currentRole !== 'admin') {
+      showToast('Bu işlem için yönetici yetkisi gerekiyor.', 'error');
+      return;
+    }
     setBusinesses(prev => prev.map(b => {
       if (b.id === id) {
         const nextScore = Math.min(100, Math.max(50, b.trustScore + delta));
@@ -403,7 +508,11 @@ export const AppProvider = ({ children }) => {
 
   // Reset all mock data to defaults
   const resetDemoData = () => {
-    localStorage.clear();
+    if (currentRole !== 'admin') {
+      showToast('Bu işlem için yönetici yetkisi gerekiyor.', 'error');
+      return;
+    }
+    clearAppStorage();
     setListings(MOCK_LISTINGS);
     setBusinesses(MOCK_BUSINESSES);
     setReservations(MOCK_RESERVATIONS);
@@ -424,6 +533,7 @@ export const AppProvider = ({ children }) => {
         currentRole,
         login,
         logout,
+        resolveOrganisation,
         isAuthenticated,
         viewMode,
         setViewMode,
@@ -446,6 +556,9 @@ export const AppProvider = ({ children }) => {
         isFilterModalOpen,
         setIsFilterModalOpen,
         listings,
+        myListings,
+        myReservations,
+        myOrganisationId,
         setListings,
         updateListingPortions,
         deleteListing,

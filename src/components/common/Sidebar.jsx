@@ -22,8 +22,9 @@ import {
 } from 'lucide-react';
 
 export const Sidebar = () => {
-  const { currentRole, activeTab, setActiveTab, reservations, notifications } = useApp();
+  const { currentRole, activeTab, setActiveTab, reservations, notifications, businesses } = useApp();
 
+  const pendingOrgCount = businesses.filter(b => b.status === 'pending').length;
   const unreadCount = notifications.filter(n => !n.read).length;
   const activeResCount = reservations.filter(r => r.status === 'confirmed').length;
 
@@ -48,7 +49,7 @@ export const Sidebar = () => {
       case 'admin':
         return [
           { id: 'admin_dash', label: 'Admin Dashboard', icon: ShieldCheck },
-          { id: 'admin_businesses', label: 'İşletme Yönetimi', icon: Building2, badge: '3 Bekleyen' },
+          { id: 'admin_businesses', label: 'İşletme Yönetimi', icon: Building2, badge: pendingOrgCount > 0 ? `${pendingOrgCount} Bekleyen` : null },
           { id: 'admin_categories', label: 'Kategori Yönetimi', icon: FolderTree },
           { id: 'admin_reports', label: 'Platform Raporları', icon: FileSpreadsheet },
           { id: 'explore', label: 'Kullanıcı Görünümü', icon: Compass },

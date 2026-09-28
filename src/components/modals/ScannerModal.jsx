@@ -3,13 +3,13 @@ import { useApp } from '../../context/AppContext';
 import { X, QrCode, Camera, CheckCircle2, AlertTriangle, Sparkles, RefreshCw } from 'lucide-react';
 
 export const ScannerModal = ({ isOpen, onClose }) => {
-  const { completeDelivery, reservations } = useApp();
+  const { completeDelivery, myReservations } = useApp();
   const [manualCode, setManualCode] = useState('');
   const [isScanning, setIsScanning] = useState(true);
 
   if (!isOpen) return null;
 
-  const pendingList = reservations.filter(r => r.status === 'confirmed');
+  const pendingList = myReservations.filter(r => r.status === 'confirmed');
 
   const handleSimulateScan = (code) => {
     setIsScanning(false);
@@ -89,11 +89,11 @@ export const ScannerModal = ({ isOpen, onClose }) => {
 
           {/* Manual Code Input Form */}
           <form onSubmit={handleSubmitManual} className="w-full space-y-2">
-            <label className="text-xs text-gray-400 font-semibold block text-left">Veya 4 Haneli Kodu Manuel Girin:</label>
+            <label className="text-xs text-gray-400 font-semibold block text-left">Veya Teslimat Kodunu Manuel Girin:</label>
             <div className="flex gap-2">
               <input
                 type="text"
-                placeholder="Örn: GK-7482"
+                placeholder="Örn: GK-482193"
                 value={manualCode}
                 onChange={(e) => setManualCode(e.target.value.toUpperCase())}
                 className="flex-1 bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-center text-sm font-bold text-white uppercase outline-none focus:border-[#52B788]"

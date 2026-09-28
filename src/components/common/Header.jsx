@@ -128,7 +128,8 @@ export const Header = () => {
             <span>{language.toUpperCase()}</span>
           </button>
 
-          {/* Role Authority Badge (Fixed / Secure) */}
+          {/* Role Authority Badge. Shows currentRole, the value the route guard actually
+              enforces, so the badge can never advertise more or less than is in effect. */}
           <div
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[11px] font-bold ${roleLabels[currentRole]?.color}`}
             title={`Yetki Alanı: ${roleLabels[currentRole]?.name}`}

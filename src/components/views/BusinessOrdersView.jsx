@@ -14,7 +14,7 @@ import {
 
 export const BusinessOrdersView = () => {
   const {
-    reservations,
+    myReservations,
     completeDelivery,
     currentUser,
   } = useApp();
@@ -24,10 +24,10 @@ export const BusinessOrdersView = () => {
   const [orderFilter, setOrderFilter] = useState('pending'); // 'pending' | 'completed' | 'all'
   const [searchQuery, setSearchQuery] = useState('');
 
-  const pendingOrders = reservations.filter(r => r.status === 'confirmed');
-  const completedOrders = reservations.filter(r => r.status === 'completed');
+  const pendingOrders = myReservations.filter(r => r.status === 'confirmed');
+  const completedOrders = myReservations.filter(r => r.status === 'completed');
 
-  const filteredOrders = reservations.filter(ord => {
+  const filteredOrders = myReservations.filter(ord => {
     if (orderFilter === 'pending' && ord.status !== 'confirmed') return false;
     if (orderFilter === 'completed' && ord.status !== 'completed') return false;
     if (searchQuery.trim()) {
@@ -73,7 +73,7 @@ export const BusinessOrdersView = () => {
             </div>
             <div>
               <h3 className="font-bold text-sm">Hızlı Kod Doğrulama</h3>
-              <p className="text-[10px] text-white/70">Müşterinin telefonundaki 4 haneli kodu girin</p>
+              <p className="text-[10px] text-white/70">Müşterinin telefonundaki teslimat kodunu girin</p>
             </div>
           </div>
           <span className="px-2 py-0.5 rounded-lg bg-white/20 text-[9px] font-bold">Personel Girişi</span>
@@ -83,10 +83,10 @@ export const BusinessOrdersView = () => {
           <div className="flex gap-2">
             <input
               type="text"
-              maxLength={7}
+              maxLength={9}
               value={inputCode}
               onChange={(e) => setInputCode(e.target.value.toUpperCase())}
-              placeholder="Örn: GK-7482"
+              placeholder="Örn: GK-482193"
               className="flex-1 bg-white/15 border border-white/30 rounded-2xl px-4 py-3 text-center text-lg font-black tracking-widest text-white placeholder:text-white/40 focus:outline-none focus:border-[#52B788]"
             />
             <button
