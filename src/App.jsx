@@ -28,6 +28,10 @@ import { NgoDashboardView } from './components/views/NgoDashboardView';
 import { AdminDashboardView } from './components/views/AdminDashboardView';
 import { AdminReportsView } from './components/views/AdminReportsView';
 
+// Security & RBAC Guard
+import { isAuthorized } from './utils/security';
+import { UnauthorizedView } from './components/views/UnauthorizedView';
+
 // Mobile Frame Viewport
 import { MobileFrame } from './components/mobile/MobileFrame';
 
@@ -35,7 +39,8 @@ export const App = () => {
   const {
     isAuthenticated,
     viewMode,
-    activeTab
+    activeTab,
+    currentRole
   } = useApp();
 
   // If user is logged out, render Auth View (OTP Login)
@@ -48,8 +53,13 @@ export const App = () => {
     );
   }
 
-  // Active View Router
+  // Active View Router with RBAC Security Guard
   const renderActiveView = () => {
+    // 🛡️ Security Check: Ensure user role is permitted to view requested tab
+    if (!isAuthorized(currentRole, activeTab)) {
+      return <UnauthorizedView />;
+    }
+
     switch (activeTab) {
       case 'map':
         return <MapView />;

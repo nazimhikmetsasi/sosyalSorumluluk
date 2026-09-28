@@ -12,8 +12,11 @@ import {
   MOCK_LEADERBOARD,
   PLATFORM_STATS
 } from '../data/mockData';
+import { sanitizeText, sanitizeNumber } from '../utils/security';
 
 const AppContext = createContext();
+
+const VALID_ROLES = ['buyer', 'business', 'ngo', 'admin'];
 
 const loadStorage = (key, fallback) => {
   try {
@@ -33,9 +36,12 @@ const saveStorage = (key, data) => {
 };
 
 export const AppProvider = ({ children }) => {
-  // Global user state & role
+  // Global user state & role with RBAC integrity check
   const [currentUser, setCurrentUser] = useState(() => loadStorage('USER', INITIAL_USER));
-  const [currentRole, setCurrentRole] = useState(() => loadStorage('ROLE', 'buyer'));
+  const [currentRole, setCurrentRole] = useState(() => {
+    const savedRole = loadStorage('ROLE', 'buyer');
+    return VALID_ROLES.includes(savedRole) ? savedRole : 'buyer';
+  });
   const [isAuthenticated, setIsAuthenticated] = useState(true);
 
   // View presentation mode: 'web' or 'mobile'
@@ -295,32 +301,40 @@ export const AppProvider = ({ children }) => {
     showToast('İlan başarıyla kaldırıldı.', 'info');
   };
 
-  // Business: Add new Listing
+  // Business: Add new Listing (with security sanitization)
   const addNewListing = (listingData) => {
+    const cleanTitle = sanitizeText(listingData.title || '', 100);
+    const cleanDesc = sanitizeText(listingData.description || '', 500);
+    const cleanCategory = sanitizeText(listingData.category || 'Unlu Mamüller', 50);
+    const priceOrig = sanitizeNumber(listingData.priceOriginal, 0, 50000, 0);
+    const priceDisc = sanitizeNumber(listingData.priceDiscounted, 0, priceOrig || 50000, 0);
+    const portions = Math.max(1, Math.floor(sanitizeNumber(listingData.portions, 1, 1000, 1)));
+    const weight = sanitizeNumber(listingData.weightKg, 0.1, 500, 1.5);
+
     const newListing = {
       id: `lst_${Date.now().toString().slice(-4)}`,
       businessId: 'biz_01',
       businessName: currentUser.name || 'Moda Fırını',
       businessAvatar: currentUser.avatar,
-      title: listingData.title,
-      description: listingData.description,
-      category: listingData.category || 'Unlu Mamüller',
+      title: cleanTitle || 'Günün Kurtarma Paketi',
+      description: cleanDesc,
+      category: cleanCategory,
       type: listingData.type || 'discounted',
-      priceOriginal: Number(listingData.priceOriginal) || 0,
-      priceDiscounted: Number(listingData.priceDiscounted) || 0,
-      discountPercentage: listingData.priceOriginal ? Math.round((1 - (listingData.priceDiscounted / listingData.priceOriginal)) * 100) : 100,
-      portionsTotal: Number(listingData.portions) || 1,
-      portionsAvailable: Number(listingData.portions) || 1,
-      pickupStartTime: listingData.pickupStartTime || '19:00',
-      pickupEndTime: listingData.pickupEndTime || '21:00',
+      priceOriginal: priceOrig,
+      priceDiscounted: priceDisc,
+      discountPercentage: priceOrig ? Math.round((1 - (priceDisc / priceOrig)) * 100) : 100,
+      portionsTotal: portions,
+      portionsAvailable: portions,
+      pickupStartTime: sanitizeText(listingData.pickupStartTime || '19:00', 10),
+      pickupEndTime: sanitizeText(listingData.pickupEndTime || '21:00', 10),
       pickupDate: 'Bugün',
       image: listingData.image || 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80',
-      allergens: listingData.allergens || ['Gluten'],
+      allergens: Array.isArray(listingData.allergens) ? listingData.allergens.map(a => sanitizeText(a, 30)) : ['Gluten'],
       lat: 40.9842,
       lng: 29.0265,
       distanceKm: 0.4,
-      weightKg: Number(listingData.weightKg) || 2.0,
-      co2ReductionKg: (Number(listingData.weightKg) || 2.0) * 2.5,
+      weightKg: weight,
+      co2ReductionKg: +(weight * 2.5).toFixed(1),
       status: 'active',
       createdAt: 'Az önce',
     };
@@ -333,7 +347,12 @@ export const AppProvider = ({ children }) => {
 
   // Business: Complete delivery by code or QR
   const completeDelivery = (pickupCode) => {
-    const target = reservations.find(r => r.pickupCode.toUpperCase() === pickupCode.trim().toUpperCase());
+    if (!pickupCode || typeof pickupCode !== 'string') {
+      showToast('Lütfen geçerli bir kod girin.', 'error');
+      return false;
+    }
+    const cleanCode = sanitizeText(pickupCode, 30).toUpperCase().replace(/[^A-Z0-9-]/g, '');
+    const target = reservations.find(r => r.pickupCode.toUpperCase() === cleanCode);
     if (!target) {
       playSoundEffect('error');
       showToast('Geçersiz veya bulunamayan teslimat kodu!', 'error');
