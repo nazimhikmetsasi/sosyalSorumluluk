@@ -3,7 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { Trophy } from 'lucide-react';
 
 export const LeaderboardView = () => {
-  const { leaderboard } = useApp();
+  const { leaderboard, currentUser } = useApp();
 
   return (
     <div className="space-y-3.5 pb-20 lg:pb-10 animate-in fade-in duration-300">
@@ -66,45 +66,53 @@ export const LeaderboardView = () => {
 
       {/* Full Leaderboard List */}
       <div className="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-sm space-y-1.5">
-        {leaderboard.map((user) => (
-          <div
-            key={user.rank}
-            className={`flex items-center justify-between p-2 rounded-xl transition ${
-              user.isCurrentUser
-                ? 'bg-[#E8FFF0] border border-[#52B788]'
-                : 'hover:bg-gray-50 border border-transparent'
-            }`}
-          >
-            <div className="flex items-center gap-2 min-w-0">
-              <span className={`w-5 text-center font-black text-xs flex-shrink-0 ${user.rank <= 3 ? 'text-amber-500' : 'text-gray-400'}`}>
-                #{user.rank}
-              </span>
+        {leaderboard.map((user) => {
+          const isMe = user.isCurrentUser;
+          const displayName = isMe ? currentUser.name : user.name;
+          const displayAvatar = isMe ? currentUser.avatar : user.avatar;
+          const displayKg = isMe ? currentUser.savedKg : user.kg;
+          const displayPoints = isMe ? currentUser.points : user.points;
 
-              <img
-                src={user.avatar}
-                alt={user.name}
-                className="w-7 h-7 rounded-full object-cover border border-gray-200 flex-shrink-0"
-              />
+          return (
+            <div
+              key={user.rank}
+              className={`flex items-center justify-between p-2 rounded-xl transition ${
+                isMe
+                  ? 'bg-[#E8FFF0] border border-[#52B788]'
+                  : 'hover:bg-gray-50 border border-transparent'
+              }`}
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                <span className={`w-5 text-center font-black text-xs flex-shrink-0 ${user.rank <= 3 ? 'text-amber-500' : 'text-gray-400'}`}>
+                  #{user.rank}
+                </span>
 
-              <div className="min-w-0">
-                <h4 className="text-[11px] font-bold text-[#0F5238] flex items-center gap-1 truncate">
-                  <span className="truncate">{user.name}</span>
-                  {user.isCurrentUser && (
-                    <span className="px-1 py-0.2 bg-[#2D6A4F] text-white text-[8px] font-bold rounded flex-shrink-0">
-                      Sen
-                    </span>
-                  )}
-                </h4>
-                <p className="text-[9px] text-gray-400 truncate">{user.badge}</p>
+                <img
+                  src={displayAvatar}
+                  alt={displayName}
+                  className="w-7 h-7 rounded-full object-cover border border-gray-200 flex-shrink-0"
+                />
+
+                <div className="min-w-0">
+                  <h4 className="text-[11px] font-bold text-[#0F5238] flex items-center gap-1 truncate">
+                    <span className="truncate">{displayName}</span>
+                    {isMe && (
+                      <span className="px-1 py-0.2 bg-[#2D6A4F] text-white text-[8px] font-bold rounded flex-shrink-0">
+                        Sen
+                      </span>
+                    )}
+                  </h4>
+                  <p className="text-[9px] text-gray-400 truncate">{user.badge}</p>
+                </div>
+              </div>
+
+              <div className="text-right flex-shrink-0 ml-2">
+                <p className="text-[11px] font-black text-[#0F5238]">{displayKg} kg</p>
+                <p className="text-[9px] text-gray-400">{displayPoints} P</p>
               </div>
             </div>
-
-            <div className="text-right flex-shrink-0 ml-2">
-              <p className="text-[11px] font-black text-[#0F5238]">{user.kg} kg</p>
-              <p className="text-[9px] text-gray-400">{user.points} P</p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
     </div>

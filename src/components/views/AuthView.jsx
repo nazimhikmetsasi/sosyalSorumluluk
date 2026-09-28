@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Leaf, Mail, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
+import { Leaf, Mail, ArrowRight, CheckCircle2, User, Sparkles } from 'lucide-react';
 
 export const AuthView = () => {
   const { setIsAuthenticated, showToast, setCurrentUser } = useApp();
   const [step, setStep] = useState('input'); // 'input' | 'otp'
+  const [fullName, setFullName] = useState('');
   const [identifier, setIdentifier] = useState('');
   const [otpCodes, setOtpCodes] = useState(['', '', '', '', '', '']);
   const inputRefs = useRef([]);
@@ -14,7 +15,7 @@ export const AuthView = () => {
     if (!identifier.trim()) return;
     setStep('otp');
     setOtpCodes(['', '', '', '', '', '']);
-    showToast(`${identifier} adresine 6 haneli doğrulama kodu gönderildi!`);
+    showToast(`${identifier} adresine doğrulama kodu gönderildi! 📩`);
     setTimeout(() => {
       inputRefs.current[0]?.focus();
     }, 100);
@@ -44,13 +45,28 @@ export const AuthView = () => {
       showToast('Lütfen 6 haneli kodu eksiksiz girin.', 'error');
       return;
     }
+
+    // Determine clean name from input or email
+    let cleanName = fullName.trim();
+    if (!cleanName && identifier.includes('@')) {
+      const prefix = identifier.split('@')[0].replace(/[._-]/g, ' ');
+      cleanName = prefix
+        .split(' ')
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ');
+    }
+    if (!cleanName) cleanName = 'Gıda Kurtarıcısı';
+
     setCurrentUser(prev => ({
       ...prev,
-      email: identifier.includes('@') ? identifier : prev.email,
+      name: cleanName,
+      email: identifier.includes('@') ? identifier : `${cleanName.toLowerCase().replace(/\s+/g, '')}@gmail.com`,
       phone: !identifier.includes('@') ? identifier : prev.phone,
+      avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(cleanName)}`,
     }));
+
     setIsAuthenticated(true);
-    showToast('Giriş başarılı! GıdaKöprüsü\'ne hoş geldiniz. 🌿');
+    showToast(`Hoş geldiniz, ${cleanName}! 🌿`);
   };
 
   return (
@@ -72,45 +88,61 @@ export const AuthView = () => {
           </div>
 
           {step === 'input' ? (
-            <form onSubmit={handleSendCode} className="space-y-5 animate-in fade-in">
+            <form onSubmit={handleSendCode} className="space-y-4 animate-in fade-in">
               <div>
                 <h2 className="text-2xl font-extrabold text-[#0F5238]">Giriş Yap veya Kaydol</h2>
                 <p className="text-xs text-gray-500 mt-1">
-                  Şifresiz, tek kullanımlık güvenli kod (OTP) ile saniyeler içinde bağlanın.
+                  Kendi hesabınızı oluşturun veya saniyeler içinde bağlanın.
                 </p>
               </div>
 
               <div>
-                <label className="text-xs font-bold text-gray-700 block mb-1.5">
-                  E-posta Adresiniz veya Telefon Numaranız
+                <label className="text-xs font-bold text-gray-700 block mb-1">
+                  Adınız ve Soyadınız
                 </label>
                 <div className="relative">
-                  <Mail className="w-5 h-5 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <User className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="Örn: Nazım Hikmet Şaşı"
+                    className="w-full pl-10 pr-4 py-3 rounded-2xl bg-[#F8FAFC] border border-gray-200 focus:border-[#2D6A4F] focus:ring-2 focus:ring-[#95D5B2]/30 text-xs font-semibold text-gray-800 outline-none transition"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold text-gray-700 block mb-1">
+                  E-posta Adresiniz veya Telefon Numaranız *
+                </label>
+                <div className="relative">
+                  <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     required
                     value={identifier}
                     onChange={(e) => setIdentifier(e.target.value)}
-                    placeholder="ornek@email.com veya 0532..."
-                    className="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-[#F8FAFC] border border-gray-200 focus:border-[#2D6A4F] focus:ring-2 focus:ring-[#95D5B2]/30 text-xs font-semibold text-gray-800 outline-none transition"
+                    placeholder="nazimhikmetsasi@gmail.com veya 0532..."
+                    className="w-full pl-10 pr-4 py-3 rounded-2xl bg-[#F8FAFC] border border-gray-200 focus:border-[#2D6A4F] focus:ring-2 focus:ring-[#95D5B2]/30 text-xs font-semibold text-gray-800 outline-none transition"
                   />
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-4 bg-[#0F5238] hover:bg-[#2D6A4F] text-white font-bold text-xs rounded-2xl shadow-xl shadow-[#0F5238]/20 transition flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-[#0F5238] hover:bg-[#2D6A4F] text-white font-bold text-xs rounded-2xl shadow-xl shadow-[#0F5238]/20 transition flex items-center justify-center gap-2 mt-2"
               >
                 <span>Doğrulama Kodu Gönder</span>
                 <ArrowRight className="w-4 h-4 text-[#95D5B2]" />
               </button>
 
-              <p className="text-[11px] text-gray-400 text-center">
+              <p className="text-[11px] text-gray-400 text-center pt-2">
                 Devam ederek GıdaKöprüsü Kullanım Koşulları ve KVKK Aydınlatma Metnini kabul etmiş olursunuz.
               </p>
             </form>
           ) : (
-            <form onSubmit={handleVerifyOtp} className="space-y-6 animate-in fade-in">
+            <form onSubmit={handleVerifyOtp} className="space-y-5 animate-in fade-in">
               <div>
                 <h2 className="text-2xl font-extrabold text-[#0F5238]">Kodu Doğrulayın</h2>
                 <p className="text-xs text-gray-500 mt-1">
@@ -154,7 +186,7 @@ export const AuthView = () => {
                 className="w-full py-4 bg-[#0F5238] hover:bg-[#2D6A4F] text-white font-bold text-xs rounded-2xl shadow-xl shadow-[#0F5238]/20 transition flex items-center justify-center gap-2"
               >
                 <CheckCircle2 className="w-4 h-4 text-[#95D5B2]" />
-                <span>Doğrula ve Giriş Yap</span>
+                <span>Hesabımla Giriş Yap</span>
               </button>
 
               <button

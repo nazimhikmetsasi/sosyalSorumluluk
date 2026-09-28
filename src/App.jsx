@@ -21,6 +21,8 @@ import { ProfileBadgesView } from './components/views/ProfileBadgesView';
 import { LeaderboardView } from './components/views/LeaderboardView';
 import { NotificationsView } from './components/views/NotificationsView';
 import { BusinessDashboardView } from './components/views/BusinessDashboardView';
+import { BusinessOrdersView } from './components/views/BusinessOrdersView';
+import { BusinessStatsView } from './components/views/BusinessStatsView';
 import { NewListingView } from './components/views/NewListingView';
 import { NgoDashboardView } from './components/views/NgoDashboardView';
 import { AdminDashboardView } from './components/views/AdminDashboardView';
@@ -61,9 +63,11 @@ export const App = () => {
       case 'notifications':
         return <NotificationsView />;
       case 'business_dash':
-      case 'business_orders':
-      case 'business_stats':
         return <BusinessDashboardView />;
+      case 'business_orders':
+        return <BusinessOrdersView />;
+      case 'business_stats':
+        return <BusinessStatsView />;
       case 'business_new_listing':
         return <NewListingView />;
       case 'ngo_dash':

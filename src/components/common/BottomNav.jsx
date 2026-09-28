@@ -8,7 +8,10 @@ import {
   PlusCircle,
   LayoutDashboard,
   QrCode,
-  ShieldCheck
+  ShieldCheck,
+  Award,
+  BarChart3,
+  FileSpreadsheet
 } from 'lucide-react';
 
 export const BottomNav = () => {
@@ -22,7 +25,7 @@ export const BottomNav = () => {
         { id: 'business_dash', label: 'Özet', icon: LayoutDashboard },
         { id: 'business_orders', label: 'QR Onay', icon: QrCode },
         { id: 'business_new_listing', label: 'Yeni İlan', icon: PlusCircle, isMain: true },
-        { id: 'business_stats', label: 'İstatistik', icon: ShoppingBag },
+        { id: 'business_stats', label: 'İstatistik', icon: BarChart3 },
         { id: 'profile', label: 'Profil', icon: User },
       ];
     }
@@ -31,7 +34,7 @@ export const BottomNav = () => {
         { id: 'admin_dash', label: 'Admin', icon: ShieldCheck },
         { id: 'admin_businesses', label: 'İşletmeler', icon: LayoutDashboard },
         { id: 'explore', label: 'Keşfet', icon: Compass },
-        { id: 'admin_reports', label: 'Raporlar', icon: ShoppingBag },
+        { id: 'admin_reports', label: 'Raporlar', icon: FileSpreadsheet },
         { id: 'profile', label: 'Profil', icon: User },
       ];
     }
@@ -40,7 +43,7 @@ export const BottomNav = () => {
       { id: 'explore', label: 'Keşfet', icon: Compass },
       { id: 'map', label: 'Harita', icon: MapPin },
       { id: 'reservations', label: 'Kuponlarım', icon: ShoppingBag, badge: activeResCount > 0 ? activeResCount : null },
-      { id: 'badges', label: 'Rozetler', icon: ShoppingBag },
+      { id: 'badges', label: 'Rozetler', icon: Award },
       { id: 'profile', label: 'Profil', icon: User },
     ];
   };
