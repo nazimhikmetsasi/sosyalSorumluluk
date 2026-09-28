@@ -270,7 +270,10 @@ export const AppProvider = ({ children }) => {
 
     const { error } = await saveProfile(account.id, fields);
     if (error) {
-      showToast('Profil kaydedilemedi. Lütfen tekrar deneyin.', 'error');
+      // Surfacing the real reason matters here: the usual failure is a migration that has
+      // not been run yet, and a generic message makes that impossible to diagnose.
+      console.error('Profil kaydedilemedi', error);
+      showToast(`Profil kaydedilemedi: ${error.message || 'bilinmeyen hata'}`, 'error');
       return false;
     }
 
@@ -285,7 +288,8 @@ export const AppProvider = ({ children }) => {
 
     const { error } = await uploadAvatar(account.id, file);
     if (error) {
-      showToast(error.message || 'Görsel yüklenemedi.', 'error');
+      console.error('Avatar yüklenemedi', error);
+      showToast(`Görsel yüklenemedi: ${error.message || 'bilinmeyen hata'}`, 'error');
       return false;
     }
 
