@@ -12,7 +12,7 @@ import {
   MOCK_LEADERBOARD,
   PLATFORM_STATS
 } from '../data/mockData';
-import { sanitizeText, sanitizeNumber } from '../utils/security';
+import { sanitizeText, sanitizeNumber, getHomeTab } from '../utils/security';
 
 const AppContext = createContext();
 
@@ -150,38 +150,13 @@ export const AppProvider = ({ children }) => {
     });
   };
 
-  // Switch role handler with sync
-  const handleRoleChange = (newRole) => {
-    setCurrentRole(newRole);
-    if (newRole === 'business') {
-      setActiveTab('business_dash');
-      setCurrentUser(prev => ({
-        ...prev,
-        name: 'Moda Fırını & Ekmek Atölyesi',
-        email: 'iletisim@modafirini.com',
-        role: 'business'
-      }));
-    } else if (newRole === 'ngo') {
-      setActiveTab('ngo_dash');
-      setCurrentUser(prev => ({
-        ...prev,
-        name: 'Temel İhtiyaç Derneği (TİDER)',
-        email: 'destek@tider.org',
-        role: 'ngo'
-      }));
-    } else if (newRole === 'admin') {
-      setActiveTab('admin_dash');
-      setCurrentUser(prev => ({
-        ...prev,
-        name: 'Sistem Yöneticisi',
-        email: 'admin@gidakoprusu.org',
-        role: 'admin'
-      }));
-    } else {
-      setActiveTab('explore');
-      setCurrentUser(INITIAL_USER);
-    }
-    showToast(`Rol "${newRole.toUpperCase()}" olarak değiştirildi.`, 'info');
+  // Sign in: identity, role and landing tab move together so they cannot drift apart
+  const login = (profile) => {
+    const role = VALID_ROLES.includes(profile.role) ? profile.role : 'buyer';
+    setCurrentUser({ ...profile, role });
+    setCurrentRole(role);
+    setActiveTab(getHomeTab(role));
+    setIsAuthenticated(true);
   };
 
   // Make a reservation action
@@ -418,7 +393,7 @@ export const AppProvider = ({ children }) => {
         currentUser,
         setCurrentUser,
         currentRole,
-        handleRoleChange,
+        login,
         isAuthenticated,
         setIsAuthenticated,
         viewMode,

@@ -1,23 +1,10 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
+import { getHomeTab } from '../../utils/security';
 import { ShieldAlert, ArrowLeft, Lock } from 'lucide-react';
 
 export const UnauthorizedView = () => {
   const { currentRole, setActiveTab } = useApp();
-
-  const getHomeTab = () => {
-    switch (currentRole) {
-      case 'business':
-        return 'business_dash';
-      case 'ngo':
-        return 'ngo_dash';
-      case 'admin':
-        return 'admin_dash';
-      case 'buyer':
-      default:
-        return 'explore';
-    }
-  };
 
   return (
     <div className="min-h-[60vh] flex items-center justify-center p-4 animate-in fade-in">
@@ -40,7 +27,7 @@ export const UnauthorizedView = () => {
 
         <div className="pt-2">
           <button
-            onClick={() => setActiveTab(getHomeTab())}
+            onClick={() => setActiveTab(getHomeTab(currentRole))}
             className="w-full py-3 bg-[#0F5238] hover:bg-[#2D6A4F] text-white font-bold text-xs rounded-2xl shadow-lg shadow-[#0F5238]/20 transition flex items-center justify-center gap-2"
           >
             <ArrowLeft className="w-4 h-4 text-[#95D5B2]" />

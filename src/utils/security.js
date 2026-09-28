@@ -53,6 +53,16 @@ export const ROLE_PERMISSIONS = {
   notifications: ['buyer', 'business', 'ngo', 'admin'],
 };
 
+// Landing tab each role is sent to after login or after a denied navigation
+const ROLE_HOME_TAB = {
+  buyer: 'explore',
+  business: 'business_dash',
+  ngo: 'ngo_dash',
+  admin: 'admin_dash',
+};
+
+export const getHomeTab = (role) => ROLE_HOME_TAB[role] || 'explore';
+
 // Check if a role can view a tab
 export const isAuthorized = (role, tab) => {
   const allowedRoles = ROLE_PERMISSIONS[tab];

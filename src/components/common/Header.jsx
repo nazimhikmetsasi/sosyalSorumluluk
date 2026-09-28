@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
+import { getHomeTab } from '../../utils/security';
 import {
   Bell,
   Search,
@@ -17,7 +18,6 @@ export const Header = () => {
   const {
     currentUser,
     currentRole,
-    handleRoleChange,
     viewMode,
     setViewMode,
     activeTab,
@@ -74,7 +74,7 @@ export const Header = () => {
         {/* Left: Brand Logo & Tagline */}
         <div
           className="flex items-center gap-2.5 cursor-pointer flex-shrink-0"
-          onClick={() => setActiveTab(currentRole === 'business' ? 'business_dash' : currentRole === 'ngo' ? 'ngo_dash' : currentRole === 'admin' ? 'admin_dash' : 'explore')}
+          onClick={() => setActiveTab(getHomeTab(currentRole))}
         >
           <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-[#0F5238] to-[#52B788] flex items-center justify-center text-white shadow-md shadow-[#2D6A4F]/20 transition-transform hover:scale-105">
             <Leaf className="w-5 h-5" />

@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 
 export const AuthView = () => {
-  const { setIsAuthenticated, showToast, setCurrentUser, setCurrentRole, setActiveTab } = useApp();
+  const { login, showToast } = useApp();
   
   // Auth Mode: 'standard' | 'admin'
   const [authMode, setAuthMode] = useState('standard');
@@ -91,20 +91,7 @@ export const AuthView = () => {
       if (!displayName) displayName = 'Gıda Kurtarıcısı';
     }
 
-    // Set Role
-    setCurrentRole(selectedRole);
-    
-    // Set Target View
-    if (selectedRole === 'business') {
-      setActiveTab('business_dash');
-    } else if (selectedRole === 'ngo') {
-      setActiveTab('ngo_dash');
-    } else {
-      setActiveTab('explore');
-    }
-
-    // Update User Profile
-    setCurrentUser({
+    login({
       name: displayName,
       email: identifier.includes('@') ? identifier : `${displayName.toLowerCase().replace(/[^a-z0-9]/g, '')}@gmail.com`,
       phone: !identifier.includes('@') ? identifier : '0532 555 0199',
@@ -121,7 +108,6 @@ export const AuthView = () => {
       points: selectedRole === 'buyer' ? 420 : 2500,
     });
 
-    setIsAuthenticated(true);
     showToast(`Giriş başarılı! Hoş geldiniz: ${displayName} 🌿`);
   };
 
@@ -142,9 +128,7 @@ export const AuthView = () => {
       return;
     }
 
-    setCurrentRole('admin');
-    setActiveTab('admin_dash');
-    setCurrentUser({
+    login({
       name: 'Nazım Hikmet (Sistem Yöneticisi)',
       email: adminEmail,
       phone: '0532 000 0000',
@@ -157,7 +141,6 @@ export const AuthView = () => {
       points: 99999,
     });
 
-    setIsAuthenticated(true);
     showToast('🛡️ Yönetici Yetkisi ile Giriş Yapıldı.');
   };
 
