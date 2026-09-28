@@ -15,6 +15,13 @@ import {
   ChevronLeft
 } from 'lucide-react';
 
+// Vite inlines these at build time, so they are deployment configuration, not secrets:
+// anyone holding the bundle can read them. The portal stays hidden until both are set,
+// and this gate is not an authentication boundary until the server verifies the session.
+const ADMIN_EMAIL = (import.meta.env.VITE_ADMIN_EMAIL || '').trim().toLowerCase();
+const ADMIN_PASSCODE = import.meta.env.VITE_ADMIN_PASSCODE || '';
+const ADMIN_PORTAL_ENABLED = Boolean(ADMIN_EMAIL && ADMIN_PASSCODE);
+
 export const AuthView = () => {
   const { login, showToast } = useApp();
   
@@ -114,22 +121,22 @@ export const AuthView = () => {
   // Dedicated Admin Login Handler
   const handleAdminLogin = (e) => {
     e.preventDefault();
+    if (!ADMIN_PORTAL_ENABLED) {
+      showToast('Yönetici portalı bu ortamda yapılandırılmamış.', 'error');
+      return;
+    }
     if (!adminEmail.trim() || !adminPassword.trim()) {
       showToast('Lütfen yönetici e-posta ve şifrenizi girin.', 'error');
       return;
     }
 
-    // Admin validation check (supports admin emails or admin key)
-    const isAdminEmail = adminEmail.toLowerCase().includes('admin') || adminEmail.toLowerCase() === 'nazimhikmetsasi@gmail.com';
-    const isCorrectPass = adminPassword === 'admin2026' || adminPassword === '1453' || adminPassword === 'admin';
-
-    if (!isAdminEmail || !isCorrectPass) {
+    if (adminEmail.trim().toLowerCase() !== ADMIN_EMAIL || adminPassword !== ADMIN_PASSCODE) {
       showToast('Hatalı Yönetici Bilgileri! Yetkiniz bulunmuyor.', 'error');
       return;
     }
 
     login({
-      name: 'Nazım Hikmet (Sistem Yöneticisi)',
+      name: 'Sistem Yöneticisi',
       email: adminEmail,
       phone: '0532 000 0000',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
@@ -164,7 +171,7 @@ export const AuthView = () => {
             </div>
 
             {/* Admin Portal Switcher Toggle */}
-            <button
+            {ADMIN_PORTAL_ENABLED && <button
               onClick={() => {
                 setAuthMode(authMode === 'standard' ? 'admin' : 'standard');
                 setStep('input');
@@ -177,7 +184,7 @@ export const AuthView = () => {
             >
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>{authMode === 'admin' ? 'Normal Giriş' : 'Admin Girişi'}</span>
-            </button>
+            </button>}
           </div>
 
           {/* ADMIN LOGIN PORTAL */}
@@ -204,7 +211,7 @@ export const AuthView = () => {
                     required
                     value={adminEmail}
                     onChange={(e) => setAdminEmail(e.target.value)}
-                    placeholder="admin@gidakoprusu.org veya yetkili e-posta"
+                    placeholder="Yetkili yönetici e-posta adresi"
                     className="w-full pl-10 pr-4 py-3 rounded-2xl bg-[#F8FAFC] border border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 text-xs font-semibold text-gray-800 outline-none transition"
                   />
                 </div>
@@ -221,7 +228,7 @@ export const AuthView = () => {
                     required
                     value={adminPassword}
                     onChange={(e) => setAdminPassword(e.target.value)}
-                    placeholder="Yönetici şifresi (Örn: admin2026)"
+                    placeholder="Yönetici şifresi"
                     className="w-full pl-10 pr-4 py-3 rounded-2xl bg-[#F8FAFC] border border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 text-xs font-semibold text-gray-800 outline-none transition"
                   />
                 </div>
@@ -374,7 +381,7 @@ export const AuthView = () => {
                         required
                         value={identifier}
                         onChange={(e) => setIdentifier(e.target.value)}
-                        placeholder="nazimhikmetsasi@gmail.com veya 0532..."
+                        placeholder="ornek@eposta.com veya 0532..."
                         className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-[#F8FAFC] border border-gray-200 focus:border-[#2D6A4F] text-xs font-semibold text-gray-800 outline-none transition"
                       />
                     </div>
