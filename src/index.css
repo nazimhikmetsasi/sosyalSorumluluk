@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #0f5238;
+  --color-primary-container: #2d6a4f;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #a8e7c5;
+  --color-primary-fixed: #b1f0ce;
+  --color-primary-fixed-dim: #95d4b3;
+
+  --color-secondary: #006c48;
+  --color-secondary-container: #52b788;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #00734d;
+
+  --color-surface: #ffffff;
+  --color-surface-dim: #b8e4cc;
+  --color-surface-bright: #e8fff0;
+  --color-surface-container: #ccf8df;
+  --color-surface-container-high: #c6f2da;
+  --color-surface-container-highest: #c1ecd4;
+  --color-surface-container-low: #d1fee5;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-variant: #c1ecd4;
+
+  --color-background: #f0fff4;
+  --color-on-background: #002114;
+  --color-on-surface: #002114;
+  --color-on-surface-variant: #404943;
+
+  --color-outline: #707973;
+  --color-outline-variant: #bfc9c1;
+
+  --color-gk-error: #ba1a1a;
+  --color-gk-warning: #f59e0b;
+  --color-gk-success: #10b981;
+  --color-gk-info: #3b82f6;
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+:root {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Glassmorphism custom classes */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.glass-panel-green {
+  background: rgba(240, 255, 244, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(149, 213, 178, 0.3);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f0fff4;
+}
+::-webkit-scrollbar-thumb {
+  background: #a8e7c5;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #52b788;
+}
+
+/* Material Symbols sizing helper */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+.material-symbols-outlined.fill {
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
