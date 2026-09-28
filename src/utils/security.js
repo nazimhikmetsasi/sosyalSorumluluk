@@ -23,6 +23,20 @@ export const sanitizeText = (input, maxLength = 250) => {
     .trim();
 };
 
+// Cryptographically random decimal string. Bytes at or above 250 are discarded so the
+// remaining 250 values map onto 0-9 evenly; Math.random and a plain modulo both skew.
+export const randomDigits = (length) => {
+  const digits = [];
+  const buffer = new Uint8Array(length * 2);
+  while (digits.length < length) {
+    crypto.getRandomValues(buffer);
+    for (const byte of buffer) {
+      if (byte < 250 && digits.length < length) digits.push(byte % 10);
+    }
+  }
+  return digits.join('');
+};
+
 // Safe numerical sanitizer with bounding
 export const sanitizeNumber = (val, min = 0, max = 100000, fallback = 0) => {
   const parsed = parseFloat(val);

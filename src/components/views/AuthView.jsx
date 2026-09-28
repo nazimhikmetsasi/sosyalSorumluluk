@@ -1,5 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
+import { randomDigits } from '../../utils/security';
 import {
   Leaf,
   Mail,
@@ -22,6 +23,9 @@ const ADMIN_EMAIL = (import.meta.env.VITE_ADMIN_EMAIL || '').trim().toLowerCase(
 const ADMIN_PASSCODE = import.meta.env.VITE_ADMIN_PASSCODE || '';
 const ADMIN_PORTAL_ENABLED = Boolean(ADMIN_EMAIL && ADMIN_PASSCODE);
 
+const OTP_TTL_MS = 3 * 60 * 1000;
+const OTP_MAX_ATTEMPTS = 5;
+
 export const AuthView = () => {
   const { login, showToast } = useApp();
   
@@ -39,22 +43,40 @@ export const AuthView = () => {
   const [entityName, setEntityName] = useState(''); // For business / NGO name
   const [identifier, setIdentifier] = useState('');
   const [otpCodes, setOtpCodes] = useState(['', '', '', '', '', '']);
-  
+  const [otpChallenge, setOtpChallenge] = useState(null); // { code, expiresAt, attempts }
+  const [secondsLeft, setSecondsLeft] = useState(0);
+
   // Admin form fields
   const [adminEmail, setAdminEmail] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
   
   const inputRefs = useRef([]);
 
+  useEffect(() => {
+    if (!otpChallenge) return;
+    const tick = () => setSecondsLeft(Math.max(0, Math.ceil((otpChallenge.expiresAt - Date.now()) / 1000)));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [otpChallenge]);
+
+  // ponytail: no mail or SMS backend exists, so the demo surfaces the code in a toast.
+  // Once delivery is server-side the code must never reach the client.
+  const issueOtp = () => {
+    const code = randomDigits(6);
+    setOtpChallenge({ code, expiresAt: Date.now() + OTP_TTL_MS, attempts: 0 });
+    setOtpCodes(['', '', '', '', '', '']);
+    showToast(`${identifier} için doğrulama kodu (demo): ${code}`);
+    setTimeout(() => {
+      inputRefs.current[0]?.focus();
+    }, 100);
+  };
+
   const handleSendCode = (e) => {
     e.preventDefault();
     if (!identifier.trim()) return;
     setStep('otp');
-    setOtpCodes(['', '', '', '', '', '']);
-    showToast(`${identifier} adresine doğrulama kodu gönderildi! 📩`);
-    setTimeout(() => {
-      inputRefs.current[0]?.focus();
-    }, 100);
+    issueOtp();
   };
 
   const handleOtpChange = (index, value) => {
@@ -81,6 +103,36 @@ export const AuthView = () => {
       showToast('Lütfen 6 haneli doğrulama kodunu eksiksiz girin.', 'error');
       return;
     }
+
+    if (!otpChallenge) {
+      showToast('Önce doğrulama kodu isteyin.', 'error');
+      setStep('input');
+      return;
+    }
+
+    if (Date.now() > otpChallenge.expiresAt) {
+      showToast('Doğrulama kodunun süresi doldu. Yeni kod isteyin.', 'error');
+      setOtpChallenge(null);
+      setStep('input');
+      return;
+    }
+
+    if (entered !== otpChallenge.code) {
+      const attempts = otpChallenge.attempts + 1;
+      setOtpCodes(['', '', '', '', '', '']);
+      if (attempts >= OTP_MAX_ATTEMPTS) {
+        showToast('Çok fazla hatalı deneme. Lütfen yeni kod isteyin.', 'error');
+        setOtpChallenge(null);
+        setStep('input');
+        return;
+      }
+      setOtpChallenge({ ...otpChallenge, attempts });
+      showToast(`Hatalı kod. Kalan deneme hakkı: ${OTP_MAX_ATTEMPTS - attempts}`, 'error');
+      inputRefs.current[0]?.focus();
+      return;
+    }
+
+    setOtpChallenge(null);
 
     let displayName = fullName.trim();
     if (selectedRole === 'business') {
@@ -426,14 +478,15 @@ export const AuthView = () => {
                   </div>
 
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-gray-400 text-[11px]">Kalan Süre: <strong className="text-[#52B788]">02:45</strong></span>
+                    <span className="text-gray-400 text-[11px]">
+                      Kalan Süre:{' '}
+                      <strong className={secondsLeft > 0 ? 'text-[#52B788]' : 'text-red-600'}>
+                        {String(Math.floor(secondsLeft / 60)).padStart(2, '0')}:{String(secondsLeft % 60).padStart(2, '0')}
+                      </strong>
+                    </span>
                     <button
                       type="button"
-                      onClick={() => {
-                        setOtpCodes(['', '', '', '', '', '']);
-                        inputRefs.current[0]?.focus();
-                        showToast('Yeni kod başarıyla gönderildi!');
-                      }}
+                      onClick={issueOtp}
                       className="font-bold text-xs text-[#0F5238] hover:underline"
                     >
                       Tekrar Gönder

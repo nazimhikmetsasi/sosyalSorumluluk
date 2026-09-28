@@ -35,14 +35,36 @@ const saveStorage = (key, data) => {
   }
 };
 
+const removeStorage = (key) => {
+  try {
+    localStorage.removeItem(`GK_${key}`);
+  } catch (e) {
+    console.warn('Storage remove failed', e);
+  }
+};
+
+const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
+
+// The session record is the only place a granted role is stored, so identity and
+// privilege cannot drift apart, and it counts only inside its window so a shared
+// device does not hand the next person an open account.
+//
+// ponytail: this still trusts the browser. Anyone can edit the record and pick their
+// own role; nothing here is an authorization boundary until a server issues and
+// verifies the session. Treat it as state restoration, not as a security control.
+const loadSession = () => {
+  const session = loadStorage('SESSION', null);
+  if (!session || typeof session.expiresAt !== 'number' || session.expiresAt <= Date.now()) return null;
+  if (!VALID_ROLES.includes(session.role)) return null;
+  return session;
+};
+
 export const AppProvider = ({ children }) => {
-  // Global user state & role with RBAC integrity check
+  const restoredSession = loadSession();
+
   const [currentUser, setCurrentUser] = useState(() => loadStorage('USER', INITIAL_USER));
-  const [currentRole, setCurrentRole] = useState(() => {
-    const savedRole = loadStorage('ROLE', 'buyer');
-    return VALID_ROLES.includes(savedRole) ? savedRole : 'buyer';
-  });
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [currentRole, setCurrentRole] = useState(restoredSession?.role || 'buyer');
+  const [isAuthenticated, setIsAuthenticated] = useState(Boolean(restoredSession));
 
   // View presentation mode: 'web' or 'mobile'
   const [viewMode, setViewMode] = useState(() => loadStorage('VIEW_MODE', 'web'));
@@ -98,7 +120,6 @@ export const AppProvider = ({ children }) => {
 
   // Sync state changes to localStorage
   useEffect(() => saveStorage('USER', currentUser), [currentUser]);
-  useEffect(() => saveStorage('ROLE', currentRole), [currentRole]);
   useEffect(() => saveStorage('VIEW_MODE', viewMode), [viewMode]);
   useEffect(() => saveStorage('LANG', language), [language]);
   useEffect(() => saveStorage('LISTINGS', listings), [listings]);
@@ -156,7 +177,14 @@ export const AppProvider = ({ children }) => {
     setCurrentUser({ ...profile, role });
     setCurrentRole(role);
     setActiveTab(getHomeTab(role));
+    saveStorage('SESSION', { role, expiresAt: Date.now() + SESSION_TTL_MS });
     setIsAuthenticated(true);
+  };
+
+  const logout = () => {
+    removeStorage('SESSION');
+    setIsAuthenticated(false);
+    setActiveTab('explore');
   };
 
   // Make a reservation action
@@ -384,6 +412,7 @@ export const AppProvider = ({ children }) => {
     setFavorites(['lst_01', 'lst_03']);
     setCurrentUser(INITIAL_USER);
     setCurrentRole('buyer');
+    logout();
     showToast('Tüm veriler başarıyla sıfırlandı! 🔄', 'info');
   };
 
@@ -394,8 +423,8 @@ export const AppProvider = ({ children }) => {
         setCurrentUser,
         currentRole,
         login,
+        logout,
         isAuthenticated,
-        setIsAuthenticated,
         viewMode,
         setViewMode,
         language,
