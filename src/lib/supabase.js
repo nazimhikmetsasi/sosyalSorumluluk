@@ -32,7 +32,7 @@ export const loadVerifiedAccount = async () => {
   // must not block sign-in, so the name simply falls back to the address.
   const { data: profile } = await supabase
     .from('profiles')
-    .select('display_name, avatar_url')
+    .select('display_name, avatar_url, city, district, phone, bio')
     .eq('id', data.user.id)
     .maybeSingle();
 
@@ -43,7 +43,55 @@ export const loadVerifiedAccount = async () => {
     organisationId,
     displayName: profile?.display_name || data.user.email?.split('@')[0] || '',
     avatarUrl: profile?.avatar_url || null,
+    city: profile?.city || '',
+    district: profile?.district || '',
+    phone: profile?.phone || '',
+    bio: profile?.bio || '',
   };
+};
+
+// Presentation fields only. Role and organisation are not accepted here by design:
+// they live in app_metadata, which this key cannot write even if asked.
+export const saveProfile = (userId, fields) =>
+  supabase.from('profiles').upsert({
+    id: userId,
+    display_name: fields.displayName,
+    city: fields.city,
+    district: fields.district,
+    phone: fields.phone,
+    bio: fields.bio,
+  });
+
+export const MAX_AVATAR_BYTES = 2 * 1024 * 1024;
+const ALLOWED_AVATAR_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
+// Uploads into avatars/<uid>/, the only folder the storage policy lets this user write.
+export const uploadAvatar = async (userId, file) => {
+  if (!ALLOWED_AVATAR_TYPES.includes(file.type)) {
+    return { error: { message: 'Yalnızca JPG, PNG veya WebP yükleyebilirsiniz.' } };
+  }
+  if (file.size > MAX_AVATAR_BYTES) {
+    return { error: { message: 'Görsel 2 MB sınırını aşıyor.' } };
+  }
+
+  const extension = file.type.split('/')[1].replace('jpeg', 'jpg');
+  const path = `${userId}/avatar.${extension}`;
+
+  const { error } = await supabase.storage
+    .from('avatars')
+    .upload(path, file, { upsert: true, contentType: file.type });
+
+  if (error) return { error };
+
+  const { data } = supabase.storage.from('avatars').getPublicUrl(path);
+  // Cache-bust: the path is stable across replacements, so browsers would keep the old one.
+  const publicUrl = `${data.publicUrl}?v=${Date.now()}`;
+
+  const { error: saveError } = await supabase
+    .from('profiles')
+    .upsert({ id: userId, avatar_url: publicUrl });
+
+  return saveError ? { error: saveError } : { publicUrl };
 };
 
 export const sendOtp = (email) =>

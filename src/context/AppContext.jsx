@@ -13,7 +13,7 @@ import {
   PLATFORM_STATS
 } from '../data/mockData';
 import { sanitizeText, sanitizeNumber, getHomeTab, randomDigits, ownsRecord, distanceKm } from '../utils/security';
-import { supabase, loadVerifiedAccount, signOut } from '../lib/supabase';
+import { supabase, loadVerifiedAccount, signOut, saveProfile, uploadAvatar } from '../lib/supabase';
 
 const AppContext = createContext();
 
@@ -65,6 +65,11 @@ export const AppProvider = ({ children }) => {
         id: account.id,
         email: account.email,
         name: account.displayName || storedProfile.name,
+        avatar: account.avatarUrl || storedProfile.avatar,
+        city: account.city || storedProfile.city,
+        district: account.district || storedProfile.district,
+        phone: account.phone || storedProfile.phone,
+        bio: account.bio || '',
         role: account.role,
         organisationId: account.organisationId,
       }
@@ -254,6 +259,40 @@ export const AppProvider = ({ children }) => {
 
   // Signing out is the auth server's job; onAuthStateChange clears local identity.
   const logout = () => signOut();
+
+  const refreshAccount = async () => {
+    const verified = await loadVerifiedAccount();
+    setAccount(verified);
+  };
+
+  const updateProfile = async (fields) => {
+    if (!account) return false;
+
+    const { error } = await saveProfile(account.id, fields);
+    if (error) {
+      showToast('Profil kaydedilemedi. Lütfen tekrar deneyin.', 'error');
+      return false;
+    }
+
+    await refreshAccount();
+    playSoundEffect('pop');
+    showToast('Profiliniz güncellendi ✅');
+    return true;
+  };
+
+  const changeAvatar = async (file) => {
+    if (!account) return false;
+
+    const { error } = await uploadAvatar(account.id, file);
+    if (error) {
+      showToast(error.message || 'Görsel yüklenemedi.', 'error');
+      return false;
+    }
+
+    await refreshAccount();
+    showToast('Profil fotoğrafınız güncellendi 📸');
+    return true;
+  };
 
   // Make a reservation action
   const makeReservation = (listing, portionCount = 1) => {
@@ -532,6 +571,8 @@ export const AppProvider = ({ children }) => {
         currentRole,
         logout,
         authLoading,
+        updateProfile,
+        changeAvatar,
         isAuthenticated,
         viewMode,
         setViewMode,
