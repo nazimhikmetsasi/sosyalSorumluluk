@@ -332,6 +332,19 @@ export const AppProvider = ({ children }) => {
     showToast(`İşletme durumu güncellendi: ${newStatus.toUpperCase()}`);
   };
 
+  // Admin: Update business trust score
+  const updateBusinessTrustScore = (id, delta) => {
+    setBusinesses(prev => prev.map(b => {
+      if (b.id === id) {
+        const nextScore = Math.min(100, Math.max(50, b.trustScore + delta));
+        return { ...b, trustScore: nextScore };
+      }
+      return b;
+    }));
+    playSoundEffect('pop');
+    showToast('İşletme güven skoru güncellendi.', 'info');
+  };
+
   // Reset all mock data to defaults
   const resetDemoData = () => {
     localStorage.clear();
@@ -402,6 +415,7 @@ export const AppProvider = ({ children }) => {
         addNewListing,
         completeDelivery,
         updateBusinessStatus,
+        updateBusinessTrustScore,
         resetDemoData,
       }}
     >

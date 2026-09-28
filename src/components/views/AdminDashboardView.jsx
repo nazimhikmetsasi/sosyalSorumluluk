@@ -2,14 +2,30 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import {
   Building2,
-  FileText
+  FileText,
+  ShieldCheck,
+  Plus,
+  Minus,
+  CheckCircle2,
+  AlertTriangle,
+  RotateCcw
 } from 'lucide-react';
 
 export const AdminDashboardView = () => {
-  const { businesses, updateBusinessStatus, stats, setActiveTab } = useApp();
+  const {
+    businesses,
+    updateBusinessStatus,
+    updateBusinessTrustScore,
+    stats,
+    setActiveTab,
+    resetDemoData,
+  } = useApp();
+
   const [filterStatus, setFilterStatus] = useState('all');
 
-  const filteredBusinesses = businesses.filter(b => filterStatus === 'all' || b.status === filterStatus);
+  const filteredBusinesses = businesses.filter(
+    b => filterStatus === 'all' || b.status === filterStatus
+  );
 
   return (
     <div className="space-y-3.5 pb-20 lg:pb-10 animate-in fade-in duration-300">
@@ -23,16 +39,18 @@ export const AdminDashboardView = () => {
               Admin
             </span>
           </div>
-          <p className="text-[9px] text-gray-400 mt-0.5">İşletme onayları & sistem denetimi</p>
+          <p className="text-[9px] text-gray-400 mt-0.5">İşletme onayları & denetim</p>
         </div>
 
-        <button
-          onClick={() => setActiveTab('admin_reports')}
-          className="flex items-center gap-1 px-2.5 py-1.5 bg-[#0F5238] text-white font-bold text-[10px] rounded-xl shadow transition flex-shrink-0"
-        >
-          <FileText className="w-3 h-3 text-[#95D5B2]" />
-          <span>Raporlar</span>
-        </button>
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => setActiveTab('admin_reports')}
+            className="flex items-center gap-1 px-2.5 py-1.5 bg-[#0F5238] text-white font-bold text-[10px] rounded-xl shadow transition flex-shrink-0"
+          >
+            <FileText className="w-3 h-3 text-[#95D5B2]" />
+            <span>Raporlar</span>
+          </button>
+        </div>
       </div>
 
       {/* 4 Stats Cards in 2x2 Grid */}
@@ -67,7 +85,7 @@ export const AdminDashboardView = () => {
         <div className="flex items-center justify-between gap-2">
           <h3 className="font-bold text-xs text-[#0F5238] flex items-center gap-1">
             <Building2 className="w-3.5 h-3.5 text-[#2D6A4F]" />
-            İşletme Onayları
+            İşletme Onayları & Güven Skorları
           </h3>
 
           <div className="flex items-center gap-1 bg-[#F8FAFC] p-0.5 rounded-lg border border-gray-200">
@@ -94,38 +112,80 @@ export const AdminDashboardView = () => {
           {filteredBusinesses.map((b) => (
             <div
               key={b.id}
-              className="p-2.5 rounded-xl bg-[#F8FAFC] border border-gray-100 flex items-center justify-between gap-2"
+              className="p-2.5 rounded-xl bg-[#F8FAFC] border border-gray-100 space-y-2"
             >
-              <div className="flex items-center gap-2 min-w-0">
-                <img src={b.avatar} alt={b.name} className="w-8 h-8 rounded-lg object-cover flex-shrink-0" />
-                <div className="min-w-0">
-                  <h4 className="text-[11px] font-bold text-[#0F5238] truncate">{b.name}</h4>
-                  <p className="text-[9px] text-gray-400">
-                    {b.type} • <span className="text-[#10B981] font-bold">%{b.trustScore}</span> • {b.totalDonatedKg}kg
-                  </p>
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <img src={b.avatar} alt={b.name} className="w-8 h-8 rounded-lg object-cover flex-shrink-0" />
+                  <div className="min-w-0">
+                    <h4 className="text-[11px] font-bold text-[#0F5238] truncate">{b.name}</h4>
+                    <p className="text-[9px] text-gray-400">
+                      {b.type} • {b.totalDonatedKg}kg kurtarıldı
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1 flex-shrink-0">
+                  {b.status !== 'active' ? (
+                    <button
+                      onClick={() => updateBusinessStatus(b.id, 'active')}
+                      className="px-2 py-1 bg-[#2D6A4F] text-white rounded-lg text-[9px] font-bold hover:bg-[#1B4332]"
+                    >
+                      Onayla
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => updateBusinessStatus(b.id, 'suspended')}
+                      className="px-2 py-1 bg-red-50 text-red-700 border border-red-200 rounded-lg text-[9px] font-bold hover:bg-red-100"
+                    >
+                      Askıya Al
+                    </button>
+                  )}
                 </div>
               </div>
 
-              <div className="flex items-center gap-1.5 flex-shrink-0">
-                {b.status !== 'active' ? (
+              {/* Trust score control row */}
+              <div className="flex items-center justify-between pt-1 border-t border-gray-100 text-[9px]">
+                <span className="text-gray-500">
+                  Güven Skoru: <strong className="text-[#10B981]">%{b.trustScore}</strong>
+                </span>
+
+                <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-lg p-0.5 shadow-sm">
                   <button
-                    onClick={() => updateBusinessStatus(b.id, 'active')}
-                    className="px-2 py-1 bg-[#2D6A4F] text-white rounded-lg text-[9px] font-bold hover:bg-[#1B4332]"
+                    onClick={() => updateBusinessTrustScore(b.id, -5)}
+                    className="w-5 h-5 flex items-center justify-center text-gray-600 hover:bg-gray-100 rounded text-[9px] font-bold"
+                    title="-5 Puan"
                   >
-                    Onayla
+                    -5
                   </button>
-                ) : (
+                  <span className="w-6 text-center font-black text-[#0F5238]">%{b.trustScore}</span>
                   <button
-                    onClick={() => updateBusinessStatus(b.id, 'suspended')}
-                    className="px-2 py-1 bg-red-50 text-red-700 border border-red-200 rounded-lg text-[9px] font-bold hover:bg-red-100"
+                    onClick={() => updateBusinessTrustScore(b.id, +5)}
+                    className="w-5 h-5 flex items-center justify-center text-gray-600 hover:bg-gray-100 rounded text-[9px] font-bold"
+                    title="+5 Puan"
                   >
-                    Askıya Al
+                    +5
                   </button>
-                )}
+                </div>
               </div>
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Demo Reset Bar */}
+      <div className="bg-white p-3 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
+        <div>
+          <h4 className="text-[10px] font-bold text-gray-700">Demo Verilerini Sıfırla</h4>
+          <p className="text-[9px] text-gray-400">Tüm mock verileri varsayılana döndürür</p>
+        </div>
+        <button
+          onClick={resetDemoData}
+          className="flex items-center gap-1 px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-[10px] rounded-xl transition"
+        >
+          <RotateCcw className="w-3 h-3" />
+          <span>Sıfırla</span>
+        </button>
       </div>
 
     </div>
