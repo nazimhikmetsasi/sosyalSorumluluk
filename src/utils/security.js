@@ -33,6 +33,21 @@ export const randomDigits = (length) => {
   return digits.join('');
 };
 
+// Great-circle distance in kilometres. Straight-line, so it reads a little shorter than
+// the walk; good enough for sorting nearby pickups and for a "x km away" label.
+export const distanceKm = (from, to) => {
+  const EARTH_RADIUS_KM = 6371;
+  const toRad = (deg) => (deg * Math.PI) / 180;
+
+  const dLat = toRad(to.lat - from.lat);
+  const dLng = toRad(to.lng - from.lng);
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(toRad(from.lat)) * Math.cos(toRad(to.lat)) * Math.sin(dLng / 2) ** 2;
+
+  return EARTH_RADIUS_KM * 2 * Math.asin(Math.min(1, Math.sqrt(a)));
+};
+
 // Safe numerical sanitizer with bounding
 export const sanitizeNumber = (val, min = 0, max = 100000, fallback = 0) => {
   const parsed = parseFloat(val);

@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+/* Stacking order, low to high:
+     10    page content
+     40    header, bottom nav
+     1000  Leaflet's own panes and controls (fixed by the library)
+     2000  modals — must clear Leaflet, or the map's overlays draw on top of dialogs
+     2100  toasts — above modals so a confirmation is never hidden by its own dialog
+   Anything layered over the map has to respect the 1000 floor. */
+
 @theme {
   --color-primary: #0f5238;
   --color-primary-container: #2d6a4f;

@@ -12,7 +12,7 @@ import {
   MOCK_LEADERBOARD,
   PLATFORM_STATS
 } from '../data/mockData';
-import { sanitizeText, sanitizeNumber, getHomeTab, randomDigits, ownsRecord } from '../utils/security';
+import { sanitizeText, sanitizeNumber, getHomeTab, randomDigits, ownsRecord, distanceKm } from '../utils/security';
 import { supabase, loadVerifiedAccount, signOut } from '../lib/supabase';
 
 const AppContext = createContext();
@@ -79,6 +79,38 @@ export const AppProvider = ({ children }) => {
   const [language, setLanguage] = useState(() => loadStorage('LANG', 'tr'));
   const [isDarkMode, setIsDarkMode] = useState(() => loadStorage('DARK_MODE', false));
 
+  // Real device location. Null until the browser grants a fix, which keeps the seeded
+  // Kadıköy coordinates as the fallback rather than showing an empty map.
+  const [userPosition, setUserPosition] = useState(null);
+  const [geoStatus, setGeoStatus] = useState('idle'); // idle | locating | granted | denied | unsupported
+
+  const requestLocation = () => {
+    if (!navigator.geolocation) {
+      setGeoStatus('unsupported');
+      showToast('Tarayıcınız konum servisini desteklemiyor.', 'error');
+      return;
+    }
+
+    setGeoStatus('locating');
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        setUserPosition({ lat: coords.latitude, lng: coords.longitude });
+        setGeoStatus('granted');
+        showToast('Konumunuz alındı, mesafeler güncellendi 📍');
+      },
+      (error) => {
+        setGeoStatus(error.code === error.PERMISSION_DENIED ? 'denied' : 'unsupported');
+        showToast(
+          error.code === error.PERMISSION_DENIED
+            ? 'Konum izni verilmedi. Mesafeler varsayılan konuma göre gösteriliyor.'
+            : 'Konum alınamadı. Mesafeler varsayılan konuma göre gösteriliyor.',
+          'info'
+        );
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  };
+
   // Navigation tab state. A restored session lands on its role's home tab, otherwise a
   // reload would drop an admin or business account onto the buyer's explore view.
   const [activeTab, setActiveTab] = useState('explore');
@@ -91,7 +123,7 @@ export const AppProvider = ({ children }) => {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   // Data states with persistence
-  const [listings, setListings] = useState(() => loadStorage('LISTINGS', MOCK_LISTINGS));
+  const [rawListings, setListings] = useState(() => loadStorage('LISTINGS', MOCK_LISTINGS));
   const [businesses, setBusinesses] = useState(() => loadStorage('BUSINESSES', MOCK_BUSINESSES));
   const [reservations, setReservations] = useState(() => loadStorage('RESERVATIONS', MOCK_RESERVATIONS));
   const [badges, setBadges] = useState(() => loadStorage('BADGES', MOCK_BADGES));
@@ -154,18 +186,28 @@ export const AppProvider = ({ children }) => {
   useEffect(() => saveStorage('USER', storedProfile), [storedProfile]);
   useEffect(() => saveStorage('VIEW_MODE', viewMode), [viewMode]);
   useEffect(() => saveStorage('LANG', language), [language]);
-  useEffect(() => saveStorage('LISTINGS', listings), [listings]);
+  useEffect(() => saveStorage('LISTINGS', rawListings), [rawListings]);
   useEffect(() => saveStorage('BUSINESSES', businesses), [businesses]);
   useEffect(() => saveStorage('RESERVATIONS', reservations), [reservations]);
   useEffect(() => saveStorage('BADGES', badges), [badges]);
   useEffect(() => saveStorage('NOTIFICATIONS', notifications), [notifications]);
   useEffect(() => saveStorage('FAVORITES', favorites), [favorites]);
 
+  // Real distances replace the seeded ones as soon as the browser gives us a fix. Derived
+  // rather than written back, so a denied or revoked permission just falls back to the
+  // seed value instead of leaving stale numbers in storage.
+  const listingsWithDistance = userPosition
+    ? rawListings.map(item => ({
+        ...item,
+        distanceKm: +distanceKm(userPosition, { lat: item.lat, lng: item.lng }).toFixed(1),
+      }))
+    : rawListings;
+
   // Organisation-scoped views. Panels read these instead of the global arrays so one
   // tenant's dashboard cannot surface another tenant's listings or orders.
   // Only ever the server-issued organisation; the stored profile has no say in it.
   const myOrganisationId = account?.organisationId || null;
-  const myListings = myOrganisationId ? listings.filter(l => l.businessId === myOrganisationId) : [];
+  const myListings = myOrganisationId ? listingsWithDistance.filter(l => l.businessId === myOrganisationId) : [];
   const myReservations = myOrganisationId ? reservations.filter(r => r.businessId === myOrganisationId) : [];
 
   // Translation Helper
@@ -319,7 +361,7 @@ export const AppProvider = ({ children }) => {
 
   // A business may only touch its own listings; every mutation routes through here.
   const ownsListing = (listingId) =>
-    ownsRecord(currentRole, myOrganisationId, listings.find(l => l.id === listingId));
+    ownsRecord(currentRole, myOrganisationId, rawListings.find(l => l.id === listingId));
 
   // Business: Quick portion increment/decrement
   const updateListingPortions = (listingId, delta) => {
@@ -511,7 +553,10 @@ export const AppProvider = ({ children }) => {
         setReviewListingTarget,
         isFilterModalOpen,
         setIsFilterModalOpen,
-        listings,
+        listings: listingsWithDistance,
+        userPosition,
+        geoStatus,
+        requestLocation,
         myListings,
         myReservations,
         myOrganisationId,

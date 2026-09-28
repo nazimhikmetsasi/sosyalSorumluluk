@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { isAuthorized, sanitizeText, sanitizeNumber, randomDigits, getHomeTab, ownsRecord } from './security';
+import { isAuthorized, sanitizeText, sanitizeNumber, randomDigits, getHomeTab, ownsRecord, distanceKm } from './security';
 
 describe('isAuthorized', () => {
   it('lets each role into its own panel', () => {
@@ -50,6 +50,36 @@ describe('getHomeTab', () => {
     for (const role of ['buyer', 'business', 'ngo', 'admin']) {
       expect(isAuthorized(role, getHomeTab(role))).toBe(true);
     }
+  });
+});
+
+describe('distanceKm', () => {
+  const moda = { lat: 40.9835, lng: 29.0275 };
+
+  it('is zero for the same point', () => {
+    expect(distanceKm(moda, moda)).toBe(0);
+  });
+
+  it('matches known distances across Istanbul', () => {
+    expect(distanceKm(moda, { lat: 40.9923, lng: 29.0244 })).toBeCloseTo(1.0, 1);
+    expect(distanceKm(moda, { lat: 41.0422, lng: 29.0094 })).toBeCloseTo(6.7, 1);
+  });
+
+  it('is symmetric', () => {
+    const besiktas = { lat: 41.0422, lng: 29.0094 };
+    expect(distanceKm(moda, besiktas)).toBeCloseTo(distanceKm(besiktas, moda), 9);
+  });
+
+  // Math.sqrt of a value a hair over 1 from floating point would make asin return NaN.
+  it('stays finite for antipodal points', () => {
+    const result = distanceKm({ lat: 0, lng: 0 }, { lat: 0, lng: 180 });
+    expect(Number.isFinite(result)).toBe(true);
+    expect(result).toBeCloseTo(20015, 0);
+  });
+
+  it('handles negative and crossing coordinates', () => {
+    expect(distanceKm({ lat: -33.8688, lng: 151.2093 }, { lat: -37.8136, lng: 144.9631 }))
+      .toBeCloseTo(713, -1);
   });
 });
 
