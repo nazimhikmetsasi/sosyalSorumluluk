@@ -17,8 +17,8 @@ import {
 
 export const BusinessDashboardView = () => {
   const {
-    listings,
-    reservations,
+    myListings,
+    myReservations,
     setActiveTab,
     completeDelivery,
     currentUser,
@@ -30,10 +30,8 @@ export const BusinessDashboardView = () => {
   const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [activeTabSub, setActiveTabSub] = useState('listings'); // 'listings' | 'orders'
 
-  // Filter listings belonging to this business
-  const myListings = listings.filter(l => l.businessId === 'biz_01');
-  const pendingOrders = reservations.filter(r => r.status === 'confirmed');
-  const completedOrders = reservations.filter(r => r.status === 'completed');
+  const pendingOrders = myReservations.filter(r => r.status === 'confirmed');
+  const completedOrders = myReservations.filter(r => r.status === 'completed');
 
   const handleCodeSubmit = (e) => {
     e.preventDefault();

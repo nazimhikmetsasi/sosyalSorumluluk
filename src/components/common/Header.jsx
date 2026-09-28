@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
+import { getHomeTab } from '../../utils/security';
 import {
   Bell,
   Search,
@@ -17,7 +18,6 @@ export const Header = () => {
   const {
     currentUser,
     currentRole,
-    handleRoleChange,
     viewMode,
     setViewMode,
     activeTab,
@@ -25,7 +25,7 @@ export const Header = () => {
     notifications,
     searchQuery,
     setSearchQuery,
-    setIsAuthenticated,
+    logout,
     language,
     toggleLanguage,
     t,
@@ -74,7 +74,7 @@ export const Header = () => {
         {/* Left: Brand Logo & Tagline */}
         <div
           className="flex items-center gap-2.5 cursor-pointer flex-shrink-0"
-          onClick={() => setActiveTab(currentRole === 'business' ? 'business_dash' : currentRole === 'ngo' ? 'ngo_dash' : currentRole === 'admin' ? 'admin_dash' : 'explore')}
+          onClick={() => setActiveTab(getHomeTab(currentRole))}
         >
           <div className="w-9 h-9 rounded-2xl bg-gradient-to-tr from-[#0F5238] to-[#52B788] flex items-center justify-center text-white shadow-md shadow-[#2D6A4F]/20 transition-transform hover:scale-105">
             <Leaf className="w-5 h-5" />
@@ -128,7 +128,8 @@ export const Header = () => {
             <span>{language.toUpperCase()}</span>
           </button>
 
-          {/* Role Authority Badge (Fixed / Secure) */}
+          {/* Role Authority Badge. Shows currentRole, the value the route guard actually
+              enforces, so the badge can never advertise more or less than is in effect. */}
           <div
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[11px] font-bold ${roleLabels[currentRole]?.color}`}
             title={`Yetki Alanı: ${roleLabels[currentRole]?.name}`}
@@ -208,7 +209,7 @@ export const Header = () => {
 
                 <button
                   onClick={() => {
-                    setIsAuthenticated(false);
+                    logout();
                     setIsUserMenuOpen(false);
                   }}
                   className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-600 hover:bg-red-50 transition border-t border-gray-50"

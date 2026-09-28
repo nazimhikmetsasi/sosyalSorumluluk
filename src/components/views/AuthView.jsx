@@ -1,5 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
+import { randomDigits } from '../../utils/security';
 import {
   Leaf,
   Mail,
@@ -15,8 +16,25 @@ import {
   ChevronLeft
 } from 'lucide-react';
 
+// Vite inlines these at build time, so they are deployment configuration, not secrets:
+// anyone holding the bundle can read them. The portal stays hidden until both are set,
+// and this gate is not an authentication boundary until the server verifies the session.
+const ADMIN_EMAIL = (import.meta.env.VITE_ADMIN_EMAIL || '').trim().toLowerCase();
+const ADMIN_PASSCODE = import.meta.env.VITE_ADMIN_PASSCODE || '';
+const ADMIN_PORTAL_ENABLED = Boolean(ADMIN_EMAIL && ADMIN_PASSCODE);
+
+const OTP_TTL_MS = 3 * 60 * 1000;
+const OTP_MAX_ATTEMPTS = 5;
+
+const ORG_REJECTION_MESSAGE = {
+  invalid: 'Lütfen geçerli bir kurum adı girin.',
+  registered: 'Başvurunuz alındı. Yönetici onayından sonra giriş yapabilirsiniz.',
+  pending: 'Bu kurum hesabı henüz yönetici onayı bekliyor.',
+  suspended: 'Bu kurum hesabı askıya alınmış. Lütfen yönetici ile iletişime geçin.',
+};
+
 export const AuthView = () => {
-  const { setIsAuthenticated, showToast, setCurrentUser, setCurrentRole, setActiveTab } = useApp();
+  const { login, showToast, resolveOrganisation } = useApp();
   
   // Auth Mode: 'standard' | 'admin'
   const [authMode, setAuthMode] = useState('standard');
@@ -32,22 +50,40 @@ export const AuthView = () => {
   const [entityName, setEntityName] = useState(''); // For business / NGO name
   const [identifier, setIdentifier] = useState('');
   const [otpCodes, setOtpCodes] = useState(['', '', '', '', '', '']);
-  
+  const [otpChallenge, setOtpChallenge] = useState(null); // { code, expiresAt, attempts }
+  const [secondsLeft, setSecondsLeft] = useState(0);
+
   // Admin form fields
   const [adminEmail, setAdminEmail] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
   
   const inputRefs = useRef([]);
 
+  useEffect(() => {
+    if (!otpChallenge) return;
+    const tick = () => setSecondsLeft(Math.max(0, Math.ceil((otpChallenge.expiresAt - Date.now()) / 1000)));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [otpChallenge]);
+
+  // ponytail: no mail or SMS backend exists, so the demo surfaces the code in a toast.
+  // Once delivery is server-side the code must never reach the client.
+  const issueOtp = () => {
+    const code = randomDigits(6);
+    setOtpChallenge({ code, expiresAt: Date.now() + OTP_TTL_MS, attempts: 0 });
+    setOtpCodes(['', '', '', '', '', '']);
+    showToast(`${identifier} için doğrulama kodu (demo): ${code}`);
+    setTimeout(() => {
+      inputRefs.current[0]?.focus();
+    }, 100);
+  };
+
   const handleSendCode = (e) => {
     e.preventDefault();
     if (!identifier.trim()) return;
     setStep('otp');
-    setOtpCodes(['', '', '', '', '', '']);
-    showToast(`${identifier} adresine doğrulama kodu gönderildi! 📩`);
-    setTimeout(() => {
-      inputRefs.current[0]?.focus();
-    }, 100);
+    issueOtp();
   };
 
   const handleOtpChange = (index, value) => {
@@ -75,11 +111,51 @@ export const AuthView = () => {
       return;
     }
 
+    if (!otpChallenge) {
+      showToast('Önce doğrulama kodu isteyin.', 'error');
+      setStep('input');
+      return;
+    }
+
+    if (Date.now() > otpChallenge.expiresAt) {
+      showToast('Doğrulama kodunun süresi doldu. Yeni kod isteyin.', 'error');
+      setOtpChallenge(null);
+      setStep('input');
+      return;
+    }
+
+    if (entered !== otpChallenge.code) {
+      const attempts = otpChallenge.attempts + 1;
+      setOtpCodes(['', '', '', '', '', '']);
+      if (attempts >= OTP_MAX_ATTEMPTS) {
+        showToast('Çok fazla hatalı deneme. Lütfen yeni kod isteyin.', 'error');
+        setOtpChallenge(null);
+        setStep('input');
+        return;
+      }
+      setOtpChallenge({ ...otpChallenge, attempts });
+      showToast(`Hatalı kod. Kalan deneme hakkı: ${OTP_MAX_ATTEMPTS - attempts}`, 'error');
+      inputRefs.current[0]?.focus();
+      return;
+    }
+
+    let organisation = null;
+    if (selectedRole === 'business' || selectedRole === 'ngo') {
+      const outcome = resolveOrganisation(selectedRole, entityName);
+      if (!outcome.ok) {
+        setOtpChallenge(null);
+        setStep('input');
+        showToast(ORG_REJECTION_MESSAGE[outcome.reason], 'error');
+        return;
+      }
+      organisation = outcome.organisation;
+    }
+
+    setOtpChallenge(null);
+
     let displayName = fullName.trim();
-    if (selectedRole === 'business') {
-      displayName = entityName.trim() || 'Moda Fırını & Ekmek Atölyesi';
-    } else if (selectedRole === 'ngo') {
-      displayName = entityName.trim() || 'TİDER Temel İhtiyaç Aşevi';
+    if (organisation) {
+      displayName = organisation.name;
     } else {
       if (!displayName && identifier.includes('@')) {
         const prefix = identifier.split('@')[0].replace(/[._-]/g, ' ');
@@ -91,28 +167,12 @@ export const AuthView = () => {
       if (!displayName) displayName = 'Gıda Kurtarıcısı';
     }
 
-    // Set Role
-    setCurrentRole(selectedRole);
-    
-    // Set Target View
-    if (selectedRole === 'business') {
-      setActiveTab('business_dash');
-    } else if (selectedRole === 'ngo') {
-      setActiveTab('ngo_dash');
-    } else {
-      setActiveTab('explore');
-    }
-
-    // Update User Profile
-    setCurrentUser({
+    login({
       name: displayName,
       email: identifier.includes('@') ? identifier : `${displayName.toLowerCase().replace(/[^a-z0-9]/g, '')}@gmail.com`,
       phone: !identifier.includes('@') ? identifier : '0532 555 0199',
-      avatar: selectedRole === 'business'
-        ? 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=150&auto=format&fit=crop&q=80'
-        : selectedRole === 'ngo'
-        ? 'https://images.unsplash.com/photo-1593113598332-cd288d649433?w=150&auto=format&fit=crop&q=80'
-        : `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(displayName)}`,
+      avatar: organisation?.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(displayName)}`,
+      organisationId: organisation?.id || null,
       role: selectedRole,
       level: selectedRole === 'buyer' ? 4 : 5,
       savedKg: selectedRole === 'buyer' ? 18.5 : 420.0,
@@ -121,31 +181,28 @@ export const AuthView = () => {
       points: selectedRole === 'buyer' ? 420 : 2500,
     });
 
-    setIsAuthenticated(true);
     showToast(`Giriş başarılı! Hoş geldiniz: ${displayName} 🌿`);
   };
 
   // Dedicated Admin Login Handler
   const handleAdminLogin = (e) => {
     e.preventDefault();
+    if (!ADMIN_PORTAL_ENABLED) {
+      showToast('Yönetici portalı bu ortamda yapılandırılmamış.', 'error');
+      return;
+    }
     if (!adminEmail.trim() || !adminPassword.trim()) {
       showToast('Lütfen yönetici e-posta ve şifrenizi girin.', 'error');
       return;
     }
 
-    // Admin validation check (supports admin emails or admin key)
-    const isAdminEmail = adminEmail.toLowerCase().includes('admin') || adminEmail.toLowerCase() === 'nazimhikmetsasi@gmail.com';
-    const isCorrectPass = adminPassword === 'admin2026' || adminPassword === '1453' || adminPassword === 'admin';
-
-    if (!isAdminEmail || !isCorrectPass) {
+    if (adminEmail.trim().toLowerCase() !== ADMIN_EMAIL || adminPassword !== ADMIN_PASSCODE) {
       showToast('Hatalı Yönetici Bilgileri! Yetkiniz bulunmuyor.', 'error');
       return;
     }
 
-    setCurrentRole('admin');
-    setActiveTab('admin_dash');
-    setCurrentUser({
-      name: 'Nazım Hikmet (Sistem Yöneticisi)',
+    login({
+      name: 'Sistem Yöneticisi',
       email: adminEmail,
       phone: '0532 000 0000',
       avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
@@ -157,7 +214,6 @@ export const AuthView = () => {
       points: 99999,
     });
 
-    setIsAuthenticated(true);
     showToast('🛡️ Yönetici Yetkisi ile Giriş Yapıldı.');
   };
 
@@ -181,7 +237,7 @@ export const AuthView = () => {
             </div>
 
             {/* Admin Portal Switcher Toggle */}
-            <button
+            {ADMIN_PORTAL_ENABLED && <button
               onClick={() => {
                 setAuthMode(authMode === 'standard' ? 'admin' : 'standard');
                 setStep('input');
@@ -194,7 +250,7 @@ export const AuthView = () => {
             >
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>{authMode === 'admin' ? 'Normal Giriş' : 'Admin Girişi'}</span>
-            </button>
+            </button>}
           </div>
 
           {/* ADMIN LOGIN PORTAL */}
@@ -221,7 +277,7 @@ export const AuthView = () => {
                     required
                     value={adminEmail}
                     onChange={(e) => setAdminEmail(e.target.value)}
-                    placeholder="admin@gidakoprusu.org veya yetkili e-posta"
+                    placeholder="Yetkili yönetici e-posta adresi"
                     className="w-full pl-10 pr-4 py-3 rounded-2xl bg-[#F8FAFC] border border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 text-xs font-semibold text-gray-800 outline-none transition"
                   />
                 </div>
@@ -238,7 +294,7 @@ export const AuthView = () => {
                     required
                     value={adminPassword}
                     onChange={(e) => setAdminPassword(e.target.value)}
-                    placeholder="Yönetici şifresi (Örn: admin2026)"
+                    placeholder="Yönetici şifresi"
                     className="w-full pl-10 pr-4 py-3 rounded-2xl bg-[#F8FAFC] border border-gray-200 focus:border-red-500 focus:ring-2 focus:ring-red-200 text-xs font-semibold text-gray-800 outline-none transition"
                   />
                 </div>
@@ -391,7 +447,7 @@ export const AuthView = () => {
                         required
                         value={identifier}
                         onChange={(e) => setIdentifier(e.target.value)}
-                        placeholder="nazimhikmetsasi@gmail.com veya 0532..."
+                        placeholder="ornek@eposta.com veya 0532..."
                         className="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-[#F8FAFC] border border-gray-200 focus:border-[#2D6A4F] text-xs font-semibold text-gray-800 outline-none transition"
                       />
                     </div>
@@ -436,14 +492,15 @@ export const AuthView = () => {
                   </div>
 
                   <div className="flex items-center justify-between text-xs">
-                    <span className="text-gray-400 text-[11px]">Kalan Süre: <strong className="text-[#52B788]">02:45</strong></span>
+                    <span className="text-gray-400 text-[11px]">
+                      Kalan Süre:{' '}
+                      <strong className={secondsLeft > 0 ? 'text-[#52B788]' : 'text-red-600'}>
+                        {String(Math.floor(secondsLeft / 60)).padStart(2, '0')}:{String(secondsLeft % 60).padStart(2, '0')}
+                      </strong>
+                    </span>
                     <button
                       type="button"
-                      onClick={() => {
-                        setOtpCodes(['', '', '', '', '', '']);
-                        inputRefs.current[0]?.focus();
-                        showToast('Yeni kod başarıyla gönderildi!');
-                      }}
+                      onClick={issueOtp}
                       className="font-bold text-xs text-[#0F5238] hover:underline"
                     >
                       Tekrar Gönder

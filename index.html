@@ -24,12 +24,5 @@
   <body class="bg-[#F0FFF4] text-[#1B4332] font-sans antialiased selection:bg-[#52B788]/20 selection:text-[#0F5238] transition-colors duration-300">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW reg error:', err));
-        });
-      }
-    </script>
   </body>
 </html>

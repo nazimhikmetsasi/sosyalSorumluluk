@@ -11,7 +11,10 @@ import {
   ShieldCheck,
   Award,
   BarChart3,
-  FileSpreadsheet
+  FileSpreadsheet,
+  HeartHandshake,
+  Truck,
+  Users
 } from 'lucide-react';
 
 export const BottomNav = () => {
@@ -26,6 +29,15 @@ export const BottomNav = () => {
         { id: 'business_orders', label: 'QR Onay', icon: QrCode },
         { id: 'business_new_listing', label: 'Yeni İlan', icon: PlusCircle, isMain: true },
         { id: 'business_stats', label: 'İstatistik', icon: BarChart3 },
+        { id: 'profile', label: 'Profil', icon: User },
+      ];
+    }
+    if (currentRole === 'ngo') {
+      return [
+        { id: 'ngo_dash', label: 'STK Panel', icon: HeartHandshake },
+        { id: 'ngo_bulk_requests', label: 'Talepler', icon: Truck },
+        { id: 'ngo_distribution', label: 'Dağıtım', icon: MapPin, isMain: true },
+        { id: 'ngo_volunteers', label: 'Gönüllüler', icon: Users },
         { id: 'profile', label: 'Profil', icon: User },
       ];
     }
