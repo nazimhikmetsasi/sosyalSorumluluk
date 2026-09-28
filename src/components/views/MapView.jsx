@@ -37,7 +37,11 @@ export const MapView = () => {
     geoStatus,
     requestLocation,
   } = useApp();
-  const [selectedPin, setSelectedPin] = useState(listings[0] || null);
+  // Hold the id, not the object: listings are re-anchored when the location fix lands, and
+  // a captured copy would keep the pre-fix coordinates and fly the map to the wrong city.
+  const [selectedPinId, setSelectedPinId] = useState(listings[0]?.id || null);
+  const selectedPin = listings.find(l => l.id === selectedPinId) || listings[0] || null;
+  const setSelectedPin = (item) => setSelectedPinId(item?.id || null);
   const [filterType, setFilterType] = useState('all');
 
   // Ask once when the map opens: someone who navigated to a map expects it to locate

@@ -12,10 +12,14 @@ import {
   MOCK_LEADERBOARD,
   PLATFORM_STATS
 } from '../data/mockData';
-import { sanitizeText, sanitizeNumber, getHomeTab, randomDigits, ownsRecord, distanceKm } from '../utils/security';
+import { sanitizeText, sanitizeNumber, getHomeTab, randomDigits, ownsRecord, distanceKm, reanchor } from '../utils/security';
 import { supabase, loadVerifiedAccount, signOut, saveProfile, uploadAvatar } from '../lib/supabase';
 
 const AppContext = createContext();
+
+// Where the seeded listings were authored. Their coordinates are offsets from this point,
+// which is what lets the whole set be moved to wherever the user actually is.
+const SEED_ANCHOR = { lat: 40.9835, lng: 29.0275 }; // Moda, Kadıköy
 
 const loadStorage = (key, fallback) => {
   try {
@@ -198,14 +202,25 @@ export const AppProvider = ({ children }) => {
   useEffect(() => saveStorage('NOTIFICATIONS', notifications), [notifications]);
   useEffect(() => saveStorage('FAVORITES', favorites), [favorites]);
 
-  // Real distances replace the seeded ones as soon as the browser gives us a fix. Derived
-  // rather than written back, so a denied or revoked permission just falls back to the
-  // seed value instead of leaving stale numbers in storage.
+  // The seed data is laid out around Moda. Once the browser gives us a fix, the whole
+  // cluster is translated onto the user: each listing keeps its offset from the anchor,
+  // so a user in Bursa sees the same neighbourhood-scale spread instead of a map centred
+  // 150 km away, and the relative distances the seed intended still hold.
+  //
+  // Longitude degrees shrink towards the poles, so the east-west offsets are rescaled by
+  // latitude; without it the cluster would stretch or squash as it moves north or south.
+  //
+  // Derived, never written back: revoking the permission restores the seeded coordinates.
   const listingsWithDistance = userPosition
-    ? rawListings.map(item => ({
-        ...item,
-        distanceKm: +distanceKm(userPosition, { lat: item.lat, lng: item.lng }).toFixed(1),
-      }))
+    ? rawListings.map(item => {
+        const { lat, lng } = reanchor(SEED_ANCHOR, userPosition, item);
+        return {
+          ...item,
+          lat,
+          lng,
+          distanceKm: +distanceKm(userPosition, { lat, lng }).toFixed(1),
+        };
+      })
     : rawListings;
 
   // Organisation-scoped views. Panels read these instead of the global arrays so one

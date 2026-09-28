@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { isAuthorized, sanitizeText, sanitizeNumber, randomDigits, getHomeTab, ownsRecord, distanceKm } from './security';
+import { isAuthorized, sanitizeText, sanitizeNumber, randomDigits, getHomeTab, ownsRecord, distanceKm, reanchor } from './security';
 
 describe('isAuthorized', () => {
   it('lets each role into its own panel', () => {
@@ -80,6 +80,43 @@ describe('distanceKm', () => {
   it('handles negative and crossing coordinates', () => {
     expect(distanceKm({ lat: -33.8688, lng: 151.2093 }, { lat: -37.8136, lng: 144.9631 }))
       .toBeCloseTo(713, -1);
+  });
+});
+
+describe('reanchor', () => {
+  const moda = { lat: 40.9835, lng: 29.0275 };
+  const seeded = [
+    { lat: 40.9842, lng: 29.0265 }, // next door
+    { lat: 41.0430, lng: 29.0046 }, // Beşiktaş, ~7 km
+    { lat: 41.0255, lng: 28.9744 }, // Karaköy, ~6.5 km
+  ];
+
+  it('is a no-op when the target is the anchor', () => {
+    const moved = reanchor(moda, moda, seeded[1]);
+    expect(moved.lat).toBeCloseTo(seeded[1].lat, 10);
+    expect(moved.lng).toBeCloseTo(seeded[1].lng, 10);
+  });
+
+  // The whole point: a user elsewhere should see the same neighbourhood spread, not a
+  // cluster left behind in Istanbul.
+  it('keeps every distance from the viewer intact after moving the cluster', () => {
+    for (const target of [
+      { lat: 40.1826, lng: 29.0665 }, // Bursa
+      { lat: 41.0015, lng: 39.7178 }, // Trabzon
+      { lat: 59.9139, lng: 10.7522 }, // Oslo, to exercise the latitude rescale
+    ]) {
+      for (const point of seeded) {
+        const before = distanceKm(moda, point);
+        const after = distanceKm(target, reanchor(moda, target, point));
+        expect(after).toBeCloseTo(before, 2);
+      }
+    }
+  });
+
+  it('survives a target near the pole without dividing by zero', () => {
+    const moved = reanchor(moda, { lat: 89.9, lng: 0 }, seeded[1]);
+    expect(Number.isFinite(moved.lat)).toBe(true);
+    expect(Number.isFinite(moved.lng)).toBe(true);
   });
 });
 

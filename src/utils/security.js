@@ -48,6 +48,19 @@ export const distanceKm = (from, to) => {
   return EARTH_RADIUS_KM * 2 * Math.asin(Math.min(1, Math.sqrt(a)));
 };
 
+// Moves a point that was authored relative to `anchor` so it sits the same way relative
+// to `target`. Longitude degrees narrow towards the poles, so east-west offsets are
+// rescaled by latitude; without that the spread would squash as it moves north.
+export const reanchor = (anchor, target, point) => {
+  const toRad = (deg) => (deg * Math.PI) / 180;
+  const lngScale = Math.cos(toRad(anchor.lat)) / Math.max(0.05, Math.cos(toRad(target.lat)));
+
+  return {
+    lat: target.lat + (point.lat - anchor.lat),
+    lng: target.lng + (point.lng - anchor.lng) * lngScale,
+  };
+};
+
 // Safe numerical sanitizer with bounding
 export const sanitizeNumber = (val, min = 0, max = 100000, fallback = 0) => {
   const parsed = parseFloat(val);
