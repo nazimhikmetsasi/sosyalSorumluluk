@@ -9,8 +9,6 @@ import {
   ChevronDown,
   User,
   LogOut,
-  Moon,
-  Sun,
   Globe,
   Download
 } from 'lucide-react';
@@ -30,8 +28,6 @@ export const Header = () => {
     setIsAuthenticated,
     language,
     toggleLanguage,
-    isDarkMode,
-    toggleDarkMode,
     t,
     showToast
   } = useApp();
@@ -58,7 +54,7 @@ export const Header = () => {
       }
       setDeferredPrompt(null);
     } else {
-      showToast('PWA kurulumu: Tarayıcınızın "Ana Ekrana Ekle" seçeneğini kullanabilirsiniz 📱', 'info');
+      showToast('PWA: Tarayıcınızın "Ana Ekrana Ekle" seçeneğiyle yükleyebilirsiniz 📱', 'info');
     }
   };
 
@@ -72,7 +68,7 @@ export const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-[#2D6A4F]/10 dark:border-gray-800 px-4 lg:px-8 py-3 transition-colors">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#2D6A4F]/10 px-4 lg:px-8 py-3 transition-colors shadow-sm">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
         
         {/* Left: Brand Logo & Tagline */}
@@ -85,10 +81,10 @@ export const Header = () => {
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-lg tracking-tight text-[#0F5238] dark:text-[#92F7C3]">
+              <span className="font-extrabold text-lg tracking-tight text-[#0F5238]">
                 Gıda<span className="text-[#52B788]">Köprüsü</span>
               </span>
-              <span className="hidden sm:inline-block px-2 py-0.5 text-[9px] font-semibold tracking-wide uppercase bg-[#D1FEE5] dark:bg-[#0F5238] text-[#006C48] dark:text-[#95D5B2] rounded-full">
+              <span className="hidden sm:inline-block px-2 py-0.5 text-[9px] font-semibold tracking-wide uppercase bg-[#D1FEE5] text-[#006C48] rounded-full">
                 {t('zeroWaste')}
               </span>
             </div>
@@ -104,7 +100,7 @@ export const Header = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Fırın, manav veya yemek ara..."
-              className="w-full bg-[#F0FFF4] dark:bg-gray-800 border border-[#A8E7C5]/60 dark:border-gray-700 focus:border-[#2D6A4F] rounded-full pl-9 pr-3 py-1.5 text-xs text-[#002114] dark:text-gray-100 placeholder:text-gray-400 outline-none transition"
+              className="w-full bg-[#F0FFF4] border border-[#A8E7C5]/60 focus:border-[#2D6A4F] rounded-full pl-9 pr-3 py-1.5 text-xs text-[#002114] placeholder:text-gray-400 outline-none transition"
             />
           </div>
         )}
@@ -115,7 +111,7 @@ export const Header = () => {
           {/* PWA Install Button */}
           <button
             onClick={handleInstallApp}
-            className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 bg-[#F0FFF4] dark:bg-gray-800 border border-[#A8E7C5]/60 dark:border-gray-700 text-[#0F5238] dark:text-[#92F7C3] rounded-xl text-[11px] font-bold hover:bg-[#E8FFF0] transition"
+            className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 bg-[#F0FFF4] border border-[#A8E7C5]/60 text-[#0F5238] rounded-xl text-[11px] font-bold hover:bg-[#E8FFF0] transition"
             title={t('installApp')}
           >
             <Download className="w-3.5 h-3.5 text-[#52B788]" />
@@ -125,20 +121,11 @@ export const Header = () => {
           {/* Language Switcher */}
           <button
             onClick={toggleLanguage}
-            className="flex items-center gap-1 px-2 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 text-[11px] font-bold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+            className="flex items-center gap-1 px-2 py-1.5 rounded-xl border border-gray-200 text-[11px] font-bold text-gray-700 hover:bg-gray-50 transition"
             title="Dili Değiştir (TR / EN)"
           >
             <Globe className="w-3.5 h-3.5 text-[#52B788]" />
             <span>{language.toUpperCase()}</span>
-          </button>
-
-          {/* Dark Mode Switcher */}
-          <button
-            onClick={toggleDarkMode}
-            className="p-1.5 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition"
-            title={isDarkMode ? t('lightMode') : t('darkMode')}
-          >
-            {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-[#0F5238]" />}
           </button>
 
           {/* Role Selector */}
@@ -153,7 +140,7 @@ export const Header = () => {
             </button>
 
             {isRoleMenuOpen && (
-              <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 py-2 z-50 animate-in fade-in">
+              <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 animate-in fade-in">
                 <div className="px-3 py-1 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
                   {t('switchRole')}
                 </div>
@@ -164,8 +151,8 @@ export const Header = () => {
                       handleRoleChange(roleKey);
                       setIsRoleMenuOpen(false);
                     }}
-                    className={`w-full flex items-center justify-between px-3 py-2 text-xs text-left transition hover:bg-[#F0FFF4] dark:hover:bg-gray-700 ${
-                      currentRole === roleKey ? 'font-bold text-[#0F5238] dark:text-[#95D5B2] bg-[#E8FFF0] dark:bg-gray-700' : 'text-gray-700 dark:text-gray-200'
+                    className={`w-full flex items-center justify-between px-3 py-2 text-xs text-left transition hover:bg-[#F0FFF4] ${
+                      currentRole === roleKey ? 'font-bold text-[#0F5238] bg-[#E8FFF0]' : 'text-gray-700'
                     }`}
                   >
                     <span className="flex items-center gap-1.5">
@@ -185,7 +172,7 @@ export const Header = () => {
             className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-medium border transition ${
               viewMode === 'mobile'
                 ? 'bg-[#2D6A4F] text-white border-[#2D6A4F] shadow-sm'
-                : 'bg-white dark:bg-gray-800 text-[#404943] dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:border-[#52B788]'
+                : 'bg-white text-[#404943] border-gray-200 hover:border-[#52B788]'
             }`}
             title="Mobil / Web Görünümü"
           >
@@ -205,8 +192,8 @@ export const Header = () => {
           {/* Notifications */}
           <button
             onClick={() => setActiveTab('notifications')}
-            className={`relative p-2 rounded-xl text-[#0F5238] dark:text-[#92F7C3] hover:bg-[#F0FFF4] dark:hover:bg-gray-800 transition ${
-              activeTab === 'notifications' ? 'bg-[#E8FFF0] dark:bg-gray-800' : ''
+            className={`relative p-2 rounded-xl text-[#0F5238] hover:bg-[#F0FFF4] transition ${
+              activeTab === 'notifications' ? 'bg-[#E8FFF0]' : ''
             }`}
           >
             <Bell className="w-4 h-4" />
@@ -221,7 +208,7 @@ export const Header = () => {
           <div className="relative">
             <button
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-              className="flex items-center gap-1.5 p-0.5 pl-1.5 bg-[#F0FFF4] dark:bg-gray-800 border border-[#A8E7C5]/40 dark:border-gray-700 rounded-full hover:border-[#52B788] transition"
+              className="flex items-center gap-1.5 p-0.5 pl-1.5 bg-[#F0FFF4] border border-[#A8E7C5]/40 rounded-full hover:border-[#52B788] transition"
             >
               <img
                 src={currentUser.avatar}
@@ -231,9 +218,9 @@ export const Header = () => {
             </button>
 
             {isUserMenuOpen && (
-              <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 py-2 z-50 animate-in fade-in">
-                <div className="px-3 py-1.5 border-b border-gray-100 dark:border-gray-700">
-                  <p className="text-xs font-bold text-[#0F5238] dark:text-gray-100">{currentUser.name}</p>
+              <div className="absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50 animate-in fade-in">
+                <div className="px-3 py-1.5 border-b border-gray-100">
+                  <p className="text-xs font-bold text-[#0F5238]">{currentUser.name}</p>
                   <p className="text-[10px] text-[#52B788] font-semibold">{currentUser.savedKg} kg {t('savedTotal')}</p>
                 </div>
 
@@ -242,7 +229,7 @@ export const Header = () => {
                     setActiveTab('profile');
                     setIsUserMenuOpen(false);
                   }}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-[#F0FFF4] dark:hover:bg-gray-700 transition"
+                  className="w-full flex items-center gap-2 px-3 py-2 text-xs text-gray-700 hover:bg-[#F0FFF4] transition"
                 >
                   <User className="w-3.5 h-3.5 text-gray-400" />
                   <span>{t('profile')}</span>
@@ -253,7 +240,7 @@ export const Header = () => {
                     setIsAuthenticated(false);
                     setIsUserMenuOpen(false);
                   }}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition border-t border-gray-50 dark:border-gray-700"
+                  className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-600 hover:bg-red-50 transition border-t border-gray-50"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                   <span>{t('logout')}</span>
