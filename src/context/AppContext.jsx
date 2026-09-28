@@ -240,6 +240,26 @@ export const AppProvider = ({ children }) => {
     showToast('Rezervasyon iptal edildi ve paket iade edildi.', 'info');
   };
 
+  // Business: Quick portion increment/decrement
+  const updateListingPortions = (listingId, delta) => {
+    setListings(prev => prev.map(item => {
+      if (item.id === listingId) {
+        const nextCount = Math.max(0, item.portionsAvailable + delta);
+        return { ...item, portionsAvailable: nextCount };
+      }
+      return item;
+    }));
+    playSoundEffect('pop');
+    showToast('Stok porsiyon adedi güncellendi.', 'success');
+  };
+
+  // Business: Remove listing
+  const deleteListing = (listingId) => {
+    setListings(prev => prev.filter(item => item.id !== listingId));
+    playSoundEffect('pop');
+    showToast('İlan başarıyla kaldırıldı.', 'info');
+  };
+
   // Business: Add new Listing
   const addNewListing = (listingData) => {
     const newListing = {
@@ -351,6 +371,8 @@ export const AppProvider = ({ children }) => {
         setIsFilterModalOpen,
         listings,
         setListings,
+        updateListingPortions,
+        deleteListing,
         businesses,
         reservations,
         badges,

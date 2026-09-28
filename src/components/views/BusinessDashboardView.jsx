@@ -8,7 +8,11 @@ import {
   PackageCheck,
   Clock,
   ShieldCheck,
-  ArrowUpRight
+  ArrowUpRight,
+  Plus,
+  Minus,
+  Trash2,
+  CheckCircle2
 } from 'lucide-react';
 
 export const BusinessDashboardView = () => {
@@ -18,14 +22,18 @@ export const BusinessDashboardView = () => {
     setActiveTab,
     completeDelivery,
     currentUser,
+    updateListingPortions,
+    deleteListing,
   } = useApp();
 
   const [inputCode, setInputCode] = useState('');
   const [isScannerOpen, setIsScannerOpen] = useState(false);
+  const [activeTabSub, setActiveTabSub] = useState('listings'); // 'listings' | 'orders'
 
   // Filter listings belonging to this business
   const myListings = listings.filter(l => l.businessId === 'biz_01');
   const pendingOrders = reservations.filter(r => r.status === 'confirmed');
+  const completedOrders = reservations.filter(r => r.status === 'completed');
 
   const handleCodeSubmit = (e) => {
     e.preventDefault();
@@ -104,14 +112,14 @@ export const BusinessDashboardView = () => {
         </div>
       </div>
 
-      {/* Delivery Confirmation Box */}
+      {/* Fast Delivery Confirmation Box */}
       <div className="bg-gradient-to-br from-[#0F5238] to-[#1B4332] text-white p-4 rounded-2xl shadow-md space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <QrCode className="w-4 h-4 text-[#95D5B2]" />
             <h3 className="font-bold text-xs">Hızlı Teslimat Onayı</h3>
           </div>
-          <span className="px-1.5 py-0.5 rounded-md bg-white/20 text-[9px] font-bold">Personel Modu</span>
+          <span className="px-1.5 py-0.5 rounded-md bg-white/20 text-[9px] font-bold">Personel Girişi</span>
         </div>
 
         <form onSubmit={handleCodeSubmit} className="space-y-2">
@@ -135,57 +143,140 @@ export const BusinessDashboardView = () => {
 
         <button
           onClick={() => setIsScannerOpen(true)}
-          className="w-full py-2.5 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-[11px] font-bold text-white flex items-center justify-center gap-1.5 transition"
+          className="w-full py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-[11px] font-bold text-white flex items-center justify-center gap-1.5 transition"
         >
           <QrCode className="w-3.5 h-3.5 text-[#92F7C3]" />
           <span>Kamerayla QR Kod Tara</span>
         </button>
       </div>
 
-      {/* Active Listings in Store */}
-      <div className="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-sm space-y-2.5">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="font-bold text-xs text-[#0F5238]">Yayındaki İlanlarınız</h3>
-            <p className="text-[10px] text-gray-500">Müşterilerin sipariş verebileceği paketler</p>
-          </div>
-          <button
-            onClick={() => setActiveTab('business_new_listing')}
-            className="text-[10px] font-bold text-[#2D6A4F] hover:underline flex items-center gap-0.5"
-          >
-            <span>Yeni Ekle</span>
-            <ArrowUpRight className="w-3 h-3" />
-          </button>
-        </div>
+      {/* Tabs: Yayındaki İlanlar / Bekleyen Siparişler */}
+      <div className="grid grid-cols-2 gap-1 bg-white p-1 rounded-xl border border-gray-100 shadow-sm">
+        <button
+          onClick={() => setActiveTabSub('listings')}
+          className={`py-1.5 text-center rounded-lg text-xs font-bold transition ${
+            activeTabSub === 'listings' ? 'bg-[#0F5238] text-white shadow-sm' : 'text-gray-500'
+          }`}
+        >
+          Yayındaki İlanlar ({myListings.length})
+        </button>
+        <button
+          onClick={() => setActiveTabSub('orders')}
+          className={`py-1.5 text-center rounded-lg text-xs font-bold transition ${
+            activeTabSub === 'orders' ? 'bg-[#0F5238] text-white shadow-sm' : 'text-gray-500'
+          }`}
+        >
+          Bekleyen Siparişler ({pendingOrders.length})
+        </button>
+      </div>
 
-        <div className="space-y-2">
-          {myListings.map((item) => (
-            <div
-              key={item.id}
-              className="flex items-center justify-between p-2.5 rounded-xl bg-[#F8FAFC] border border-gray-100"
+      {/* Tab Content */}
+      {activeTabSub === 'listings' ? (
+        <div className="bg-white p-3 rounded-2xl border border-gray-100 shadow-sm space-y-2.5">
+          <div className="flex items-center justify-between">
+            <h3 className="font-bold text-xs text-[#0F5238]">Stok ve Porsiyon Yönetimi</h3>
+            <button
+              onClick={() => setActiveTab('business_new_listing')}
+              className="text-[10px] font-bold text-[#2D6A4F] hover:underline flex items-center gap-0.5"
             >
-              <div className="flex items-center gap-2.5 min-w-0">
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
-                />
+              <span>Yeni İlan</span>
+              <ArrowUpRight className="w-3 h-3" />
+            </button>
+          </div>
+
+          <div className="space-y-2">
+            {myListings.length === 0 ? (
+              <p className="text-center text-xs text-gray-400 py-4">Şu an aktif ilanınız yok.</p>
+            ) : (
+              myListings.map((item) => (
+                <div
+                  key={item.id}
+                  className="p-2.5 rounded-xl bg-[#F8FAFC] border border-gray-100 space-y-2"
+                >
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
+                      />
+                      <div className="min-w-0">
+                        <h4 className="font-bold text-[11px] text-[#0F5238] truncate">{item.title}</h4>
+                        <p className="text-[9px] text-gray-400">
+                          {item.pickupStartTime}–{item.pickupEndTime} • {item.priceDiscounted} ₺
+                        </p>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => deleteListing(item.id)}
+                      className="text-gray-400 hover:text-red-500 p-1 flex-shrink-0"
+                      title="İlanı Kaldır"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+
+                  {/* Portion Quick Stepper */}
+                  <div className="flex items-center justify-between pt-1 border-t border-gray-100 text-[10px]">
+                    <span className="text-gray-500 font-medium">
+                      Kalan Stok: <strong className="text-[#0F5238]">{item.portionsAvailable} Paket</strong>
+                    </span>
+
+                    <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-lg p-0.5 shadow-sm">
+                      <button
+                        onClick={() => updateListingPortions(item.id, -1)}
+                        className="w-6 h-6 flex items-center justify-center text-gray-600 hover:bg-gray-100 rounded"
+                        title="1 Azalt"
+                      >
+                        <Minus className="w-3 h-3" />
+                      </button>
+                      <span className="w-5 text-center font-bold text-[#0F5238]">{item.portionsAvailable}</span>
+                      <button
+                        onClick={() => updateListingPortions(item.id, 1)}
+                        className="w-6 h-6 flex items-center justify-center text-gray-600 hover:bg-gray-100 rounded"
+                        title="1 Artır"
+                      >
+                        <Plus className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      ) : (
+        <div className="bg-white p-3 rounded-2xl border border-gray-100 shadow-sm space-y-2">
+          <h3 className="font-bold text-xs text-[#0F5238]">Teslim Edilecek Müşteri Siparişleri</h3>
+          {pendingOrders.length === 0 ? (
+            <p className="text-center text-xs text-gray-400 py-4">Bekleyen sipariş bulunmuyor.</p>
+          ) : (
+            pendingOrders.map((ord) => (
+              <div
+                key={ord.id}
+                className="p-2.5 rounded-xl bg-[#F8FAFC] border border-gray-100 flex items-center justify-between gap-2"
+              >
                 <div className="min-w-0">
-                  <h4 className="font-bold text-[11px] text-[#0F5238] truncate">{item.title}</h4>
-                  <p className="text-[9px] text-gray-500 mt-0.5 truncate">
-                    {item.pickupStartTime}–{item.pickupEndTime} • {item.portionsAvailable}/{item.portionsTotal} paket
+                  <span className="text-[9px] font-bold text-gray-400 block truncate">{ord.createdAt}</span>
+                  <h4 className="font-bold text-[11px] text-[#0F5238] truncate">{ord.listingTitle}</h4>
+                  <p className="text-[9px] text-[#2D6A4F] font-semibold">
+                    Kod: <strong>{ord.pickupCode}</strong> • {ord.portionCount} Paket ({ord.paidAmount} ₺)
                   </p>
                 </div>
-              </div>
 
-              <div className="text-right flex-shrink-0 ml-2">
-                <span className="text-xs font-black text-[#0F5238] block">{item.priceDiscounted} ₺</span>
-                <span className="text-[9px] text-gray-400 line-through">{item.priceOriginal} ₺</span>
+                <button
+                  onClick={() => completeDelivery(ord.pickupCode)}
+                  className="px-2.5 py-1.5 bg-[#0F5238] hover:bg-[#2D6A4F] text-white font-bold text-[9px] rounded-lg shadow flex items-center gap-1 flex-shrink-0"
+                >
+                  <CheckCircle2 className="w-3 h-3 text-[#95D5B2]" />
+                  <span>Teslim Et</span>
+                </button>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
-      </div>
+      )}
 
       {/* QR Scanner Viewfinder Modal */}
       <ScannerModal
