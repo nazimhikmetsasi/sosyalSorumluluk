@@ -10,6 +10,7 @@ import { ListingDetailModal } from './components/modals/ListingDetailModal';
 import { ReservationModal } from './components/modals/ReservationModal';
 import { ReviewModal } from './components/modals/ReviewModal';
 import { FilterModal } from './components/modals/FilterModal';
+import { BusinessDetailModal } from './components/modals/BusinessDetailModal';
 
 // Views
 import { AuthView } from './components/views/AuthView';
@@ -112,6 +113,7 @@ export const App = () => {
       <ReservationModal />
       <ReviewModal />
       <FilterModal />
+      <BusinessDetailModal />
 
       {/* Toast Notification Container */}
       <ToastContainer />

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { ImpactCertificateModal } from '../modals/ImpactCertificateModal';
 import {
   Award,
   Leaf,
@@ -10,11 +11,13 @@ import {
   TrendingUp,
   Droplet,
   Globe2,
-  Utensils
+  Utensils,
+  FileCheck2
 } from 'lucide-react';
 
 export const ProfileBadgesView = () => {
-  const { currentUser, badges, showToast } = useApp();
+  const { currentUser, badges, showToast, resetDemoData } = useApp();
+  const [isCertOpen, setIsCertOpen] = useState(false);
 
   const handleShareImpact = () => {
     navigator.clipboard?.writeText(
@@ -49,17 +52,25 @@ export const ProfileBadgesView = () => {
               {currentUser.city}, {currentUser.district} • Kasım 2025'ten beri platform üyesi
             </p>
 
-            <div className="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-4 text-xs font-semibold text-gray-600">
+            <div className="pt-2 flex flex-wrap items-center justify-center sm:justify-start gap-3 text-xs font-semibold text-gray-600">
               <span className="flex items-center gap-1.5 bg-[#F0FFF4] px-3 py-1.5 rounded-xl border border-[#A8E7C5]/40 text-[#0F5238]">
                 <Sparkles className="w-4 h-4 text-[#52B788]" />
                 {currentUser.points} Topluluk Puanı
               </span>
 
               <button
-                onClick={handleShareImpact}
+                onClick={() => setIsCertOpen(true)}
                 className="flex items-center gap-1.5 bg-[#0F5238] hover:bg-[#2D6A4F] text-white px-3.5 py-1.5 rounded-xl transition shadow-sm font-bold text-xs"
               >
-                <Share2 className="w-3.5 h-3.5 text-[#95D5B2]" />
+                <FileCheck2 className="w-3.5 h-3.5 text-[#95D5B2]" />
+                Eko Sertifikam
+              </button>
+
+              <button
+                onClick={handleShareImpact}
+                className="flex items-center gap-1.5 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 px-3.5 py-1.5 rounded-xl transition shadow-sm font-bold text-xs"
+              >
+                <Share2 className="w-3.5 h-3.5 text-[#52B788]" />
                 Etkini Paylaş
               </button>
             </div>
@@ -155,6 +166,26 @@ export const ProfileBadgesView = () => {
           ))}
         </div>
       </div>
+
+      {/* Reset demo data option */}
+      <div className="p-4 bg-gray-50 rounded-2xl border border-gray-200 flex items-center justify-between">
+        <div>
+          <p className="text-xs font-bold text-gray-700">Demo Verilerini Sıfırla</p>
+          <p className="text-[11px] text-gray-400">LocalStorage belleğini temizleyip başlangıç ayarlarına döndürür.</p>
+        </div>
+        <button
+          onClick={resetDemoData}
+          className="px-3.5 py-1.5 bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 text-xs font-bold rounded-xl transition"
+        >
+          Sıfırla
+        </button>
+      </div>
+
+      {/* Impact Certificate Modal */}
+      <ImpactCertificateModal
+        isOpen={isCertOpen}
+        onClose={() => setIsCertOpen(false)}
+      />
 
     </div>
   );

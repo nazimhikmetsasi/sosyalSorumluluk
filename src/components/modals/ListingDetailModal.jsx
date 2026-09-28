@@ -107,8 +107,11 @@ export const ListingDetailModal = () => {
         {/* Scrollable Content Body */}
         <div className="p-5 sm:p-6 overflow-y-auto space-y-6 flex-1">
           
-          {/* Business Summary Card */}
-          <div className="flex items-center justify-between p-3.5 bg-[#F0FFF4] rounded-2xl border border-[#A8E7C5]/50">
+          {/* Business Summary Card (Clickable to view business profile) */}
+          <div
+            onClick={() => window.dispatchEvent(new CustomEvent('OPEN_BIZ_MODAL', { detail: selectedListing.businessId }))}
+            className="flex items-center justify-between p-3.5 bg-[#F0FFF4] rounded-2xl border border-[#A8E7C5]/50 cursor-pointer hover:bg-[#E8FFF0] transition group"
+          >
             <div className="flex items-center gap-3">
               <img
                 src={selectedListing.businessAvatar}
@@ -116,13 +119,13 @@ export const ListingDetailModal = () => {
                 className="w-12 h-12 rounded-2xl object-cover border border-white shadow-sm"
               />
               <div>
-                <h4 className="text-sm font-bold text-[#0F5238] flex items-center gap-1.5">
+                <h4 className="text-sm font-bold text-[#0F5238] flex items-center gap-1.5 group-hover:text-[#52B788] transition">
                   {selectedListing.businessName}
                   <ShieldCheck className="w-4 h-4 text-[#10B981]" />
                 </h4>
                 <p className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
                   <MapPin className="w-3.5 h-3.5 text-gray-400" />
-                  Kadıköy, İstanbul • {selectedListing.distanceKm} km yakında
+                  Kadıköy, İstanbul • {selectedListing.distanceKm} km yakında • <span className="text-[#52B788] font-bold underline">Profili Gör</span>
                 </p>
               </div>
             </div>

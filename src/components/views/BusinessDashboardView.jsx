@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { ScannerModal } from '../modals/ScannerModal';
 import {
   LayoutDashboard,
   PlusCircle,
@@ -26,7 +27,7 @@ export const BusinessDashboardView = () => {
   } = useApp();
 
   const [inputCode, setInputCode] = useState('');
-  const [isScanning, setIsScanning] = useState(false);
+  const [isScannerOpen, setIsScannerOpen] = useState(false);
 
   // Filter listings belonging to this business
   const myListings = listings.filter(l => l.businessId === 'biz_01');
@@ -38,17 +39,6 @@ export const BusinessDashboardView = () => {
     if (!inputCode.trim()) return;
     completeDelivery(inputCode);
     setInputCode('');
-  };
-
-  const handleSimulateScan = () => {
-    setIsScanning(true);
-    setTimeout(() => {
-      setIsScanning(false);
-      const target = pendingOrders[0];
-      if (target) {
-        completeDelivery(target.pickupCode);
-      }
-    }, 1500);
   };
 
   return (
@@ -168,12 +158,11 @@ export const BusinessDashboardView = () => {
             </div>
 
             <button
-              onClick={handleSimulateScan}
-              disabled={isScanning}
+              onClick={() => setIsScannerOpen(true)}
               className="w-full py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl text-xs font-bold text-white flex items-center justify-center gap-2 transition"
             >
               <QrCode className="w-4 h-4 text-[#92F7C3]" />
-              <span>{isScanning ? 'Kamera Taranıyor...' : 'Kamerayla QR Tara (Simülasyon)'}</span>
+              <span>Canlı Kamerayla QR Kod Tara</span>
             </button>
           </div>
         </div>
@@ -224,6 +213,12 @@ export const BusinessDashboardView = () => {
         </div>
 
       </div>
+
+      {/* QR Scanner Viewfinder Modal */}
+      <ScannerModal
+        isOpen={isScannerOpen}
+        onClose={() => setIsScannerOpen(false)}
+      />
 
     </div>
   );
