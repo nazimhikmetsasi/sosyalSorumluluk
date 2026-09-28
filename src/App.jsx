@@ -9,6 +9,7 @@ import { ToastContainer } from './components/common/ToastContainer';
 import { ListingDetailModal } from './components/modals/ListingDetailModal';
 import { ReservationModal } from './components/modals/ReservationModal';
 import { ReviewModal } from './components/modals/ReviewModal';
+import { FilterModal } from './components/modals/FilterModal';
 
 // Views
 import { AuthView } from './components/views/AuthView';
@@ -110,6 +111,7 @@ export const App = () => {
       <ListingDetailModal />
       <ReservationModal />
       <ReviewModal />
+      <FilterModal />
 
       {/* Toast Notification Container */}
       <ToastContainer />

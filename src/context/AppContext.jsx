@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
+import { playSoundEffect } from '../utils/audioEffects';
 import {
   INITIAL_USER,
   MOCK_BUSINESSES,
@@ -13,38 +14,73 @@ import {
 
 const AppContext = createContext();
 
+const loadStorage = (key, fallback) => {
+  try {
+    const saved = localStorage.getItem(`GK_${key}`);
+    return saved ? JSON.parse(saved) : fallback;
+  } catch (e) {
+    return fallback;
+  }
+};
+
+const saveStorage = (key, data) => {
+  try {
+    localStorage.setItem(`GK_${key}`, JSON.stringify(data));
+  } catch (e) {
+    console.warn('Storage save failed', e);
+  }
+};
+
 export const AppProvider = ({ children }) => {
   // Global user state & role
-  const [currentUser, setCurrentUser] = useState(INITIAL_USER);
-  const [currentRole, setCurrentRole] = useState('buyer'); // 'buyer' | 'business' | 'ngo' | 'admin'
+  const [currentUser, setCurrentUser] = useState(() => loadStorage('USER', INITIAL_USER));
+  const [currentRole, setCurrentRole] = useState(() => loadStorage('ROLE', 'buyer'));
   const [isAuthenticated, setIsAuthenticated] = useState(true);
 
-  // View presentation mode: 'web' or 'mobile-preview' or 'native'
-  const [viewMode, setViewMode] = useState('web'); // 'web' | 'mobile'
+  // View presentation mode: 'web' or 'mobile'
+  const [viewMode, setViewMode] = useState(() => loadStorage('VIEW_MODE', 'web'));
 
   // Navigation tab state
-  const [activeTab, setActiveTab] = useState('explore'); // explore, map, reservations, profile, badges, business_dash, business_new_listing, business_orders, ngo_dash, admin_dash, admin_businesses, admin_reports, notifications, leaderboard
+  const [activeTab, setActiveTab] = useState('explore');
 
   // Selected item states for modals / detailed views
   const [selectedListing, setSelectedListing] = useState(null);
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
   const [reviewListingTarget, setReviewListingTarget] = useState(null);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
-  // Data states
-  const [listings, setListings] = useState(MOCK_LISTINGS);
-  const [businesses, setBusinesses] = useState(MOCK_BUSINESSES);
-  const [reservations, setReservations] = useState(MOCK_RESERVATIONS);
-  const [badges, setBadges] = useState(MOCK_BADGES);
-  const [notifications, setNotifications] = useState(MOCK_NOTIFICATIONS);
+  // Data states with persistence
+  const [listings, setListings] = useState(() => loadStorage('LISTINGS', MOCK_LISTINGS));
+  const [businesses, setBusinesses] = useState(() => loadStorage('BUSINESSES', MOCK_BUSINESSES));
+  const [reservations, setReservations] = useState(() => loadStorage('RESERVATIONS', MOCK_RESERVATIONS));
+  const [badges, setBadges] = useState(() => loadStorage('BADGES', MOCK_BADGES));
+  const [notifications, setNotifications] = useState(() => loadStorage('NOTIFICATIONS', MOCK_NOTIFICATIONS));
   const [leaderboard, setLeaderboard] = useState(MOCK_LEADERBOARD);
   const [stats, setStats] = useState(PLATFORM_STATS);
 
-  // Filter states
+  // Advanced Filter & Sort states
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Tümü');
   const [selectedListingType, setSelectedListingType] = useState('all'); // all, free, discounted, bulk
+  const [sortBy, setSortBy] = useState('distance'); // 'distance' | 'discount' | 'price' | 'co2'
   const [maxDistance, setMaxDistance] = useState(10); // km
+  const [dietaryFilters, setDietaryFilters] = useState({
+    vegan: false,
+    vegetarian: false,
+    glutenFree: false,
+    dairyFree: false
+  });
+
+  // Sync state changes to localStorage
+  useEffect(() => saveStorage('USER', currentUser), [currentUser]);
+  useEffect(() => saveStorage('ROLE', currentRole), [currentRole]);
+  useEffect(() => saveStorage('VIEW_MODE', viewMode), [viewMode]);
+  useEffect(() => saveStorage('LISTINGS', listings), [listings]);
+  useEffect(() => saveStorage('BUSINESSES', businesses), [businesses]);
+  useEffect(() => saveStorage('RESERVATIONS', reservations), [reservations]);
+  useEffect(() => saveStorage('BADGES', badges), [badges]);
+  useEffect(() => saveStorage('NOTIFICATIONS', notifications), [notifications]);
 
   // Toast system
   const [toasts, setToasts] = useState([]);
@@ -94,6 +130,7 @@ export const AppProvider = ({ children }) => {
   // Make a reservation action
   const makeReservation = (listing, portionCount = 1) => {
     if (listing.portionsAvailable < portionCount) {
+      playSoundEffect('error');
       showToast('Yeterli porsiyon kalmadı!', 'error');
       return false;
     }
@@ -143,7 +180,8 @@ export const AppProvider = ({ children }) => {
       points: prev.points + (portionCount * 50),
     }));
 
-    // Trigger celebratory confetti
+    // Trigger sound and confetti
+    playSoundEffect('success');
     confetti({
       particleCount: 80,
       spread: 70,
@@ -166,6 +204,24 @@ export const AppProvider = ({ children }) => {
     showToast(`Rezervasyon başarıyla oluşturuldu! Teslimat Kodunuz: ${newCode}`);
     setSelectedReservation(newRes);
     return newRes;
+  };
+
+  // Cancel a reservation
+  const cancelReservation = (resId) => {
+    const target = reservations.find(r => r.id === resId);
+    if (!target) return;
+
+    setReservations(prev => prev.map(r => r.id === resId ? { ...r, status: 'cancelled' } : r));
+    
+    // Restore portion
+    setListings(prev => prev.map(l => {
+      if (l.id === target.listingId) {
+        return { ...l, portionsAvailable: l.portionsAvailable + target.portionCount };
+      }
+      return l;
+    }));
+
+    showToast('Rezervasyon iptal edildi.', 'info');
   };
 
   // Business: Add new Listing
@@ -200,6 +256,7 @@ export const AppProvider = ({ children }) => {
     };
 
     setListings(prev => [newListing, ...prev]);
+    playSoundEffect('success');
     showToast('Yeni ilan başarıyla yayınlandı!', 'success');
     setActiveTab('business_dash');
   };
@@ -208,6 +265,7 @@ export const AppProvider = ({ children }) => {
   const completeDelivery = (pickupCode) => {
     const target = reservations.find(r => r.pickupCode.toUpperCase() === pickupCode.trim().toUpperCase());
     if (!target) {
+      playSoundEffect('error');
       showToast('Geçersiz veya bulunamayan teslimat kodu!', 'error');
       return false;
     }
@@ -217,9 +275,11 @@ export const AppProvider = ({ children }) => {
     }
 
     setReservations(prev => prev.map(r => r.id === target.id ? { ...r, status: 'completed' } : r));
+    playSoundEffect('beep');
+    setTimeout(() => playSoundEffect('success'), 150);
+
     showToast(`Teslimat başarıyla onaylandı: ${target.listingTitle}`, 'success');
     
-    // Trigger confetti
     confetti({
       particleCount: 60,
       spread: 60,
@@ -234,6 +294,19 @@ export const AppProvider = ({ children }) => {
   const updateBusinessStatus = (id, newStatus) => {
     setBusinesses(prev => prev.map(b => b.id === id ? { ...b, status: newStatus } : b));
     showToast(`İşletme durumu güncellendi: ${newStatus.toUpperCase()}`);
+  };
+
+  // Reset all mock data to defaults
+  const resetDemoData = () => {
+    localStorage.clear();
+    setListings(MOCK_LISTINGS);
+    setBusinesses(MOCK_BUSINESSES);
+    setReservations(MOCK_RESERVATIONS);
+    setBadges(MOCK_BADGES);
+    setNotifications(MOCK_NOTIFICATIONS);
+    setCurrentUser(INITIAL_USER);
+    setCurrentRole('buyer');
+    showToast('Tüm demo verileri başarıyla sıfırlandı! 🔄', 'info');
   };
 
   return (
@@ -257,6 +330,8 @@ export const AppProvider = ({ children }) => {
         setIsReviewModalOpen,
         reviewListingTarget,
         setReviewListingTarget,
+        isFilterModalOpen,
+        setIsFilterModalOpen,
         listings,
         setListings,
         businesses,
@@ -273,14 +348,20 @@ export const AppProvider = ({ children }) => {
         setSelectedCategory,
         selectedListingType,
         setSelectedListingType,
+        sortBy,
+        setSortBy,
         maxDistance,
         setMaxDistance,
+        dietaryFilters,
+        setDietaryFilters,
         toasts,
         showToast,
         makeReservation,
+        cancelReservation,
         addNewListing,
         completeDelivery,
         updateBusinessStatus,
+        resetDemoData,
       }}
     >
       {children}

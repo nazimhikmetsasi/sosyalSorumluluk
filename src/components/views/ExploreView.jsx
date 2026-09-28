@@ -2,7 +2,7 @@ import React from 'react';
 import { useApp } from '../../context/AppContext';
 import {
   Search,
-  Filter,
+  SlidersHorizontal,
   MapPin,
   Clock,
   Sparkles,
@@ -12,7 +12,8 @@ import {
   TrendingDown,
   ArrowRight,
   ShieldCheck,
-  ChevronRight
+  ChevronRight,
+  Filter
 } from 'lucide-react';
 
 export const ExploreView = () => {
@@ -27,7 +28,11 @@ export const ExploreView = () => {
     setSelectedListing,
     setActiveTab,
     currentUser,
-    stats
+    stats,
+    sortBy,
+    maxDistance,
+    dietaryFilters,
+    setIsFilterModalOpen
   } = useApp();
 
   const categories = [
@@ -45,8 +50,11 @@ export const ExploreView = () => {
     { id: 'bulk', label: '🤝 STK & Aşevi' },
   ];
 
-  // Filter listings based on category, search, and type
-  const filteredListings = listings.filter((item) => {
+  // Active dietary filters count
+  const activeDietaryCount = Object.values(dietaryFilters).filter(Boolean).length;
+
+  // Filter listings based on category, search, type, distance, and dietary preferences
+  let filteredListings = listings.filter((item) => {
     const matchesSearch =
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.businessName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -58,7 +66,22 @@ export const ExploreView = () => {
     const matchesType =
       selectedListingType === 'all' || item.type === selectedListingType;
 
-    return matchesSearch && matchesCategory && matchesType;
+    const matchesDistance = item.distanceKm <= maxDistance;
+
+    // Dietary checks
+    if (dietaryFilters.glutenFree && item.allergens?.includes('Gluten')) return false;
+    if (dietaryFilters.dairyFree && item.allergens?.includes('Süt Ürünleri')) return false;
+
+    return matchesSearch && matchesCategory && matchesType && matchesDistance;
+  });
+
+  // Sort logic
+  filteredListings = [...filteredListings].sort((a, b) => {
+    if (sortBy === 'distance') return a.distanceKm - b.distanceKm;
+    if (sortBy === 'discount') return b.discountPercentage - a.discountPercentage;
+    if (sortBy === 'price') return a.priceDiscounted - b.priceDiscounted;
+    if (sortBy === 'co2') return b.co2ReductionKg - a.co2ReductionKg;
+    return 0;
   });
 
   return (
@@ -121,7 +144,7 @@ export const ExploreView = () => {
         })}
       </div>
 
-      {/* Filter Type Bar */}
+      {/* Filter Type & Advanced Filter Button Bar */}
       <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-gray-100 shadow-sm">
         <div className="flex flex-wrap items-center gap-2">
           {filterTypes.map((ft) => {
@@ -142,8 +165,23 @@ export const ExploreView = () => {
           })}
         </div>
 
-        <div className="text-xs text-gray-500 font-medium">
-          Toplam <strong>{filteredListings.length}</strong> ilan listeleniyor
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsFilterModalOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-gray-200 text-xs font-bold text-gray-700 hover:bg-[#F0FFF4] hover:border-[#52B788] transition shadow-sm"
+          >
+            <SlidersHorizontal className="w-3.5 h-3.5 text-[#52B788]" />
+            <span>Filtrele & Sırala</span>
+            {activeDietaryCount > 0 && (
+              <span className="w-4 h-4 rounded-full bg-[#0F5238] text-white text-[9px] font-bold flex items-center justify-center">
+                {activeDietaryCount}
+              </span>
+            )}
+          </button>
+
+          <span className="text-xs text-gray-400 font-medium hidden sm:inline">
+            <strong>{filteredListings.length}</strong> ilan
+          </span>
         </div>
       </div>
 
@@ -155,7 +193,7 @@ export const ExploreView = () => {
           </div>
           <h3 className="text-base font-bold text-gray-800">Aradığınız kriterde ilan bulunamadı</h3>
           <p className="text-xs text-gray-500 max-w-sm mx-auto">
-            Filtreleri sıfırlayarak veya arama terimini değiştirerek tekrar deneyebilirsiniz.
+            Filtreleri sıfırlayarak veya arama mesafesini artırarak tekrar deneyebilirsiniz.
           </p>
           <button
             onClick={() => {
