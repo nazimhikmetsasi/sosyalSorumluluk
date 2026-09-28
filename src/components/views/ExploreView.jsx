@@ -6,6 +6,7 @@ import {
   Clock,
   Sparkles,
   ChevronRight,
+  Heart,
 } from 'lucide-react';
 
 export const ExploreView = () => {
@@ -24,7 +25,9 @@ export const ExploreView = () => {
     sortBy,
     maxDistance,
     dietaryFilters,
-    setIsFilterModalOpen
+    setIsFilterModalOpen,
+    favorites,
+    toggleFavorite,
   } = useApp();
 
   const categories = [
@@ -39,6 +42,7 @@ export const ExploreView = () => {
     { id: 'all', label: 'Tümü' },
     { id: 'free', label: '🌱 Ücretsiz' },
     { id: 'discounted', label: '🏷️ İndirimli' },
+    { id: 'favorites', label: `❤️ Favoriler (${favorites.length})` },
     { id: 'bulk', label: '🤝 STK' },
   ];
 
@@ -53,8 +57,12 @@ export const ExploreView = () => {
     const matchesCategory =
       selectedCategory === 'Tümü' || item.category === selectedCategory;
 
-    const matchesType =
-      selectedListingType === 'all' || item.type === selectedListingType;
+    let matchesType = true;
+    if (selectedListingType === 'favorites') {
+      matchesType = favorites.includes(item.id);
+    } else if (selectedListingType !== 'all') {
+      matchesType = item.type === selectedListingType;
+    }
 
     const matchesDistance = item.distanceKm <= maxDistance;
 
@@ -165,7 +173,12 @@ export const ExploreView = () => {
       {filteredListings.length === 0 ? (
         <div className="bg-white rounded-2xl p-8 text-center border border-gray-100 space-y-3">
           <div className="w-12 h-12 rounded-full bg-[#F0FFF4] flex items-center justify-center mx-auto text-xl">🔍</div>
-          <h3 className="text-sm font-bold text-gray-800">İlan bulunamadı</h3>
+          <h3 className="text-sm font-bold text-gray-800">
+            {selectedListingType === 'favorites' ? 'Henüz favori ilanınız yok' : 'İlan bulunamadı'}
+          </h3>
+          <p className="text-xs text-gray-400">
+            {selectedListingType === 'favorites' ? 'İlanların üzerindeki kalp ikonuna dokunarak favorilerinize ekleyin.' : 'Farklı bir arama veya filtre deneyebilirsiniz.'}
+          </p>
           <button
             onClick={() => {
               setSearchQuery('');
@@ -179,100 +192,115 @@ export const ExploreView = () => {
         </div>
       ) : (
         <div className="grid grid-cols-2 gap-2.5">
-          {filteredListings.map((item) => (
-            <div
-              key={item.id}
-              onClick={() => setSelectedListing(item)}
-              className="group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-lg hover:border-[#52B788]/40 transition-all duration-200 cursor-pointer flex flex-col"
-            >
-              {/* Image */}
-              <div className="relative h-[110px] w-full overflow-hidden bg-gray-100 flex-shrink-0">
-                <img
-                  src={item.image}
-                  alt={item.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+          {filteredListings.map((item) => {
+            const isFav = favorites.includes(item.id);
 
-                {/* Type badge — top left */}
-                <div className="absolute top-1.5 left-1.5">
-                  {item.type === 'free' ? (
-                    <span className="px-1.5 py-0.5 text-[9px] font-extrabold rounded-md bg-[#10B981] text-white shadow">
-                      🌱 Ücretsiz
-                    </span>
-                  ) : item.type === 'bulk' ? (
-                    <span className="px-1.5 py-0.5 text-[9px] font-extrabold rounded-md bg-[#3B82F6] text-white shadow">
-                      🤝 Toplu
-                    </span>
-                  ) : (
-                    <span className="px-1.5 py-0.5 text-[9px] font-extrabold rounded-md bg-[#F59E0B] text-white shadow">
-                      %{item.discountPercentage}
-                    </span>
-                  )}
-                </div>
-
-                {/* Distance + portions bottom */}
-                <div className="absolute bottom-1.5 left-1.5 right-1.5 flex items-center justify-between text-[9px] font-bold text-white">
-                  <span className="bg-black/50 backdrop-blur-sm px-1.5 py-0.5 rounded-md flex items-center gap-0.5">
-                    <MapPin className="w-2.5 h-2.5 text-[#95D5B2]" />
-                    {item.distanceKm}km
-                  </span>
-                  <span className="bg-[#0F5238]/80 px-1.5 py-0.5 rounded-md text-[#B1F0CE]">
-                    {item.portionsAvailable} kaldı
-                  </span>
-                </div>
-              </div>
-
-              {/* Card Body */}
-              <div className="p-2.5 flex flex-col flex-1 gap-1.5">
-                {/* Business name */}
-                <div className="flex items-center gap-1.5">
+            return (
+              <div
+                key={item.id}
+                onClick={() => setSelectedListing(item)}
+                className="group bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm hover:shadow-lg hover:border-[#52B788]/40 transition-all duration-200 cursor-pointer flex flex-col relative"
+              >
+                {/* Image */}
+                <div className="relative h-[110px] w-full overflow-hidden bg-gray-100 flex-shrink-0">
                   <img
-                    src={item.businessAvatar}
-                    alt={item.businessName}
-                    className="w-4 h-4 rounded-full object-cover border border-gray-200 flex-shrink-0"
+                    src={item.image}
+                    alt={item.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <span className="text-[10px] font-medium text-gray-400 truncate">{item.businessName}</span>
-                </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
 
-                {/* Title */}
-                <h3 className="font-bold text-[11px] text-[#0F5238] line-clamp-2 leading-tight group-hover:text-[#52B788] transition">
-                  {item.title}
-                </h3>
-
-                {/* Pickup time */}
-                <div className="flex items-center gap-1 text-[10px] text-gray-500 bg-[#F0FFF4] px-2 py-1 rounded-lg border border-[#A8E7C5]/30">
-                  <Clock className="w-2.5 h-2.5 text-[#2D6A4F] flex-shrink-0" />
-                  <span className="truncate">{item.pickupStartTime}–{item.pickupEndTime}</span>
-                </div>
-
-                {/* Price + action */}
-                <div className="flex items-center justify-between mt-auto pt-1 border-t border-gray-50">
-                  <div>
-                    <span className="text-sm font-black text-[#0F5238]">
-                      {item.priceDiscounted === 0 ? 'ÜCRETSİZ' : `${item.priceDiscounted}₺`}
-                    </span>
-                    {item.priceOriginal > 0 && item.priceDiscounted > 0 && (
-                      <span className="text-[10px] text-gray-400 line-through ml-1">
-                        {item.priceOriginal}₺
+                  {/* Type badge — top left */}
+                  <div className="absolute top-1.5 left-1.5">
+                    {item.type === 'free' ? (
+                      <span className="px-1.5 py-0.5 text-[9px] font-extrabold rounded-md bg-[#10B981] text-white shadow">
+                        🌱 Ücretsiz
+                      </span>
+                    ) : item.type === 'bulk' ? (
+                      <span className="px-1.5 py-0.5 text-[9px] font-extrabold rounded-md bg-[#3B82F6] text-white shadow">
+                        🤝 Toplu
+                      </span>
+                    ) : (
+                      <span className="px-1.5 py-0.5 text-[9px] font-extrabold rounded-md bg-[#F59E0B] text-white shadow">
+                        %{item.discountPercentage}
                       </span>
                     )}
                   </div>
 
+                  {/* Favorite button — top right */}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedListing(item);
+                      toggleFavorite(item.id);
                     }}
-                    className="flex items-center gap-0.5 px-2 py-1.5 rounded-lg bg-[#0F5238] text-white font-bold text-[10px] shadow-sm transition"
+                    className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-black/40 backdrop-blur-sm flex items-center justify-center text-white transition hover:scale-110"
                   >
-                    <span>Kurtar</span>
-                    <ChevronRight className="w-3 h-3" />
+                    <Heart className={`w-3.5 h-3.5 ${isFav ? 'fill-red-500 text-red-500' : 'text-white'}`} />
                   </button>
+
+                  {/* Distance + portions bottom */}
+                  <div className="absolute bottom-1.5 left-1.5 right-1.5 flex items-center justify-between text-[9px] font-bold text-white">
+                    <span className="bg-black/50 backdrop-blur-sm px-1.5 py-0.5 rounded-md flex items-center gap-0.5">
+                      <MapPin className="w-2.5 h-2.5 text-[#95D5B2]" />
+                      {item.distanceKm}km
+                    </span>
+                    <span className="bg-[#0F5238]/80 px-1.5 py-0.5 rounded-md text-[#B1F0CE]">
+                      {item.portionsAvailable} kaldı
+                    </span>
+                  </div>
+                </div>
+
+                {/* Card Body */}
+                <div className="p-2.5 flex flex-col flex-1 gap-1.5">
+                  {/* Business name */}
+                  <div className="flex items-center gap-1.5">
+                    <img
+                      src={item.businessAvatar}
+                      alt={item.businessName}
+                      className="w-4 h-4 rounded-full object-cover border border-gray-200 flex-shrink-0"
+                    />
+                    <span className="text-[10px] font-medium text-gray-400 truncate">{item.businessName}</span>
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="font-bold text-[11px] text-[#0F5238] line-clamp-2 leading-tight group-hover:text-[#52B788] transition">
+                    {item.title}
+                  </h3>
+
+                  {/* Pickup time */}
+                  <div className="flex items-center gap-1 text-[10px] text-gray-500 bg-[#F0FFF4] px-2 py-1 rounded-lg border border-[#A8E7C5]/30">
+                    <Clock className="w-2.5 h-2.5 text-[#2D6A4F] flex-shrink-0" />
+                    <span className="truncate">{item.pickupStartTime}–{item.pickupEndTime}</span>
+                  </div>
+
+                  {/* Price + action */}
+                  <div className="flex items-center justify-between mt-auto pt-1 border-t border-gray-50">
+                    <div>
+                      <span className="text-sm font-black text-[#0F5238]">
+                        {item.priceDiscounted === 0 ? 'ÜCRETSİZ' : `${item.priceDiscounted}₺`}
+                      </span>
+                      {item.priceOriginal > 0 && item.priceDiscounted > 0 && (
+                        <span className="text-[10px] text-gray-400 line-through ml-1">
+                          {item.priceOriginal}₺
+                        </span>
+                      )}
+                    </div>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedListing(item);
+                      }}
+                      className="flex items-center gap-0.5 px-2 py-1.5 rounded-lg bg-[#0F5238] text-white font-bold text-[10px] shadow-sm transition"
+                    >
+                      <span>Kurtar</span>
+                      <ChevronRight className="w-3 h-3" />
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 

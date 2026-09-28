@@ -59,10 +59,13 @@ export const AppProvider = ({ children }) => {
   const [leaderboard, setLeaderboard] = useState(MOCK_LEADERBOARD);
   const [stats, setStats] = useState(PLATFORM_STATS);
 
+  // Favorites state
+  const [favorites, setFavorites] = useState(() => loadStorage('FAVORITES', ['lst_01', 'lst_03']));
+
   // Advanced Filter & Sort states
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Tümü');
-  const [selectedListingType, setSelectedListingType] = useState('all'); // all, free, discounted, bulk
+  const [selectedListingType, setSelectedListingType] = useState('all'); // all, free, discounted, bulk, favorites
   const [sortBy, setSortBy] = useState('distance'); // 'distance' | 'discount' | 'price' | 'co2'
   const [maxDistance, setMaxDistance] = useState(10); // km
   const [dietaryFilters, setDietaryFilters] = useState({
@@ -81,6 +84,7 @@ export const AppProvider = ({ children }) => {
   useEffect(() => saveStorage('RESERVATIONS', reservations), [reservations]);
   useEffect(() => saveStorage('BADGES', badges), [badges]);
   useEffect(() => saveStorage('NOTIFICATIONS', notifications), [notifications]);
+  useEffect(() => saveStorage('FAVORITES', favorites), [favorites]);
 
   // Toast system
   const [toasts, setToasts] = useState([]);
@@ -91,6 +95,17 @@ export const AppProvider = ({ children }) => {
     setTimeout(() => {
       setToasts(prev => prev.filter(t => t.id !== id));
     }, 4000);
+  };
+
+  // Toggle favorite
+  const toggleFavorite = (listingId) => {
+    setFavorites(prev => {
+      const isFav = prev.includes(listingId);
+      const updated = isFav ? prev.filter(id => id !== listingId) : [...prev, listingId];
+      showToast(isFav ? 'Favorilerden çıkarıldı 💔' : 'Favorilere eklendi! ❤️', 'info');
+      playSoundEffect('pop');
+      return updated;
+    });
   };
 
   // Switch role handler with sync
@@ -221,7 +236,8 @@ export const AppProvider = ({ children }) => {
       return l;
     }));
 
-    showToast('Rezervasyon iptal edildi.', 'info');
+    playSoundEffect('pop');
+    showToast('Rezervasyon iptal edildi ve paket iade edildi.', 'info');
   };
 
   // Business: Add new Listing
@@ -304,6 +320,7 @@ export const AppProvider = ({ children }) => {
     setReservations(MOCK_RESERVATIONS);
     setBadges(MOCK_BADGES);
     setNotifications(MOCK_NOTIFICATIONS);
+    setFavorites(['lst_01', 'lst_03']);
     setCurrentUser(INITIAL_USER);
     setCurrentRole('buyer');
     showToast('Tüm demo verileri başarıyla sıfırlandı! 🔄', 'info');
@@ -342,6 +359,8 @@ export const AppProvider = ({ children }) => {
         setNotifications,
         leaderboard,
         stats,
+        favorites,
+        toggleFavorite,
         searchQuery,
         setSearchQuery,
         selectedCategory,
