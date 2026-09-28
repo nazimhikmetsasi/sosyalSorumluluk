@@ -74,7 +74,7 @@ export const BusinessDashboardView = () => {
       </div>
 
       {/* 4 Stat Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         
         <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm">
           <p className="text-xs font-bold text-gray-400">Aktif İlanlarım</p>

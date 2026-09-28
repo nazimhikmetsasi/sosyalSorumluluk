@@ -70,7 +70,7 @@ export const NewListingView = () => {
         {/* Listing Type Segment Selector */}
         <div>
           <label className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-2">İlan Türü</label>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {[
               { id: 'discounted', title: '🏷️ İndirimli Paket', desc: '%50 - %70 İndirimli Satış' },
               { id: 'free', title: '🌱 %100 Ücretsiz', desc: 'İhtiyaç Sahiplerine Doğrudan' },
@@ -100,7 +100,7 @@ export const NewListingView = () => {
         </div>
 
         {/* Title & Category */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           <div className="sm:col-span-2">
             <label className="text-xs font-bold text-gray-700 block mb-1.5">İlan Başlığı *</label>
             <input
