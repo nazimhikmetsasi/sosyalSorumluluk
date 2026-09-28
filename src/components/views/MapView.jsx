@@ -24,13 +24,34 @@ const MapRecenter = ({ center }) => {
   return null;
 };
 
+const FALLBACK_POSITION = { lat: 40.9835, lng: 29.0275 }; // Moda, Kadıköy
+
 export const MapView = () => {
-  const { listings, setSelectedListing, maxDistance, setMaxDistance, t } = useApp();
-  const [selectedPin, setSelectedPin] = useState(listings[0] || null);
+  const {
+    listings,
+    setSelectedListing,
+    maxDistance,
+    setMaxDistance,
+    t,
+    userPosition: realPosition,
+    geoStatus,
+    requestLocation,
+  } = useApp();
+  // Hold the id, not the object: listings are re-anchored when the location fix lands, and
+  // a captured copy would keep the pre-fix coordinates and fly the map to the wrong city.
+  const [selectedPinId, setSelectedPinId] = useState(listings[0]?.id || null);
+  const selectedPin = listings.find(l => l.id === selectedPinId) || listings[0] || null;
+  const setSelectedPin = (item) => setSelectedPinId(item?.id || null);
   const [filterType, setFilterType] = useState('all');
 
-  // User location: Moda Kadıköy
-  const userPosition = [40.9835, 29.0275];
+  // Ask once when the map opens: someone who navigated to a map expects it to locate
+  // them, and a prompt fired anywhere else in the app would be unexplained.
+  useEffect(() => {
+    if (geoStatus === 'idle') requestLocation();
+  }, [geoStatus, requestLocation]);
+
+  const position = realPosition || FALLBACK_POSITION;
+  const userPosition = [position.lat, position.lng];
 
   const filteredMapListings = listings.filter(item => {
     if (filterType !== 'all' && item.type !== filterType) return false;
@@ -41,6 +62,7 @@ export const MapView = () => {
   const walkingMinutes = selectedPin ? Math.max(2, Math.round(selectedPin.distanceKm * 12)) : 0;
 
   // Custom User Location Pin Icon
+  const geoLabel = realPosition ? 'Konumunuz' : 'Varsayılan';
   const userIcon = L.divIcon({
     className: 'custom-user-icon',
     html: `
@@ -48,7 +70,7 @@ export const MapView = () => {
         <div style="width:24px;height:24px;border-radius:50%;background:#0F5238;color:white;display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 4px 10px rgba(0,0,0,0.3);">
           📍
         </div>
-        <span style="background:white;color:#0F5238;font-size:8px;font-weight:900;padding:1px 4px;border-radius:6px;box-shadow:0 2px 4px rgba(0,0,0,0.2);margin-top:2px;white-space:nowrap;">Konumunuz</span>
+        <span style="background:white;color:#0F5238;font-size:8px;font-weight:900;padding:1px 4px;border-radius:6px;box-shadow:0 2px 4px rgba(0,0,0,0.2);margin-top:2px;white-space:nowrap;">${geoLabel}</span>
       </div>
     `,
     iconSize: [30, 36],
@@ -135,7 +157,7 @@ export const MapView = () => {
           <Marker position={userPosition} icon={userIcon}>
             <Popup>
               <div className="text-xs font-bold text-[#0F5238]">
-                📍 Sizin Konumunuz (Kadıköy Moda)
+                {realPosition ? '📍 Sizin Konumunuz' : '📍 Varsayılan Konum (Kadıköy Moda)'}
               </div>
             </Popup>
           </Marker>

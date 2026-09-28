@@ -1,18 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
 import { ImpactCertificateModal } from '../modals/ImpactCertificateModal';
+import { ProfileEditModal } from '../modals/ProfileEditModal';
 import {
   Award,
   Sparkles,
   Share2,
   Lock,
   CheckCircle2,
-  FileCheck2
+  FileCheck2,
+  Pencil,
+  Camera
 } from 'lucide-react';
 
 export const ProfileBadgesView = () => {
-  const { currentUser, badges, showToast, resetDemoData } = useApp();
+  const { currentUser, badges, showToast, resetDemoData, changeAvatar } = useApp();
   const [isCertOpen, setIsCertOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
+
+  const handleAvatarPick = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = ''; // let the same file be picked again after a failure
+    if (!file) return;
+
+    setUploading(true);
+    await changeAvatar(file);
+    setUploading(false);
+  };
 
   const handleShareImpact = () => {
     navigator.clipboard?.writeText(
@@ -29,10 +45,34 @@ export const ProfileBadgesView = () => {
         <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-[#D1FEE5]/50 to-transparent rounded-bl-full pointer-events-none"></div>
 
         <div className="flex items-center gap-3 relative z-10">
-          <img
-            src={currentUser.avatar}
-            alt={currentUser.name}
-            className="w-16 h-16 rounded-2xl object-cover border-2 border-white shadow-md flex-shrink-0"
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+            title="Profil fotoğrafını değiştir"
+            className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-white shadow-md flex-shrink-0 group"
+          >
+            <img
+              src={currentUser.avatar}
+              alt={currentUser.name}
+              className="w-full h-full object-cover"
+            />
+            <span className="absolute inset-0 bg-black/45 flex items-center justify-center opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition">
+              <Camera className="w-5 h-5 text-white" />
+            </span>
+            {uploading && (
+              <span className="absolute inset-0 bg-black/55 flex items-center justify-center">
+                <span className="w-5 h-5 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+              </span>
+            )}
+          </button>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            onChange={handleAvatarPick}
+            className="hidden"
           />
 
           <div className="flex-1 min-w-0">
@@ -41,10 +81,21 @@ export const ProfileBadgesView = () => {
               <span className="px-2 py-0.5 bg-[#D1FEE5] text-[#006C48] text-[10px] font-extrabold rounded-full whitespace-nowrap">
                 Seviye {currentUser.level} Kurtarıcı
               </span>
+              <button
+                onClick={() => setIsEditOpen(true)}
+                className="flex items-center gap-1 px-2 py-0.5 rounded-full border border-gray-200 text-gray-600 hover:border-[#52B788] hover:text-[#0F5238] text-[10px] font-bold transition"
+              >
+                <Pencil className="w-3 h-3" />
+                Düzenle
+              </button>
             </div>
             <p className="text-[10px] text-gray-400 font-medium mt-0.5">
-              {currentUser.city}, {currentUser.district} • Kasım 2025'ten beri
+              {[currentUser.city, currentUser.district].filter(Boolean).join(', ') || 'Konum belirtilmedi'}
+              {currentUser.email ? ` • ${currentUser.email}` : ''}
             </p>
+            {currentUser.bio && (
+              <p className="text-[11px] text-gray-600 mt-1 line-clamp-2">{currentUser.bio}</p>
+            )}
 
             <div className="flex items-center gap-2 mt-2 flex-wrap">
               <span className="flex items-center gap-1 bg-[#F0FFF4] px-2.5 py-1 rounded-lg border border-[#A8E7C5]/40 text-[#0F5238] text-[11px] font-bold">
@@ -172,6 +223,11 @@ export const ProfileBadgesView = () => {
         isOpen={isCertOpen}
         onClose={() => setIsCertOpen(false)}
       />
+
+      {/* Remounted on open so the form always starts from the saved values */}
+      {isEditOpen && (
+        <ProfileEditModal isOpen onClose={() => setIsEditOpen(false)} />
+      )}
     </div>
   );
 };

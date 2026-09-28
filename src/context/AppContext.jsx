@@ -12,11 +12,14 @@ import {
   MOCK_LEADERBOARD,
   PLATFORM_STATS
 } from '../data/mockData';
-import { sanitizeText, sanitizeNumber, getHomeTab, randomDigits, ownsRecord } from '../utils/security';
+import { sanitizeText, sanitizeNumber, getHomeTab, randomDigits, ownsRecord, distanceKm, reanchor } from '../utils/security';
+import { supabase, loadVerifiedAccount, signOut, saveProfile, uploadAvatar } from '../lib/supabase';
 
 const AppContext = createContext();
 
-const VALID_ROLES = ['buyer', 'business', 'ngo', 'admin'];
+// Where the seeded listings were authored. Their coordinates are offsets from this point,
+// which is what lets the whole set be moved to wherever the user actually is.
+const SEED_ANCHOR = { lat: 40.9835, lng: 29.0275 }; // Moda, Kadıköy
 
 const loadStorage = (key, fallback) => {
   try {
@@ -35,14 +38,6 @@ const saveStorage = (key, data) => {
   }
 };
 
-const removeStorage = (key) => {
-  try {
-    localStorage.removeItem(`GK_${key}`);
-  } catch (e) {
-    console.warn('Storage remove failed', e);
-  }
-};
-
 // Only this app's own keys. localStorage is shared per origin, so clear() would also
 // wipe anything else served from the same host.
 const clearAppStorage = () => {
@@ -55,39 +50,36 @@ const clearAppStorage = () => {
   }
 };
 
-const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
-
-const normalizeOrgName = (name) =>
-  (name || '').trim().toLocaleLowerCase('tr').replace(/\s+/g, ' ');
-
-// The session record is the only place a granted role is stored, so identity and
-// privilege cannot drift apart, and it counts only inside its window so a shared
-// device does not hand the next person an open account.
-//
-// ponytail: this still trusts the browser. Anyone can edit the record and pick their
-// own role; nothing here is an authorization boundary until a server issues and
-// verifies the session. Treat it as state restoration, not as a security control.
-const loadSession = () => {
-  const session = loadStorage('SESSION', null);
-  if (!session || typeof session.expiresAt !== 'number' || session.expiresAt <= Date.now()) return null;
-  if (!VALID_ROLES.includes(session.role)) return null;
-  return session;
-};
-
 export const AppProvider = ({ children }) => {
-  const storedUser = loadStorage('USER', INITIAL_USER);
-  const candidateSession = loadSession();
+  // Identity comes from a server-verified Supabase session, never from browser storage.
+  // The demo profile below only supplies presentational extras (avatar, points); role and
+  // organisation always come from `account`, which the auth server signed.
+  const [account, setAccount] = useState(null);
+  // Nothing to verify when Supabase is absent, so the app renders signed out immediately.
+  const [authLoading, setAuthLoading] = useState(Boolean(supabase));
 
-  // The stored profile and the session must agree on the role. If they do not, one of
-  // the two was edited independently, so the session is discarded rather than letting
-  // the badge and the enforced privilege describe different accounts.
-  const restoredSession = candidateSession && storedUser?.role === candidateSession.role
-    ? candidateSession
-    : null;
+  const [storedProfile, setStoredProfile] = useState(() => loadStorage('USER', INITIAL_USER));
 
-  const [currentUser, setCurrentUser] = useState(storedUser);
-  const [currentRole, setCurrentRole] = useState(restoredSession?.role || 'buyer');
-  const [isAuthenticated, setIsAuthenticated] = useState(Boolean(restoredSession));
+  const currentRole = account?.role || 'buyer';
+  const isAuthenticated = Boolean(account);
+
+  const currentUser = account
+    ? {
+        ...storedProfile,
+        id: account.id,
+        email: account.email,
+        name: account.displayName || storedProfile.name,
+        avatar: account.avatarUrl || storedProfile.avatar,
+        city: account.city || storedProfile.city,
+        district: account.district || storedProfile.district,
+        phone: account.phone || storedProfile.phone,
+        bio: account.bio || '',
+        role: account.role,
+        organisationId: account.organisationId,
+      }
+    : storedProfile;
+
+  const setCurrentUser = setStoredProfile;
 
   // View presentation mode: 'web' or 'mobile'
   const [viewMode, setViewMode] = useState(() => loadStorage('VIEW_MODE', 'web'));
@@ -96,9 +88,41 @@ export const AppProvider = ({ children }) => {
   const [language, setLanguage] = useState(() => loadStorage('LANG', 'tr'));
   const [isDarkMode, setIsDarkMode] = useState(() => loadStorage('DARK_MODE', false));
 
+  // Real device location. Null until the browser grants a fix, which keeps the seeded
+  // Kadıköy coordinates as the fallback rather than showing an empty map.
+  const [userPosition, setUserPosition] = useState(null);
+  const [geoStatus, setGeoStatus] = useState('idle'); // idle | locating | granted | denied | unsupported
+
+  const requestLocation = () => {
+    if (!navigator.geolocation) {
+      setGeoStatus('unsupported');
+      showToast('Tarayıcınız konum servisini desteklemiyor.', 'error');
+      return;
+    }
+
+    setGeoStatus('locating');
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        setUserPosition({ lat: coords.latitude, lng: coords.longitude });
+        setGeoStatus('granted');
+        showToast('Konumunuz alındı, mesafeler güncellendi 📍');
+      },
+      (error) => {
+        setGeoStatus(error.code === error.PERMISSION_DENIED ? 'denied' : 'unsupported');
+        showToast(
+          error.code === error.PERMISSION_DENIED
+            ? 'Konum izni verilmedi. Mesafeler varsayılan konuma göre gösteriliyor.'
+            : 'Konum alınamadı. Mesafeler varsayılan konuma göre gösteriliyor.',
+          'info'
+        );
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  };
+
   // Navigation tab state. A restored session lands on its role's home tab, otherwise a
   // reload would drop an admin or business account onto the buyer's explore view.
-  const [activeTab, setActiveTab] = useState(() => getHomeTab(restoredSession?.role));
+  const [activeTab, setActiveTab] = useState('explore');
 
   // Selected item states for modals / detailed views
   const [selectedListing, setSelectedListing] = useState(null);
@@ -108,7 +132,7 @@ export const AppProvider = ({ children }) => {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   // Data states with persistence
-  const [listings, setListings] = useState(() => loadStorage('LISTINGS', MOCK_LISTINGS));
+  const [rawListings, setListings] = useState(() => loadStorage('LISTINGS', MOCK_LISTINGS));
   const [businesses, setBusinesses] = useState(() => loadStorage('BUSINESSES', MOCK_BUSINESSES));
   const [reservations, setReservations] = useState(() => loadStorage('RESERVATIONS', MOCK_RESERVATIONS));
   const [badges, setBadges] = useState(() => loadStorage('BADGES', MOCK_BADGES));
@@ -142,21 +166,68 @@ export const AppProvider = ({ children }) => {
     saveStorage('DARK_MODE', isDarkMode);
   }, [isDarkMode]);
 
+  // Keep identity in step with the auth server. getUser() inside loadVerifiedAccount
+  // validates the JWT against Supabase, so a hand-written session in localStorage simply
+  // fails to resolve and the app falls back to signed out.
+  useEffect(() => {
+    if (!supabase) return undefined;
+
+    let cancelled = false;
+
+    const sync = async () => {
+      const verified = await loadVerifiedAccount();
+      if (cancelled) return;
+      setAccount(verified);
+      setActiveTab(getHomeTab(verified?.role));
+      setAuthLoading(false);
+    };
+
+    sync();
+
+    const { data } = supabase.auth.onAuthStateChange(() => sync());
+    return () => {
+      cancelled = true;
+      data.subscription.unsubscribe();
+    };
+  }, []);
+
   // Sync state changes to localStorage
-  useEffect(() => saveStorage('USER', currentUser), [currentUser]);
+  useEffect(() => saveStorage('USER', storedProfile), [storedProfile]);
   useEffect(() => saveStorage('VIEW_MODE', viewMode), [viewMode]);
   useEffect(() => saveStorage('LANG', language), [language]);
-  useEffect(() => saveStorage('LISTINGS', listings), [listings]);
+  useEffect(() => saveStorage('LISTINGS', rawListings), [rawListings]);
   useEffect(() => saveStorage('BUSINESSES', businesses), [businesses]);
   useEffect(() => saveStorage('RESERVATIONS', reservations), [reservations]);
   useEffect(() => saveStorage('BADGES', badges), [badges]);
   useEffect(() => saveStorage('NOTIFICATIONS', notifications), [notifications]);
   useEffect(() => saveStorage('FAVORITES', favorites), [favorites]);
 
+  // The seed data is laid out around Moda. Once the browser gives us a fix, the whole
+  // cluster is translated onto the user: each listing keeps its offset from the anchor,
+  // so a user in Bursa sees the same neighbourhood-scale spread instead of a map centred
+  // 150 km away, and the relative distances the seed intended still hold.
+  //
+  // Longitude degrees shrink towards the poles, so the east-west offsets are rescaled by
+  // latitude; without it the cluster would stretch or squash as it moves north or south.
+  //
+  // Derived, never written back: revoking the permission restores the seeded coordinates.
+  const listingsWithDistance = userPosition
+    ? rawListings.map(item => {
+        const { lat, lng } = reanchor(SEED_ANCHOR, userPosition, item);
+        return {
+          ...item,
+          lat,
+          lng,
+          distanceKm: +distanceKm(userPosition, { lat, lng }).toFixed(1),
+        };
+      })
+    : rawListings;
+
   // Organisation-scoped views. Panels read these instead of the global arrays so one
   // tenant's dashboard cannot surface another tenant's listings or orders.
-  const myOrganisationId = currentUser.organisationId || null;
-  const myListings = myOrganisationId ? listings.filter(l => l.businessId === myOrganisationId) : [];
+  // Only ever the server-issued organisation; the stored profile has no say in it.
+  const myOrganisationId = account?.organisationId || null;
+  const myListings = myOrganisationId ? listingsWithDistance.filter(l => l.businessId === myOrganisationId) : [];
   const myReservations = myOrganisationId ? reservations.filter(r => r.businessId === myOrganisationId) : [];
 
   // Translation Helper
@@ -201,58 +272,45 @@ export const AppProvider = ({ children }) => {
     });
   };
 
-  // Sign in: identity, role and landing tab move together so they cannot drift apart
-  const login = (profile) => {
-    const role = VALID_ROLES.includes(profile.role) ? profile.role : 'buyer';
-    setCurrentUser({ ...profile, role });
-    setCurrentRole(role);
-    setActiveTab(getHomeTab(role));
-    saveStorage('SESSION', { role, expiresAt: Date.now() + SESSION_TTL_MS });
-    setIsAuthenticated(true);
+  // Signing out is the auth server's job; onAuthStateChange clears local identity.
+  const logout = () => signOut();
+
+  const refreshAccount = async () => {
+    const verified = await loadVerifiedAccount();
+    setAccount(verified);
   };
 
-  // Business and NGO sign-ins resolve against the organisation registry. An unknown
-  // name is filed as a pending application rather than being granted the role, so a
-  // visitor cannot become an organisation just by picking one on the login screen.
-  const resolveOrganisation = (kind, name) => {
-    const wanted = normalizeOrgName(name);
-    if (!wanted) return { ok: false, reason: 'invalid' };
+  const updateProfile = async (fields) => {
+    if (!account) return false;
 
-    const existing = businesses.find(b => b.kind === kind && normalizeOrgName(b.name) === wanted);
-    if (existing) {
-      return existing.status === 'active'
-        ? { ok: true, organisation: existing }
-        : { ok: false, reason: existing.status === 'suspended' ? 'suspended' : 'pending' };
+    const { error } = await saveProfile(account.id, fields);
+    if (error) {
+      // Surfacing the real reason matters here: the usual failure is a migration that has
+      // not been run yet, and a generic message makes that impossible to diagnose.
+      console.error('Profil kaydedilemedi', error);
+      showToast(`Profil kaydedilemedi: ${error.message || 'bilinmeyen hata'}`, 'error');
+      return false;
     }
 
-    setBusinesses(prev => [
-      ...prev,
-      {
-        id: `${kind}_${Date.now().toString().slice(-6)}`,
-        name: name.trim(),
-        type: kind === 'ngo' ? 'STK & Aşevi' : 'Yeni Başvuru',
-        rating: 0,
-        reviewCount: 0,
-        avatar: 'https://api.dicebear.com/7.x/shapes/svg?seed=' + encodeURIComponent(wanted),
-        cover: '',
-        address: '',
-        lat: 41.0082,
-        lng: 28.9784,
-        distanceKm: 0,
-        trustScore: 50,
-        kind,
-        status: 'pending',
-        totalDonatedKg: 0,
-        phone: '',
-      },
-    ]);
-    return { ok: false, reason: 'registered' };
+    await refreshAccount();
+    playSoundEffect('pop');
+    showToast('Profiliniz güncellendi ✅');
+    return true;
   };
 
-  const logout = () => {
-    removeStorage('SESSION');
-    setIsAuthenticated(false);
-    setActiveTab('explore');
+  const changeAvatar = async (file) => {
+    if (!account) return false;
+
+    const { error } = await uploadAvatar(account.id, file);
+    if (error) {
+      console.error('Avatar yüklenemedi', error);
+      showToast(`Görsel yüklenemedi: ${error.message || 'bilinmeyen hata'}`, 'error');
+      return false;
+    }
+
+    await refreshAccount();
+    showToast('Profil fotoğrafınız güncellendi 📸');
+    return true;
   };
 
   // Make a reservation action
@@ -361,7 +419,7 @@ export const AppProvider = ({ children }) => {
 
   // A business may only touch its own listings; every mutation routes through here.
   const ownsListing = (listingId) =>
-    ownsRecord(currentRole, myOrganisationId, listings.find(l => l.id === listingId));
+    ownsRecord(currentRole, myOrganisationId, rawListings.find(l => l.id === listingId));
 
   // Business: Quick portion increment/decrement
   const updateListingPortions = (listingId, delta) => {
@@ -520,7 +578,6 @@ export const AppProvider = ({ children }) => {
     setNotifications(MOCK_NOTIFICATIONS);
     setFavorites(['lst_01', 'lst_03']);
     setCurrentUser(INITIAL_USER);
-    setCurrentRole('buyer');
     logout();
     showToast('Tüm veriler başarıyla sıfırlandı! 🔄', 'info');
   };
@@ -531,9 +588,10 @@ export const AppProvider = ({ children }) => {
         currentUser,
         setCurrentUser,
         currentRole,
-        login,
         logout,
-        resolveOrganisation,
+        authLoading,
+        updateProfile,
+        changeAvatar,
         isAuthenticated,
         viewMode,
         setViewMode,
@@ -555,7 +613,10 @@ export const AppProvider = ({ children }) => {
         setReviewListingTarget,
         isFilterModalOpen,
         setIsFilterModalOpen,
-        listings,
+        listings: listingsWithDistance,
+        userPosition,
+        geoStatus,
+        requestLocation,
         myListings,
         myReservations,
         myOrganisationId,
