@@ -1,0 +1,34 @@
+<!--
+  Supabase > Authentication > Emails > Templates > "Magic link or OTP".
+
+  Paste this as the template body. The subject can be: GıdaKöprüsü doğrulama kodunuz
+
+  {{ .Token }} renders the six digit code the app's login screen asks for. The stock
+  template ships {{ .ConfirmationURL }} instead, which is a sign-in link and leaves the
+  code screen with nothing to accept. Editing templates requires custom SMTP to be
+  configured first; Supabase disables the editor otherwise.
+-->
+<div style="font-family: -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 24px; color: #1B4332;">
+  <div style="font-size: 20px; font-weight: 800; color: #0F5238; margin-bottom: 4px;">
+    Gıda<span style="color: #52B788;">Köprüsü</span>
+  </div>
+  <div style="font-size: 12px; color: #6B7280; margin-bottom: 24px;">
+    Sosyal Sorumluluk &amp; Sıfır Atık
+  </div>
+
+  <h2 style="font-size: 18px; color: #0F5238; margin: 0 0 8px;">Doğrulama kodunuz</h2>
+  <p style="font-size: 14px; color: #404943; margin: 0 0 20px;">
+    Giriş ekranına aşağıdaki 6 haneli kodu girin.
+  </p>
+
+  <div style="background: #F0FFF4; border: 2px solid #A8E7C5; border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 20px;">
+    <span style="font-size: 32px; font-weight: 800; letter-spacing: 8px; color: #0F5238;">{{ .Token }}</span>
+  </div>
+
+  <p style="font-size: 12px; color: #6B7280; margin: 0 0 8px;">
+    Kod 1 saat boyunca geçerlidir ve yalnızca bir kez kullanılabilir.
+  </p>
+  <p style="font-size: 12px; color: #6B7280; margin: 0;">
+    Bu girişi siz talep etmediyseniz bu e-postayı yok sayabilirsiniz.
+  </p>
+</div>

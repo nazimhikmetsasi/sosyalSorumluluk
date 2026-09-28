@@ -14,12 +14,17 @@ import {
 // Supabase throttles one OTP mail per minute per address.
 const RESEND_COOLDOWN_SECONDS = 60;
 
+// Must match Authentication > Sign In / Providers > Email > "Email OTP Length" in the
+// Supabase dashboard. A mismatch silently rejects every correct code.
+const OTP_LENGTH = 8;
+const EMPTY_OTP = Array(OTP_LENGTH).fill('');
+
 export const AuthView = () => {
   const { showToast } = useApp();
 
   const [step, setStep] = useState('input'); // 'input' | 'otp'
   const [email, setEmail] = useState('');
-  const [otpCodes, setOtpCodes] = useState(['', '', '', '', '', '']);
+  const [otpCodes, setOtpCodes] = useState(EMPTY_OTP);
   const [busy, setBusy] = useState(false);
   const [cooldown, setCooldown] = useState(0);
 
@@ -46,9 +51,9 @@ export const AuthView = () => {
       return false;
     }
 
-    setOtpCodes(['', '', '', '', '', '']);
+    setOtpCodes(EMPTY_OTP);
     setCooldown(RESEND_COOLDOWN_SECONDS);
-    showToast(`${email.trim()} adresine 6 haneli doğrulama kodu gönderildi 📩`);
+    showToast(`${email.trim()} adresine ${OTP_LENGTH} haneli doğrulama kodu gönderildi 📩`);
     setTimeout(() => inputRefs.current[0]?.focus(), 100);
     return true;
   };
@@ -64,7 +69,7 @@ export const AuthView = () => {
     const next = [...otpCodes];
     next[index] = value.slice(-1);
     setOtpCodes(next);
-    if (value && index < 5) inputRefs.current[index + 1]?.focus();
+    if (value && index < OTP_LENGTH - 1) inputRefs.current[index + 1]?.focus();
   };
 
   const handleKeyDown = (index, e) => {
@@ -74,13 +79,13 @@ export const AuthView = () => {
   };
 
   const handlePaste = (e) => {
-    const digits = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    const digits = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, OTP_LENGTH);
     if (!digits) return;
     e.preventDefault();
-    const next = ['', '', '', '', '', ''];
+    const next = [...EMPTY_OTP];
     for (let i = 0; i < digits.length; i += 1) next[i] = digits[i];
     setOtpCodes(next);
-    inputRefs.current[Math.min(digits.length, 5)]?.focus();
+    inputRefs.current[Math.min(digits.length, OTP_LENGTH - 1)]?.focus();
   };
 
   // The server decides whether the code is right, and the session it returns carries the
@@ -88,8 +93,8 @@ export const AuthView = () => {
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
     const entered = otpCodes.join('');
-    if (entered.length < 6) {
-      showToast('Lütfen 6 haneli doğrulama kodunu eksiksiz girin.', 'error');
+    if (entered.length < OTP_LENGTH) {
+      showToast(`Lütfen ${OTP_LENGTH} haneli doğrulama kodunu eksiksiz girin.`, 'error');
       return;
     }
 
@@ -98,7 +103,7 @@ export const AuthView = () => {
     setBusy(false);
 
     if (error) {
-      setOtpCodes(['', '', '', '', '', '']);
+      setOtpCodes(EMPTY_OTP);
       inputRefs.current[0]?.focus();
       showToast('Kod hatalı veya süresi dolmuş. Lütfen tekrar deneyin.', 'error');
       return;
@@ -173,12 +178,12 @@ export const AuthView = () => {
               <div>
                 <h2 className="text-xl font-extrabold text-[#0F5238]">Kodu Doğrulayın</h2>
                 <p className="text-xs text-gray-500 mt-0.5">
-                  <strong>{email}</strong> adresine gönderilen 6 haneli kodu girin.
+                  <strong>{email}</strong> adresine gönderilen {OTP_LENGTH} haneli kodu girin.
                 </p>
               </div>
 
-              <div className="flex justify-between gap-1.5 sm:gap-2">
-                {[0, 1, 2, 3, 4, 5].map((idx) => (
+              <div className="flex gap-1 sm:gap-1.5">
+                {EMPTY_OTP.map((_, idx) => (
                   <input
                     key={idx}
                     ref={(el) => (inputRefs.current[idx] = el)}
@@ -190,7 +195,7 @@ export const AuthView = () => {
                     onChange={(e) => handleOtpChange(idx, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(idx, e)}
                     onPaste={handlePaste}
-                    className="w-11 h-13 sm:w-12 sm:h-14 text-center font-black text-xl rounded-2xl bg-[#F0FFF4] border-2 border-[#A8E7C5] focus:border-[#0F5238] text-[#0F5238] outline-none transition shadow-sm"
+                    className="flex-1 min-w-0 h-12 sm:h-14 text-center font-black text-lg sm:text-xl rounded-xl sm:rounded-2xl bg-[#F0FFF4] border-2 border-[#A8E7C5] focus:border-[#0F5238] text-[#0F5238] outline-none transition shadow-sm"
                   />
                 ))}
               </div>
