@@ -13,10 +13,9 @@ import {
   PLATFORM_STATS
 } from '../data/mockData';
 import { sanitizeText, sanitizeNumber, getHomeTab, randomDigits, ownsRecord } from '../utils/security';
+import { supabase, loadVerifiedAccount, signOut } from '../lib/supabase';
 
 const AppContext = createContext();
-
-const VALID_ROLES = ['buyer', 'business', 'ngo', 'admin'];
 
 const loadStorage = (key, fallback) => {
   try {
@@ -35,14 +34,6 @@ const saveStorage = (key, data) => {
   }
 };
 
-const removeStorage = (key) => {
-  try {
-    localStorage.removeItem(`GK_${key}`);
-  } catch (e) {
-    console.warn('Storage remove failed', e);
-  }
-};
-
 // Only this app's own keys. localStorage is shared per origin, so clear() would also
 // wipe anything else served from the same host.
 const clearAppStorage = () => {
@@ -55,39 +46,31 @@ const clearAppStorage = () => {
   }
 };
 
-const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
-
-const normalizeOrgName = (name) =>
-  (name || '').trim().toLocaleLowerCase('tr').replace(/\s+/g, ' ');
-
-// The session record is the only place a granted role is stored, so identity and
-// privilege cannot drift apart, and it counts only inside its window so a shared
-// device does not hand the next person an open account.
-//
-// ponytail: this still trusts the browser. Anyone can edit the record and pick their
-// own role; nothing here is an authorization boundary until a server issues and
-// verifies the session. Treat it as state restoration, not as a security control.
-const loadSession = () => {
-  const session = loadStorage('SESSION', null);
-  if (!session || typeof session.expiresAt !== 'number' || session.expiresAt <= Date.now()) return null;
-  if (!VALID_ROLES.includes(session.role)) return null;
-  return session;
-};
-
 export const AppProvider = ({ children }) => {
-  const storedUser = loadStorage('USER', INITIAL_USER);
-  const candidateSession = loadSession();
+  // Identity comes from a server-verified Supabase session, never from browser storage.
+  // The demo profile below only supplies presentational extras (avatar, points); role and
+  // organisation always come from `account`, which the auth server signed.
+  const [account, setAccount] = useState(null);
+  // Nothing to verify when Supabase is absent, so the app renders signed out immediately.
+  const [authLoading, setAuthLoading] = useState(Boolean(supabase));
 
-  // The stored profile and the session must agree on the role. If they do not, one of
-  // the two was edited independently, so the session is discarded rather than letting
-  // the badge and the enforced privilege describe different accounts.
-  const restoredSession = candidateSession && storedUser?.role === candidateSession.role
-    ? candidateSession
-    : null;
+  const [storedProfile, setStoredProfile] = useState(() => loadStorage('USER', INITIAL_USER));
 
-  const [currentUser, setCurrentUser] = useState(storedUser);
-  const [currentRole, setCurrentRole] = useState(restoredSession?.role || 'buyer');
-  const [isAuthenticated, setIsAuthenticated] = useState(Boolean(restoredSession));
+  const currentRole = account?.role || 'buyer';
+  const isAuthenticated = Boolean(account);
+
+  const currentUser = account
+    ? {
+        ...storedProfile,
+        id: account.id,
+        email: account.email,
+        name: account.displayName || storedProfile.name,
+        role: account.role,
+        organisationId: account.organisationId,
+      }
+    : storedProfile;
+
+  const setCurrentUser = setStoredProfile;
 
   // View presentation mode: 'web' or 'mobile'
   const [viewMode, setViewMode] = useState(() => loadStorage('VIEW_MODE', 'web'));
@@ -98,7 +81,7 @@ export const AppProvider = ({ children }) => {
 
   // Navigation tab state. A restored session lands on its role's home tab, otherwise a
   // reload would drop an admin or business account onto the buyer's explore view.
-  const [activeTab, setActiveTab] = useState(() => getHomeTab(restoredSession?.role));
+  const [activeTab, setActiveTab] = useState('explore');
 
   // Selected item states for modals / detailed views
   const [selectedListing, setSelectedListing] = useState(null);
@@ -142,8 +125,33 @@ export const AppProvider = ({ children }) => {
     saveStorage('DARK_MODE', isDarkMode);
   }, [isDarkMode]);
 
+  // Keep identity in step with the auth server. getUser() inside loadVerifiedAccount
+  // validates the JWT against Supabase, so a hand-written session in localStorage simply
+  // fails to resolve and the app falls back to signed out.
+  useEffect(() => {
+    if (!supabase) return undefined;
+
+    let cancelled = false;
+
+    const sync = async () => {
+      const verified = await loadVerifiedAccount();
+      if (cancelled) return;
+      setAccount(verified);
+      setActiveTab(getHomeTab(verified?.role));
+      setAuthLoading(false);
+    };
+
+    sync();
+
+    const { data } = supabase.auth.onAuthStateChange(() => sync());
+    return () => {
+      cancelled = true;
+      data.subscription.unsubscribe();
+    };
+  }, []);
+
   // Sync state changes to localStorage
-  useEffect(() => saveStorage('USER', currentUser), [currentUser]);
+  useEffect(() => saveStorage('USER', storedProfile), [storedProfile]);
   useEffect(() => saveStorage('VIEW_MODE', viewMode), [viewMode]);
   useEffect(() => saveStorage('LANG', language), [language]);
   useEffect(() => saveStorage('LISTINGS', listings), [listings]);
@@ -155,7 +163,8 @@ export const AppProvider = ({ children }) => {
 
   // Organisation-scoped views. Panels read these instead of the global arrays so one
   // tenant's dashboard cannot surface another tenant's listings or orders.
-  const myOrganisationId = currentUser.organisationId || null;
+  // Only ever the server-issued organisation; the stored profile has no say in it.
+  const myOrganisationId = account?.organisationId || null;
   const myListings = myOrganisationId ? listings.filter(l => l.businessId === myOrganisationId) : [];
   const myReservations = myOrganisationId ? reservations.filter(r => r.businessId === myOrganisationId) : [];
 
@@ -201,59 +210,8 @@ export const AppProvider = ({ children }) => {
     });
   };
 
-  // Sign in: identity, role and landing tab move together so they cannot drift apart
-  const login = (profile) => {
-    const role = VALID_ROLES.includes(profile.role) ? profile.role : 'buyer';
-    setCurrentUser({ ...profile, role });
-    setCurrentRole(role);
-    setActiveTab(getHomeTab(role));
-    saveStorage('SESSION', { role, expiresAt: Date.now() + SESSION_TTL_MS });
-    setIsAuthenticated(true);
-  };
-
-  // Business and NGO sign-ins resolve against the organisation registry. An unknown
-  // name is filed as a pending application rather than being granted the role, so a
-  // visitor cannot become an organisation just by picking one on the login screen.
-  const resolveOrganisation = (kind, name) => {
-    const wanted = normalizeOrgName(name);
-    if (!wanted) return { ok: false, reason: 'invalid' };
-
-    const existing = businesses.find(b => b.kind === kind && normalizeOrgName(b.name) === wanted);
-    if (existing) {
-      return existing.status === 'active'
-        ? { ok: true, organisation: existing }
-        : { ok: false, reason: existing.status === 'suspended' ? 'suspended' : 'pending' };
-    }
-
-    setBusinesses(prev => [
-      ...prev,
-      {
-        id: `${kind}_${Date.now().toString().slice(-6)}`,
-        name: name.trim(),
-        type: kind === 'ngo' ? 'STK & Aşevi' : 'Yeni Başvuru',
-        rating: 0,
-        reviewCount: 0,
-        avatar: 'https://api.dicebear.com/7.x/shapes/svg?seed=' + encodeURIComponent(wanted),
-        cover: '',
-        address: '',
-        lat: 41.0082,
-        lng: 28.9784,
-        distanceKm: 0,
-        trustScore: 50,
-        kind,
-        status: 'pending',
-        totalDonatedKg: 0,
-        phone: '',
-      },
-    ]);
-    return { ok: false, reason: 'registered' };
-  };
-
-  const logout = () => {
-    removeStorage('SESSION');
-    setIsAuthenticated(false);
-    setActiveTab('explore');
-  };
+  // Signing out is the auth server's job; onAuthStateChange clears local identity.
+  const logout = () => signOut();
 
   // Make a reservation action
   const makeReservation = (listing, portionCount = 1) => {
@@ -520,7 +478,6 @@ export const AppProvider = ({ children }) => {
     setNotifications(MOCK_NOTIFICATIONS);
     setFavorites(['lst_01', 'lst_03']);
     setCurrentUser(INITIAL_USER);
-    setCurrentRole('buyer');
     logout();
     showToast('Tüm veriler başarıyla sıfırlandı! 🔄', 'info');
   };
@@ -531,9 +488,8 @@ export const AppProvider = ({ children }) => {
         currentUser,
         setCurrentUser,
         currentRole,
-        login,
         logout,
-        resolveOrganisation,
+        authLoading,
         isAuthenticated,
         viewMode,
         setViewMode,

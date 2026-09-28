@@ -38,10 +38,21 @@ import { MobileFrame } from './components/mobile/MobileFrame';
 export const App = () => {
   const {
     isAuthenticated,
+    authLoading,
     viewMode,
     activeTab,
     currentRole
   } = useApp();
+
+  // Verifying the stored session with the auth server takes a round trip. Without this
+  // a signed-in user would see the login screen flash before it resolves.
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F0FFF4]">
+        <div className="w-10 h-10 rounded-full border-4 border-[#A8E7C5] border-t-[#0F5238] animate-spin" />
+      </div>
+    );
+  }
 
   // If user is logged out, render Auth View (OTP Login)
   if (!isAuthenticated) {
