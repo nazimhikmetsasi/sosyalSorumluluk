@@ -1,0 +1,22 @@
+{
+  "short_name": "GıdaKöprüsü",
+  "name": "GıdaKöprüsü - Sıfır İsraf & Gıda Kurtarma Platformu",
+  "description": "Fazla taze gıdaları indirimle kurtarın veya ihtiyaç sahiplerine ulaştırın.",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0F5238",
+  "theme_color": "#0F5238",
+  "display": "standalone",
+  "orientation": "portrait"
+}

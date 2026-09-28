@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { playSoundEffect } from '../utils/audioEffects';
+import { translations } from '../i18n/translations';
 import {
   INITIAL_USER,
   MOCK_BUSINESSES,
@@ -40,6 +41,10 @@ export const AppProvider = ({ children }) => {
   // View presentation mode: 'web' or 'mobile'
   const [viewMode, setViewMode] = useState(() => loadStorage('VIEW_MODE', 'web'));
 
+  // Language & Theme State
+  const [language, setLanguage] = useState(() => loadStorage('LANG', 'tr'));
+  const [isDarkMode, setIsDarkMode] = useState(() => loadStorage('DARK_MODE', false));
+
   // Navigation tab state
   const [activeTab, setActiveTab] = useState('explore');
 
@@ -75,16 +80,47 @@ export const AppProvider = ({ children }) => {
     dairyFree: false
   });
 
+  // Sync dark mode class on HTML document
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+    saveStorage('DARK_MODE', isDarkMode);
+  }, [isDarkMode]);
+
   // Sync state changes to localStorage
   useEffect(() => saveStorage('USER', currentUser), [currentUser]);
   useEffect(() => saveStorage('ROLE', currentRole), [currentRole]);
   useEffect(() => saveStorage('VIEW_MODE', viewMode), [viewMode]);
+  useEffect(() => saveStorage('LANG', language), [language]);
   useEffect(() => saveStorage('LISTINGS', listings), [listings]);
   useEffect(() => saveStorage('BUSINESSES', businesses), [businesses]);
   useEffect(() => saveStorage('RESERVATIONS', reservations), [reservations]);
   useEffect(() => saveStorage('BADGES', badges), [badges]);
   useEffect(() => saveStorage('NOTIFICATIONS', notifications), [notifications]);
   useEffect(() => saveStorage('FAVORITES', favorites), [favorites]);
+
+  // Translation Helper
+  const t = (key) => {
+    return translations[language]?.[key] || translations['tr']?.[key] || key;
+  };
+
+  // Toggle Dark Mode
+  const toggleDarkMode = () => {
+    setIsDarkMode(prev => !prev);
+    playSoundEffect('pop');
+    showToast(!isDarkMode ? 'Karanlık Mod aktif edildi 🌙' : 'Aydınlık Mod aktif edildi ☀️', 'info');
+  };
+
+  // Switch Language
+  const toggleLanguage = () => {
+    const nextLang = language === 'tr' ? 'en' : 'tr';
+    setLanguage(nextLang);
+    playSoundEffect('pop');
+    showToast(nextLang === 'tr' ? 'Türkçe seçildi 🇹🇷' : 'English selected 🇬🇧', 'info');
+  };
 
   // Toast system
   const [toasts, setToasts] = useState([]);
@@ -156,7 +192,7 @@ export const AppProvider = ({ children }) => {
       listingId: listing.id,
       listingTitle: listing.title,
       businessName: listing.businessName,
-      businessAddress: 'Moda Cad. No:44, Kadıköy / İstanbul',
+      businessAddress: 'Moda Cad. No:44, Caferağa, Kadıköy / İstanbul',
       businessPhone: '+90 216 333 1122',
       image: listing.image,
       portionCount: portionCount,
@@ -212,7 +248,6 @@ export const AppProvider = ({ children }) => {
       time: 'Az önce',
       read: false,
       type: 'order',
-      icon: 'check_circle',
     };
     setNotifications(prev => [newNotif, ...prev]);
 
@@ -280,11 +315,10 @@ export const AppProvider = ({ children }) => {
       pickupEndTime: listingData.pickupEndTime || '21:00',
       pickupDate: 'Bugün',
       image: listingData.image || 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80',
-      images: [listingData.image || 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80'],
       allergens: listingData.allergens || ['Gluten'],
-      lat: 40.9835,
-      lng: 29.0275,
-      distanceKm: 0.5,
+      lat: 40.9842,
+      lng: 29.0265,
+      distanceKm: 0.4,
       weightKg: Number(listingData.weightKg) || 2.0,
       co2ReductionKg: (Number(listingData.weightKg) || 2.0) * 2.5,
       status: 'active',
@@ -356,7 +390,7 @@ export const AppProvider = ({ children }) => {
     setFavorites(['lst_01', 'lst_03']);
     setCurrentUser(INITIAL_USER);
     setCurrentRole('buyer');
-    showToast('Tüm demo verileri başarıyla sıfırlandı! 🔄', 'info');
+    showToast('Tüm veriler başarıyla sıfırlandı! 🔄', 'info');
   };
 
   return (
@@ -370,6 +404,12 @@ export const AppProvider = ({ children }) => {
         setIsAuthenticated,
         viewMode,
         setViewMode,
+        language,
+        setLanguage,
+        toggleLanguage,
+        isDarkMode,
+        toggleDarkMode,
+        t,
         activeTab,
         setActiveTab,
         selectedListing,
