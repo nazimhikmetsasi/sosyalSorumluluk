@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hızlı İlan Oluşturma | GıdaKöprüsü</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary-fixed-variant": "#0e5138",
+            "surface-bright": "#e8fff0",
+            "surface-tint": "#2c694e",
+            "surface-container-high": "#c6f2da",
+            "on-secondary-fixed-variant": "#005235",
+            "secondary": "#006c48",
+            "on-secondary": "#ffffff",
+            "surface-variant": "#c1ecd4",
+            "on-background": "#002114",
+            "on-error": "#ffffff",
+            "error-container": "#ffdad6",
+            "on-secondary-fixed": "#002113",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-container": "#a7e7c4",
+            "background": "#e8fff0",
+            "tertiary-fixed-dim": "#94d4b1",
+            "on-error-container": "#93000a",
+            "surface-container-low": "#d1fee5",
+            "tertiary-fixed": "#b0f1cc",
+            "inverse-on-surface": "#cffbe2",
+            "on-secondary-container": "#00734d",
+            "on-primary": "#ffffff",
+            "surface": "#e8fff0",
+            "surface-dim": "#b8e4cc",
+            "tertiary-container": "#2c6a4e",
+            "on-tertiary": "#ffffff",
+            "on-surface-variant": "#404943",
+            "inverse-primary": "#95d4b3",
+            "surface-container": "#ccf8df",
+            "inverse-surface": "#0e3727",
+            "primary-fixed-dim": "#95d4b3",
+            "on-tertiary-fixed": "#002113",
+            "primary": "#0f5238",
+            "secondary-fixed": "#92f7c3",
+            "primary-fixed": "#b1f0ce",
+            "error": "#ba1a1a",
+            "secondary-container": "#92f7c3",
+            "outline": "#707973",
+            "outline-variant": "#bfc9c1",
+            "on-tertiary-fixed-variant": "#0c5136",
+            "on-primary-fixed": "#002114",
+            "on-primary-container": "#a8e7c5",
+            "tertiary": "#0d5237",
+            "secondary-fixed-dim": "#75daa8",
+            "on-surface": "#002114",
+            "primary-container": "#2d6a4f",
+            "surface-container-highest": "#c1ecd4"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "margin-mobile": "1rem",
+            "space-xs": "0.25rem",
+            "margin": "2rem",
+            "space-sm": "0.5rem",
+            "gutter-mobile": "1rem",
+            "gutter": "1.5rem",
+            "space-md": "1rem",
+            "space-xl": "2.5rem"
+          },
+          "fontFamily": {
+            "body-lg": ["Inter"],
+            "label-md": ["Inter"],
+            "headline-lg": ["Inter"],
+            "label-sm": ["Inter"],
+            "body-md": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "body-sm": ["Inter"],
+            "title-sm": ["Inter"],
+            "headline-md": ["Inter"],
+            "label-lg": ["Inter"],
+            "headline-sm": ["Inter"],
+            "display-lg": ["Inter"],
+            "title-md": ["Inter"],
+            "display-lg-mobile": ["Inter"]
+          },
+          "fontSize": {
+            "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0", "fontWeight": "400"}],
+            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+            "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+            "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+            "body-md": ["15px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}],
+            "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "body-sm": ["13px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+            "title-sm": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600"}],
+            "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+            "headline-sm": ["20px", {"lineHeight": "28px", "letterSpacing": "0", "fontWeight": "600"}],
+            "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "title-md": ["18px", {"lineHeight": "26px", "letterSpacing": "0", "fontWeight": "600"}],
+            "display-lg-mobile": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-surface text-on-surface antialiased font-body-md text-body-md flex justify-center min-h-screen">
+<!-- Mobile Viewport Container: 390px Width Target -->
+<main class="w-full max-w-[390px] bg-surface-container-lowest min-h-screen flex flex-col relative shadow-xl pb-28">
+<!-- Header: Focused Task Modal (Suppresses Bottom Navigation Shell per Destination Mandate) -->
+<header class="sticky top-0 z-30 bg-surface-container-lowest/95 backdrop-blur-md px-margin-mobile py-space-sm flex items-center justify-between border-b border-primary/10">
+<button aria-label="Kapat" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors duration-150 active:scale-95" type="button">
+<span class="material-symbols-outlined text-[24px]">close</span>
+</button>
+<h1 class="font-title-sm text-title-sm text-primary tracking-tight">Hızlı İlan Oluştur</h1>
+<button class="text-primary hover:text-on-primary-fixed-variant font-label-lg text-label-lg font-semibold px-space-xs py-space-xs rounded-lg active:scale-95 transition-transform duration-150" type="button">
+        Taslak Kaydet
+      </button>
+</header>
+<!-- Scrollable Content Canvas -->
+<div class="px-margin-mobile py-space-md flex flex-col gap-space-lg">
+<!-- 1. Fotoğraf Ekleme Alanı -->
+<section class="flex flex-col gap-space-xs">
+<label class="font-label-lg text-label-lg text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-primary" data-weight="fill" style="font-variation-settings: 'FILL' 1;">photo_camera</span>
+          İlan Görseli
+        </label>
+<div class="relative h-44 rounded-2xl border-2 border-dashed border-[#52B788] bg-[#F0FFF4] flex flex-col items-center justify-center cursor-pointer overflow-hidden p-space-sm group transition-all duration-150 hover:bg-[#F0FFF4]/80">
+<!-- Thumbnail preview container with soft badge -->
+<div class="flex items-center gap-space-md w-full h-full">
+<div class="w-24 h-24 rounded-xl overflow-hidden shadow-sm flex-shrink-0 relative border border-primary/10">
+<img class="w-full h-full object-cover" data-alt="Close up of fresh artisanal sourdough loaves and golden baked pastries neatly placed on parchment paper inside a modern sustainable bakery, natural soft morning ambient lighting with clean organic green tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOpKobsLHPy5-QfCyedrDxILVguj_SxcrSOUbiYx5p-ZhRtFCM9sVf3weLnFz_8MZQdmsgo99_XbauH0G7cYLCK5OKGrqXyJaUZan3oQ8oA-624E9FRW3fD20jJ2ixFiIb_AYovOZaCty5tBhd46j06ru0HUlcaGEJ6Y_97aKy5mOT6lJrYrThWjedT0tUJBNnDLf1a483933_JOlZ2cJ7bz-rVsD-g0yrck6h57k8_jJtRk_pwy7P"/>
+<div class="absolute bottom-1 right-1 bg-primary text-white text-[10px] px-1.5 py-0.5 rounded-full font-label-sm font-bold shadow">
+                Önizleme
+              </div>
+</div>
+<div class="flex flex-col justify-center">
+<div class="w-10 h-10 rounded-full bg-secondary-container/60 text-primary flex items-center justify-center mb-1 group-hover:scale-105 transition-transform duration-150">
+<span class="material-symbols-outlined text-[22px]">add_a_photo</span>
+</div>
+<p class="font-title-sm text-title-sm text-primary leading-tight">Fotoğraf Değiştir</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-0.5">Taze çekilmiş paket görseli ekleyin</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 2. İlan Türü Seçimi (3 Segment Tab) -->
+<section class="flex flex-col gap-space-xs">
+<span class="font-label-lg text-label-lg text-on-surface">İlan Segmenti</span>
+<div class="grid grid-cols-3 gap-1.5 p-1 bg-surface-container rounded-2xl">
+<button class="py-2.5 px-1 rounded-xl text-center font-label-md text-label-md text-on-surface-variant hover:text-primary transition-all duration-150" type="button">
+            🎁 Ücretsiz
+          </button>
+<button class="bg-[#2D6A4F] text-white rounded-xl py-2.5 px-1 text-center font-label-md text-label-md font-semibold shadow-sm transition-all duration-150 flex flex-col items-center justify-center" type="button">
+<span>💰 Sürpriz Paket</span>
+</button>
+<button class="py-2.5 px-1 rounded-xl text-center font-label-md text-label-md text-on-surface-variant hover:text-primary transition-all duration-150" type="button">
+            📦 Toplu Bağış
+          </button>
+</div>
+</section>
+<!-- 3. Başlık & Kategori -->
+<section class="flex flex-col gap-space-md">
+<div class="flex flex-col gap-space-xs">
+<label class="font-label-lg text-label-lg text-on-surface" for="listing-title">İlan Başlığı</label>
+<div class="relative">
+<input class="w-full h-11 px-space-md rounded-xl bg-surface-container-lowest border border-outline-variant text-on-surface font-body-md text-body-md focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary/20 transition-all duration-150" id="listing-title" type="text" value="Günün Sürpriz Artisan Fırın Paketi"/>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs">
+<span class="font-label-lg text-label-lg text-on-surface">Kategori</span>
+<div class="flex items-center justify-between p-space-sm px-space-md rounded-xl bg-surface-container-lowest border border-outline-variant shadow-sm cursor-pointer hover:border-primary transition-colors duration-150">
+<div class="flex items-center gap-space-sm">
+<span class="text-[20px]">🍞</span>
+<span class="font-label-lg text-label-lg text-on-surface">Ekmek &amp; Unlu Mamüller</span>
+</div>
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant">expand_more</span>
+</div>
+</div>
+</section>
+<!-- 4. Porsiyon & Fiyatlandırma -->
+<section class="p-space-md rounded-2xl bg-surface-container-lowest border border-primary/10 shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<div>
+<h2 class="font-title-sm text-title-sm text-on-surface">Porsiyon Adedi</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Kalan kurtarma stok adedi</p>
+</div>
+<!-- Stepper -->
+<div class="flex items-center gap-space-sm bg-surface-container rounded-xl p-1">
+<button class="w-8 h-8 rounded-lg bg-surface-container-lowest flex items-center justify-center text-primary font-bold shadow-sm active:scale-90 transition-transform" type="button">
+<span class="material-symbols-outlined text-[18px]">remove</span>
+</button>
+<span class="font-title-md text-title-md font-bold px-2 text-primary">5</span>
+<button class="w-8 h-8 rounded-lg bg-primary text-white flex items-center justify-center font-bold shadow-sm active:scale-90 transition-transform" type="button">
+<span class="material-symbols-outlined text-[18px]">add</span>
+</button>
+</div>
+</div>
+<div class="h-px bg-primary/10"></div>
+<!-- Fiyatlandırma Satırı -->
+<div class="grid grid-cols-2 gap-space-md">
+<div class="flex flex-col gap-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Orijinal Değer</span>
+<div class="flex items-center gap-1">
+<span class="font-headline-sm text-headline-sm line-through text-outline">₺120</span>
+</div>
+</div>
+<div class="flex flex-col gap-1 items-end">
+<span class="font-label-sm text-label-sm text-primary font-semibold">Kurtarma Satış Fiyatı</span>
+<div class="flex items-center gap-space-xs">
+<span class="bg-[#FEF3C7] text-[#B45309] font-label-md text-label-md px-2 py-0.5 rounded-full font-bold">
+                %79 İndirim
+              </span>
+<span class="font-headline-md text-headline-md text-primary font-bold">₺25</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. Teslim Alma Zaman Aralığı -->
+<section class="flex flex-col gap-space-xs">
+<label class="font-label-lg text-label-lg text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-primary">schedule</span>
+          Teslim Alma Zaman Aralığı
+        </label>
+<div class="flex items-center justify-between p-space-sm px-space-md bg-[#F0FFF4] border border-[#52B788]/30 rounded-xl">
+<div class="flex items-center gap-space-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-[#52B788] animate-pulse"></span>
+<span class="font-title-sm text-title-sm text-primary">Bugün 19:00 — 21:00</span>
+</div>
+<button class="text-primary hover:text-on-primary-fixed-variant font-label-md text-label-md font-semibold underline" type="button">
+            Değiştir
+          </button>
+</div>
+</section>
+<!-- 6. Alerjenler & Hızlı Etiketler -->
+<section class="flex flex-col gap-space-xs">
+<span class="font-label-lg text-label-lg text-on-surface">Alerjen &amp; Saklama Etiketleri</span>
+<div class="flex flex-wrap gap-2">
+<button class="px-3 py-1.5 rounded-full bg-[#FEF3C7] text-[#B45309] font-label-md text-label-md font-semibold flex items-center gap-1 border border-amber-300 active:scale-95 transition-transform" type="button">
+<span>⚠️</span> Gluten
+          </button>
+<button class="px-3 py-1.5 rounded-full bg-[#FEF3C7] text-[#B45309] font-label-md text-label-md font-semibold flex items-center gap-1 border border-amber-300 active:scale-95 transition-transform" type="button">
+<span>⚠️</span> Susam
+          </button>
+<button class="px-3 py-1.5 rounded-full bg-[#F0FFF4] text-[#2D6A4F] font-label-md text-label-md font-semibold flex items-center gap-1 border border-[#52B788]/40 active:scale-95 transition-transform" type="button">
+<span>✅</span> Vejetaryen Dostu
+          </button>
+<button class="px-3 py-1.5 rounded-full bg-surface-container text-on-surface-variant font-label-md text-label-md font-semibold flex items-center gap-1 border border-outline-variant/40 active:scale-95 transition-transform" type="button">
+<span>❄️</span> Oda Sıcaklığı
+          </button>
+<button class="px-2.5 py-1.5 rounded-full bg-surface-container-lowest text-primary font-label-md text-label-md font-semibold flex items-center gap-1 border border-dashed border-primary active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-[16px]">add</span> Etiket Ekle
+          </button>
+</div>
+</section>
+</div>
+<!-- 7. Sabit Alt Bar (Sticky Bottom Bar) -->
+<div class="fixed bottom-0 max-w-[390px] w-full bg-surface-container-lowest/95 backdrop-blur-md border-t border-primary/10 px-margin-mobile py-space-sm flex items-center justify-between z-40 shadow-lg">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Toplam Kazanç</span>
+<span class="font-title-sm text-title-sm text-primary font-bold">5 Paket • ₺25 <span class="font-body-sm font-normal text-on-surface-variant">/ adet</span></span>
+</div>
+<button class="bg-[#2D6A4F] hover:bg-[#1B4332] active:scale-95 text-white px-5 py-3 rounded-2xl font-title-sm text-title-sm font-bold shadow-md transition-all duration-150 flex items-center gap-2" type="button">
+<span>İlanı Hemen Yayınla</span>
+<span class="text-[18px]">🚀</span>
+</button>
+</div>
+</main>
+</body></html>

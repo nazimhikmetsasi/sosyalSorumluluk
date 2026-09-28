@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MOB-14: İşletme — QR Tarama Ekranı</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary-fixed-variant": "#0e5138",
+            "surface-bright": "#e8fff0",
+            "surface-tint": "#2c694e",
+            "surface-container-high": "#c6f2da",
+            "on-secondary-fixed-variant": "#005235",
+            "secondary": "#006c48",
+            "on-secondary": "#ffffff",
+            "surface-variant": "#c1ecd4",
+            "on-background": "#002114",
+            "on-error": "#ffffff",
+            "error-container": "#ffdad6",
+            "on-secondary-fixed": "#002113",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-container": "#a7e7c4",
+            "background": "#e8fff0",
+            "tertiary-fixed-dim": "#94d4b1",
+            "on-error-container": "#93000a",
+            "surface-container-low": "#d1fee5",
+            "tertiary-fixed": "#b0f1cc",
+            "inverse-on-surface": "#cffbe2",
+            "on-secondary-container": "#00734d",
+            "on-primary": "#ffffff",
+            "surface": "#e8fff0",
+            "surface-dim": "#b8e4cc",
+            "tertiary-container": "#2c6a4e",
+            "on-tertiary": "#ffffff",
+            "on-surface-variant": "#404943",
+            "inverse-primary": "#95d4b3",
+            "surface-container": "#ccf8df",
+            "inverse-surface": "#0e3727",
+            "primary-fixed-dim": "#95d4b3",
+            "on-tertiary-fixed": "#002113",
+            "primary": "#0f5238",
+            "secondary-fixed": "#92f7c3",
+            "primary-fixed": "#b1f0ce",
+            "error": "#ba1a1a",
+            "secondary-container": "#92f7c3",
+            "outline": "#707973",
+            "outline-variant": "#bfc9c1",
+            "on-tertiary-fixed-variant": "#0c5136",
+            "on-primary-fixed": "#002114",
+            "on-primary-container": "#a8e7c5",
+            "tertiary": "#0d5237",
+            "secondary-fixed-dim": "#75daa8",
+            "on-surface": "#002114",
+            "primary-container": "#2d6a4f",
+            "surface-container-highest": "#c1ecd4"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "margin-mobile": "1rem",
+            "space-xs": "0.25rem",
+            "margin": "2rem",
+            "space-sm": "0.5rem",
+            "gutter-mobile": "1rem",
+            "gutter": "1.5rem",
+            "space-md": "1rem",
+            "space-xl": "2.5rem"
+          },
+          "fontFamily": {
+            "body-lg": ["Inter"],
+            "label-md": ["Inter"],
+            "headline-lg": ["Inter"],
+            "label-sm": ["Inter"],
+            "body-md": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "body-sm": ["Inter"],
+            "title-sm": ["Inter"],
+            "headline-md": ["Inter"],
+            "label-lg": ["Inter"],
+            "headline-sm": ["Inter"],
+            "display-lg": ["Inter"],
+            "title-md": ["Inter"],
+            "display-lg-mobile": ["Inter"]
+          },
+          "fontSize": {
+            "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "0", "fontWeight": "400" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "body-md": ["15px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "body-sm": ["13px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+            "title-sm": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "0", "fontWeight": "600" }],
+            "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "title-md": ["18px", { "lineHeight": "26px", "letterSpacing": "0", "fontWeight": "600" }],
+            "display-lg-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    @keyframes scanline {
+      0% { top: 4%; opacity: 0.2; }
+      20% { opacity: 0.9; }
+      80% { opacity: 0.9; }
+      100% { top: 94%; opacity: 0.2; }
+    }
+    .animate-scanner {
+      animation: scanline 2.4s ease-in-out infinite alternate;
+    }
+    .laser-glow {
+      box-shadow: 0 0 16px 3px rgba(82, 183, 136, 0.8), 0 0 4px 1px rgba(146, 247, 195, 0.9);
+    }
+    .custom-scroll-hide::-webkit-scrollbar {
+      display: none;
+    }
+    .custom-scroll-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased flex justify-center items-center min-h-screen p-0 sm:p-4 selection:bg-secondary-container selection:text-on-secondary-fixed select-none">
+<!-- Mobile Viewport Frame (390px Width Simulation) -->
+<div class="relative w-full max-w-[390px] h-[844px] max-h-screen bg-inverse-surface rounded-none sm:rounded-[44px] overflow-hidden shadow-2xl flex flex-col justify-between border-0 sm:border-[8px] sm:border-surface-variant/40">
+<!-- Simulated Live Camera Background Feed -->
+<div class="absolute inset-0 z-0">
+<div class="w-full h-full bg-cover bg-center filter brightness-[0.72] contrast-[1.08] blur-[1.5px] scale-105" data-alt="A warm commercial bakery counter softly blurred through an authentic smartphone camera viewfinder. Golden freshly baked artisan sourdough bread loaves, baguettes, and craft pastries lie in clean wicker baskets. High-key natural bakery lighting in soft morning tones with deep organic emerald touches reflecting the eco-friendly food surplus rescue aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBE46g1RumglEmq9Ui4KNahGtbU7Ow8nI23-w98EDPgxpgCjW6c2ow3ivyWDwB-0xl3aXzVf4s09XAjgPSzxgtZ0k3EqF3cLK5nkwi_8QYOwe49VbqK3X_IZw2cDLSgUEiTqo0xz3ZvG-YGse4Z5vUYWvrbHGcEMuvHL5foWc8tAQSo4h2enkhRqxgrfV00xWtFfghrWUkTljjWEye3jbwyS5tjmBtM0yKFzEycbtj3yXbSMtAPWoFB')">
+</div>
+<!-- Dark Viewfinder Vignette Overlay -->
+<div class="absolute inset-0 bg-gradient-to-b from-inverse-surface/85 via-inverse-surface/30 to-inverse-surface/90 backdrop-blur-[0.5px]"></div>
+</div>
+<!-- Screen Header (iOS / Android Camera Bar) -->
+<header class="relative z-30 pt-4 px-margin-mobile pb-space-sm flex items-center justify-between">
+<!-- Close / Back Button -->
+<button aria-label="Kapat" class="w-11 h-11 rounded-full bg-surface-container-lowest/20 backdrop-blur-md text-surface-container-lowest hover:bg-surface-container-lowest/30 active:scale-95 transition-all flex items-center justify-center border border-surface-container-lowest/15 shadow-sm" type="button">
+<span class="material-symbols-outlined text-headline-sm" data-icon="close">close</span>
+</button>
+<!-- Center Title -->
+<div class="flex flex-col items-center">
+<h1 class="text-white text-title-md font-title-md tracking-tight drop-shadow-md">
+          Teslimat Doğrulama
+        </h1>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed animate-ping"></span>
+<span class="text-surface-bright/90 text-label-sm font-label-sm tracking-wide uppercase">Kamera Hazır</span>
+</div>
+</div>
+<!-- Flash Toggle Button -->
+<button aria-label="Flaş" class="w-11 h-11 rounded-full bg-surface-container-lowest/20 backdrop-blur-md text-surface-container-lowest hover:bg-surface-container-lowest/30 active:scale-95 transition-all flex items-center justify-center border border-surface-container-lowest/15 shadow-sm" id="flashlight-btn" type="button">
+<span class="material-symbols-outlined text-headline-sm" data-icon="flash_on">flash_on</span>
+</button>
+</header>
+<!-- Camera Viewfinder Central Area -->
+<main class="relative z-20 flex-1 flex flex-col items-center justify-center px-4 -mt-2">
+<!-- Guiding Prompt Header -->
+<div class="mb-4 px-3.5 py-1.5 rounded-full bg-inverse-surface/60 backdrop-blur-md border border-white/10 shadow-sm">
+<p class="text-surface-container-lowest text-label-md font-label-md tracking-tight text-center drop-shadow">
+          Alıcının QR kodunu çerçevenin içine hizalayın
+        </p>
+</div>
+<!-- QR Target Frame Container -->
+<div class="relative w-64 h-64 rounded-2xl flex items-center justify-center">
+<!-- Corner Markers (#52B788 Bright Green) -->
+<!-- Top-Left -->
+<div class="absolute -top-1 -left-1 w-8 h-8 border-t-4 border-l-4 border-secondary-fixed rounded-tl-xl shadow-sm"></div>
+<!-- Top-Right -->
+<div class="absolute -top-1 -right-1 w-8 h-8 border-t-4 border-r-4 border-secondary-fixed rounded-tr-xl shadow-sm"></div>
+<!-- Bottom-Left -->
+<div class="absolute -bottom-1 -left-1 w-8 h-8 border-b-4 border-l-4 border-secondary-fixed rounded-bl-xl shadow-sm"></div>
+<!-- Bottom-Right -->
+<div class="absolute -bottom-1 -right-1 w-8 h-8 border-b-4 border-r-4 border-secondary-fixed rounded-br-xl shadow-sm"></div>
+<!-- Inner Target Mask Overlay Grid Lines -->
+<div class="w-full h-full border border-secondary-fixed/30 rounded-xl relative overflow-hidden bg-primary/5 backdrop-contrast-125">
+<!-- Animated Laser Scan Line -->
+<div class="absolute left-2 right-2 h-0.5 bg-secondary-fixed rounded-full laser-glow animate-scanner"></div>
+<!-- Subtle Crosshair in Center -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40">
+<span class="material-symbols-outlined text-surface-container-low/60 text-headline-lg font-thin" data-icon="filter_center_focus">filter_center_focus</span>
+</div>
+</div>
+<!-- Micro Status Tag on Scanner -->
+<div class="absolute -bottom-3 bg-primary-container/90 backdrop-blur-sm text-surface-bright px-2.5 py-0.5 rounded-full border border-secondary-fixed/30 flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="qr_code_scanner">qr_code_scanner</span>
+<span class="text-[10px] font-label-sm font-semibold tracking-wider uppercase">Otomatik Algılama</span>
+</div>
+</div>
+<!-- Quick Switch to Manual Button -->
+<button class="mt-6 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-inverse-surface/70 hover:bg-inverse-surface/90 text-surface-container-low border border-white/10 active:scale-95 transition-transform shadow-md" onclick="document.getElementById('code-input-1')?.focus();" type="button">
+<span class="material-symbols-outlined text-[16px]" data-icon="keyboard">keyboard</span>
+<span class="text-label-md font-label-md font-medium text-white/95">Kamera okumuyorsa 6 haneli kodu yazın</span>
+</button>
+</main>
+<!-- Bottom Sheet / Delivery Verification Card -->
+<section class="relative z-30 bg-surface-container-lowest rounded-t-3xl pt-3 px-5 pb-6 shadow-[0_-8px_30px_rgba(27,67,50,0.22)] border-t border-primary/10 flex flex-col gap-3.5 transition-all duration-300">
+<!-- Grab Handle Bar -->
+<div class="w-12 h-1.5 bg-outline-variant/60 rounded-full mx-auto self-center"></div>
+<!-- Sheet Header & Instruction -->
+<div class="flex items-center justify-between">
+<div>
+<h2 class="text-on-surface text-title-sm font-title-sm font-bold tracking-tight">
+            Manuel Teslimat Kodu Girişi
+          </h2>
+<p class="text-on-surface-variant text-body-sm font-body-sm">
+            Müşterinin GıdaKöprüsü uygulamasındaki 6 haneli kodu
+          </p>
+</div>
+<div class="w-8 h-8 rounded-full bg-secondary-container/50 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-headline-sm" data-icon="pin">pin</span>
+</div>
+</div>
+<!-- 6-Digit Code Input Fields (A K 7 M 2 X Example) -->
+<div class="flex items-center justify-between gap-1.5 my-1">
+<input class="w-12 h-13 text-center uppercase font-bold text-headline-sm text-primary bg-surface-container-low/40 border border-outline-variant/80 rounded-xl focus:border-primary-container focus:ring-2 focus:ring-secondary-fixed focus:outline-none transition-all" id="code-input-1" maxlength="1" type="text" value="A"/>
+<input class="w-12 h-13 text-center uppercase font-bold text-headline-sm text-primary bg-surface-container-low/40 border border-outline-variant/80 rounded-xl focus:border-primary-container focus:ring-2 focus:ring-secondary-fixed focus:outline-none transition-all" maxlength="1" type="text" value="K"/>
+<input class="w-12 h-13 text-center uppercase font-bold text-headline-sm text-primary bg-surface-container-low/40 border border-outline-variant/80 rounded-xl focus:border-primary-container focus:ring-2 focus:ring-secondary-fixed focus:outline-none transition-all" maxlength="1" type="text" value="7"/>
+<input class="w-12 h-13 text-center uppercase font-bold text-headline-sm text-primary bg-surface-container-low/40 border border-outline-variant/80 rounded-xl focus:border-primary-container focus:ring-2 focus:ring-secondary-fixed focus:outline-none transition-all" maxlength="1" type="text" value="M"/>
+<input class="w-12 h-13 text-center uppercase font-bold text-headline-sm text-primary bg-surface-container-low/40 border border-outline-variant/80 rounded-xl focus:border-primary-container focus:ring-2 focus:ring-secondary-fixed focus:outline-none transition-all" maxlength="1" type="text" value="2"/>
+<input class="w-12 h-13 text-center uppercase font-bold text-headline-sm text-primary bg-surface-container-low/40 border border-primary-container ring-1 ring-primary-container rounded-xl focus:border-primary-container focus:ring-2 focus:ring-secondary-fixed focus:outline-none transition-all" maxlength="1" type="text" value="X"/>
+</div>
+<!-- Action Button -->
+<button class="w-full py-3.5 bg-primary-container hover:bg-primary active:scale-[0.98] transition-all text-on-primary font-bold text-title-sm font-title-sm rounded-2xl shadow-md flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-headline-sm" data-icon="check_circle">check_circle</span>
+<span>Kodu Doğrula ve Paketi Teslim Et</span>
+</button>
+<!-- Status Footer Alert / Recent Handover -->
+<div class="flex items-center gap-2 px-3 py-2 bg-surface-container/70 rounded-xl border border-outline-variant/40">
+<span class="material-symbols-outlined text-secondary text-body-lg flex-shrink-0" data-icon="verified">verified</span>
+<p class="text-body-sm font-body-sm text-on-surface-variant truncate">
+<span class="font-medium text-on-surface">Son teslim edilen:</span> <span class="font-semibold text-primary">#RZ-202600038</span> (Ayşe Y. - 10 dk önce Onaylandı ✓)
+        </p>
+</div>
+</section>
+</div>
+<script>
+    // Flashlight Toggle Interaction
+    const flashBtn = document.getElementById('flashlight-btn');
+    if (flashBtn) {
+      flashBtn.addEventListener('click', () => {
+        const icon = flashBtn.querySelector('.material-symbols-outlined');
+        const isActive = flashBtn.classList.contains('bg-secondary-fixed');
+        if (isActive) {
+          flashBtn.classList.remove('bg-secondary-fixed', 'text-on-secondary-fixed');
+          flashBtn.classList.add('bg-surface-container-lowest/20', 'text-surface-container-lowest');
+        } else {
+          flashBtn.classList.remove('bg-surface-container-lowest/20', 'text-surface-container-lowest');
+          flashBtn.classList.add('bg-secondary-fixed', 'text-on-secondary-fixed');
+        }
+      });
+    }
+
+    // Auto-tab support for code inputs
+    const inputs = document.querySelectorAll('input[type="text"]');
+    inputs.forEach((input, idx) => {
+      input.addEventListener('keyup', (e) => {
+        if (e.key !== 'Backspace' && input.value.length === 1 && idx < inputs.length - 1) {
+          inputs[idx + 1].focus();
+          inputs[idx + 1].select();
+        } else if (e.key === 'Backspace' && input.value.length === 0 && idx > 0) {
+          inputs[idx - 1].focus();
+        }
+      });
+    });
+  </script>
+</body></html>

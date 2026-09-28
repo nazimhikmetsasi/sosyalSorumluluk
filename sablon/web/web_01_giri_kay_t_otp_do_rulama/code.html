@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Giriş Yap | GıdaKöprüsü</title>
+<!-- Material Symbols Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Inter Google Font -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Configuration Verbatim -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-surface": "#002114",
+            "on-tertiary-fixed": "#002113",
+            "surface-variant": "#c1ecd4",
+            "on-background": "#002114",
+            "on-error-container": "#93000a",
+            "on-tertiary-fixed-variant": "#0c5136",
+            "on-primary-container": "#a8e7c5",
+            "on-secondary-container": "#00734d",
+            "error": "#ba1a1a",
+            "outline-variant": "#bfc9c1",
+            "primary-fixed": "#b1f0ce",
+            "on-error": "#ffffff",
+            "on-surface-variant": "#404943",
+            "on-secondary-fixed": "#002113",
+            "surface-bright": "#e8fff0",
+            "tertiary": "#0d5237",
+            "on-primary": "#ffffff",
+            "inverse-surface": "#0e3727",
+            "on-tertiary-container": "#a7e7c4",
+            "on-tertiary": "#ffffff",
+            "surface-container-high": "#c6f2da",
+            "surface-container-highest": "#c1ecd4",
+            "primary-fixed-dim": "#95d4b3",
+            "surface-container": "#ccf8df",
+            "surface": "#e8fff0",
+            "tertiary-fixed-dim": "#94d4b1",
+            "primary": "#0f5238",
+            "surface-container-lowest": "#ffffff",
+            "primary-container": "#2d6a4f",
+            "on-primary-fixed": "#002114",
+            "error-container": "#ffdad6",
+            "outline": "#707973",
+            "background": "#e8fff0",
+            "surface-tint": "#2c694e",
+            "secondary-fixed-dim": "#75daa8",
+            "surface-dim": "#b8e4cc",
+            "tertiary-fixed": "#b0f1cc",
+            "tertiary-container": "#2c6a4e",
+            "surface-container-low": "#d1fee5",
+            "secondary-container": "#92f7c3",
+            "on-secondary-fixed-variant": "#005235",
+            "on-secondary": "#ffffff",
+            "inverse-primary": "#95d4b3",
+            "secondary-fixed": "#92f7c3",
+            "on-primary-fixed-variant": "#0e5138",
+            "secondary": "#006c48",
+            "inverse-on-surface": "#cffbe2"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "margin-mobile": "1rem",
+            "space-xl": "2.5rem",
+            "gutter-mobile": "1rem",
+            "gutter": "1.5rem",
+            "space-sm": "0.5rem",
+            "space-xs": "0.25rem",
+            "space-md": "1rem",
+            "margin": "2rem"
+          },
+          "fontFamily": {
+            "display-lg": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "label-sm": ["Inter"],
+            "headline-lg": ["Inter"],
+            "title-sm": ["Inter"],
+            "body-md": ["Inter"],
+            "label-md": ["Inter"],
+            "title-md": ["Inter"],
+            "headline-sm": ["Inter"],
+            "body-lg": ["Inter"],
+            "display-lg-mobile": ["Inter"],
+            "body-sm": ["Inter"],
+            "headline-md": ["Inter"],
+            "label-lg": ["Inter"]
+          },
+          "fontSize": {
+            "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "title-sm": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+            "body-md": ["15px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "title-md": ["18px", { "lineHeight": "26px", "letterSpacing": "0", "fontWeight": "600" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "0", "fontWeight": "600" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "0", "fontWeight": "400" }],
+            "display-lg-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-sm": ["13px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-surface-container-lowest font-body-md text-on-surface antialiased min-h-screen">
+<!-- Semantic Shell Mandate: Login is transactional/focused flow, suppressing TopAppBar & Footer -->
+<main class="min-h-screen flex flex-col lg:flex-row">
+<!-- Left Section: Authentication & OTP (50%) -->
+<section class="w-full lg:w-1/2 bg-surface-container-lowest flex flex-col justify-between p-space-md sm:p-space-lg lg:p-space-xl min-h-screen">
+<!-- Top Bar: Brand Logo & Mission -->
+<div class="w-full max-w-md mx-auto">
+<div class="flex items-center gap-space-xs text-primary-container">
+<span class="material-symbols-outlined text-[32px] text-primary-container" data-icon="eco" style="font-variation-settings: 'FILL' 1;">eco</span>
+<span class="font-headline-md text-headline-md font-bold tracking-tight text-primary-container">GıdaKöprüsü</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Gıda israfına birlikte son verelim</p>
+</div>
+<!-- Center Form Body -->
+<div class="w-full max-w-md mx-auto my-auto py-space-lg">
+<header class="mb-space-lg">
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-low text-primary mb-3">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="font-label-sm text-label-sm">Şifresiz Güvenli Erişim</span>
+</div>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface">Hoş Geldiniz</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Hesabınıza hızlıca giriş yapın veya yeni kayıt oluşturun.</p>
+</header>
+<!-- Initial Phone / Email Input Screen -->
+<div class="space-y-space-md" id="step-identifier">
+<div>
+<label class="block font-label-lg text-label-lg text-on-surface mb-2" for="identifier">E-posta adresiniz veya telefon numaranız</label>
+<div class="relative flex items-center">
+<span class="material-symbols-outlined absolute left-3.5 text-outline text-[20px]" data-icon="mail">mail</span>
+<input class="w-full h-12 pl-11 pr-4 rounded-xl border border-outline-variant bg-surface-container-lowest font-body-md text-body-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-fixed transition-all" id="identifier" placeholder="ornek@alanadi.com veya 05XX..." type="text" value="ayse.yilmaz@restoranagi.org"/>
+</div>
+</div>
+<button class="w-full h-12 bg-primary-container hover:bg-inverse-surface text-on-primary rounded-xl font-label-lg text-label-lg shadow-sm transition-all duration-150 active:scale-[0.99] flex items-center justify-center gap-2" id="btn-send-code" type="button">
+<span>Doğrulama Kodu Gönder</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Dynamic / Interactive OTP Verification Section -->
+<div class="mt-space-lg pt-space-lg border-t border-outline-variant/30" id="step-otp">
+<div class="bg-surface/50 border border-outline-variant/40 rounded-2xl p-space-md">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-1.5 text-primary">
+<span class="material-symbols-outlined text-[18px]" data-icon="mark_email_read">mark_email_read</span>
+<span class="font-label-md text-label-md">Doğrulama Kodu İletildi</span>
+</div>
+<button class="text-xs font-label-sm text-outline hover:text-primary underline" type="button">Değiştir</button>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+<span class="font-semibold text-on-surface">ayse.yilmaz@restoranagi.org</span> adresine gönderilen 6 haneli kodu girin:
+            </p>
+<!-- 6 Digits OTP Input Cluster -->
+<div class="flex items-center justify-between gap-1.5 sm:gap-2 mb-space-md">
+<input class="w-11 sm:w-12 h-14 text-center font-headline-sm text-headline-sm font-bold border-2 border-primary-container bg-surface-container-low text-primary-container rounded-xl focus:ring-2 focus:ring-primary-container/20 focus:outline-none transition-all" maxlength="1" type="text" value="4"/>
+<input class="w-11 sm:w-12 h-14 text-center font-headline-sm text-headline-sm font-bold border-2 border-primary-container bg-surface-container-low text-primary-container rounded-xl focus:ring-2 focus:ring-primary-container/20 focus:outline-none transition-all" maxlength="1" type="text" value="8"/>
+<input class="w-11 sm:w-12 h-14 text-center font-headline-sm text-headline-sm font-bold border-2 border-primary-container bg-surface-container-low text-primary-container rounded-xl focus:ring-2 focus:ring-primary-container/20 focus:outline-none transition-all" maxlength="1" type="text" value="2"/>
+<input class="w-11 sm:w-12 h-14 text-center font-headline-sm text-headline-sm font-bold border-2 border-primary-container bg-surface-container-low text-primary-container rounded-xl focus:ring-2 focus:ring-primary-container/20 focus:outline-none transition-all" maxlength="1" type="text" value="9"/>
+<input class="w-11 sm:w-12 h-14 text-center font-headline-sm text-headline-sm font-bold border border-outline-variant bg-surface-container-lowest text-on-surface rounded-xl focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 focus:outline-none transition-all" maxlength="1" placeholder="•" type="text"/>
+<input class="w-11 sm:w-12 h-14 text-center font-headline-sm text-headline-sm font-bold border border-outline-variant bg-surface-container-lowest text-on-surface rounded-xl focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 focus:outline-none transition-all" maxlength="1" placeholder="•" type="text"/>
+</div>
+<!-- Timer & Resend Actions -->
+<div class="flex items-center justify-between font-label-md text-label-md mb-space-md text-on-surface-variant">
+<span class="inline-flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-outline" data-icon="schedule">schedule</span>
+<span class="text-on-surface font-semibold">02:47</span> saniye kaldı
+              </span>
+<button class="text-primary hover:text-inverse-surface font-semibold transition-colors duration-150" type="button">
+                Kodu tekrar gönder
+              </button>
+</div>
+<!-- Verify Button -->
+<button class="w-full h-12 bg-primary-container hover:bg-inverse-surface text-on-primary rounded-xl font-label-lg text-label-lg shadow-sm transition-all duration-150 active:scale-[0.99] flex items-center justify-center gap-2" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="verified_user">verified_user</span>
+<span>Doğrula</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Legal / Footer Notice -->
+<footer class="w-full max-w-md mx-auto pt-space-md text-center">
+<p class="font-body-sm text-body-sm text-outline">
+          Giriş yaparak <a class="text-on-surface underline hover:text-primary transition-colors" href="#">Kullanım Koşullarını</a> ve <a class="text-on-surface underline hover:text-primary transition-colors" href="#">Gizlilik Politikası</a>'nı kabul etmiş olursunuz.
+        </p>
+</footer>
+</section>
+<!-- Right Section: Platform Showcase & Impact Metrics (50%) -->
+<section class="w-full lg:w-1/2 bg-surface-container-low relative overflow-hidden flex flex-col justify-between p-space-md sm:p-space-lg lg:p-space-xl border-t lg:border-t-0 lg:border-l border-outline-variant/20">
+<!-- Ambient Decorative Backdrop Circles -->
+<div class="absolute -top-24 -right-24 w-96 h-96 bg-primary-fixed rounded-full blur-3xl opacity-40 pointer-events-none"></div>
+<div class="absolute -bottom-20 -left-20 w-80 h-80 bg-secondary-container rounded-full blur-3xl opacity-50 pointer-events-none"></div>
+<!-- Header Label / Community Badge -->
+<div class="relative z-10 flex justify-between items-center w-full max-w-xl mx-auto">
+<div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-container-lowest/80 backdrop-blur-md shadow-sm border border-surface-container-lowest">
+<span class="material-symbols-outlined text-[18px] text-primary" data-icon="volunteer_activism">volunteer_activism</span>
+<span class="font-label-md text-label-md text-primary font-semibold">Ulusal Fazla Gıda Dayanışma Ağı</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container-high/60 px-2.5 py-1 rounded-full">Canlı Veri</span>
+</div>
+<!-- Center Hero: Modern Composition + 3 Glassmorphic Impact Cards -->
+<div class="relative z-10 w-full max-w-xl mx-auto my-auto py-space-md">
+<!-- Food Redistribution Hero Visual Card -->
+<div class="relative rounded-2xl overflow-hidden shadow-sm border border-surface-container-lowest mb-space-lg bg-surface-container-lowest">
+<img class="w-full h-56 sm:h-64 object-cover" data-alt="A clean, bright, modern light-mode photograph capturing professional organic logistics. Volunteers in minimalist forest green aprons and crisp white shirts are carefully packaging freshly harvested vibrant green vegetables, crisp red apples, and freshly baked artisanal bread into eco-friendly recycled cardboard crates inside an airy, naturally lit community food redistribution facility with polished concrete floors and soft morning sunlight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaqt1yEweYOmCIpdSEMvALPdSDQc9fGF9PlRIb6Xlh-WfbHLPMkjwMkhte10YOVkfc9_KhpGJJS7w-f7USdMD21rCmeNC1BF5KsMU3tD-CzcWucvqQ9_iUd-VcG3F4CH0aPxwIxwUl6XOi15CAeQa4W0RWYtqzg8EOH8grdtIish_jQ_Ma2SJr3vLrlnUa888Rsbo6SReYgCQK8ZmU1S2meOaRrqZAtDwnQtK_s_Wdf648G9v4Mk7c"/>
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/80 via-inverse-surface/20 to-transparent flex flex-col justify-end p- space-md text-on-primary">
+<span class="font-label-sm text-label-sm text-on-primary-container uppercase tracking-wider mb-1">Döngüsel Ekonomi &amp; Dayanışma</span>
+<p class="font-title-md text-title-md font-bold text-on-primary leading-snug">Artan değil, değer katan gıdalar ihtiyaç sahipleriyle buluşuyor.</p>
+</div>
+</div>
+<!-- 3 Glassmorphic Bento Impact Stat Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-space-sm sm:gap-space-md">
+<!-- Stat Card 1 -->
+<div class="backdrop-blur-md bg-surface-container-lowest/85 rounded-2xl p-space-md shadow-sm border border-surface-container-lowest transition-transform hover:-translate-y-1 duration-200">
+<div class="w-9 h-9 rounded-xl bg-surface-container-low flex items-center justify-center text-primary mb-2.5">
+<span aria-label="eco leaf" class="text-base" role="img">🌿</span>
+</div>
+<p class="font-headline-sm text-headline-sm font-bold text-on-surface tracking-tight">2.450 kg</p>
+<p class="font-label-md text-label-md text-on-surface-variant mt-0.5">gıda kurtarıldı</p>
+</div>
+<!-- Stat Card 2 -->
+<div class="backdrop-blur-md bg-surface-container-lowest/85 rounded-2xl p-space-md shadow-sm border border-surface-container-lowest transition-transform hover:-translate-y-1 duration-200">
+<div class="w-9 h-9 rounded-xl bg-surface-container-low flex items-center justify-center text-primary mb-2.5">
+<span aria-label="planet earth" class="text-base" role="img">🌍</span>
+</div>
+<p class="font-headline-sm text-headline-sm font-bold text-on-surface tracking-tight">6.125 kg</p>
+<p class="font-label-md text-label-md text-on-surface-variant mt-0.5">CO₂ önlendi</p>
+</div>
+<!-- Stat Card 3 -->
+<div class="backdrop-blur-md bg-surface-container-lowest/85 rounded-2xl p-space-md shadow-sm border border-surface-container-lowest transition-transform hover:-translate-y-1 duration-200">
+<div class="w-9 h-9 rounded-xl bg-surface-container-low flex items-center justify-center text-primary mb-2.5">
+<span aria-label="dinner plate" class="text-base" role="img">🍽️</span>
+</div>
+<p class="font-headline-sm text-headline-sm font-bold text-on-surface tracking-tight">8.200</p>
+<p class="font-label-md text-label-md text-on-surface-variant mt-0.5">porsiyon dağıtıldı</p>
+</div>
+</div>
+</div>
+<!-- Bottom Urgent Callout Banner -->
+<div class="relative z-10 w-full max-w-xl mx-auto">
+<div class="rounded-2xl p-space-md bg-surface-container-lowest/90 backdrop-blur-md border border-surface-container border-l-4 border-l-primary-container shadow-sm flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-error-container/60 text-error flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]" data-icon="crisis_alert">crisis_alert</span>
+</div>
+<div>
+<p class="font-title-sm text-title-sm text-on-surface font-bold leading-tight">
+              Türkiye'de yılda 26 milyon ton gıda israf ediliyor.
+            </p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+              Sen de bir adım at! Restoran, market veya gönüllü olarak bugün katıl.
+            </p>
+</div>
+</div>
+</div>
+</section>
+</main>
+</body></html>

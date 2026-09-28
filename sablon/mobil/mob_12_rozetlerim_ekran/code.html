@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Rozetlerim - GıdaKöprüsü</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Inter Font -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary-fixed-variant": "#0e5138",
+            "surface-bright": "#e8fff0",
+            "surface-tint": "#2c694e",
+            "surface-container-high": "#c6f2da",
+            "on-secondary-fixed-variant": "#005235",
+            "secondary": "#006c48",
+            "on-secondary": "#ffffff",
+            "surface-variant": "#c1ecd4",
+            "on-background": "#002114",
+            "on-error": "#ffffff",
+            "error-container": "#ffdad6",
+            "on-secondary-fixed": "#002113",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-container": "#a7e7c4",
+            "background": "#e8fff0",
+            "tertiary-fixed-dim": "#94d4b1",
+            "on-error-container": "#93000a",
+            "surface-container-low": "#d1fee5",
+            "tertiary-fixed": "#b0f1cc",
+            "inverse-on-surface": "#cffbe2",
+            "on-secondary-container": "#00734d",
+            "on-primary": "#ffffff",
+            "surface": "#e8fff0",
+            "surface-dim": "#b8e4cc",
+            "tertiary-container": "#2c6a4e",
+            "on-tertiary": "#ffffff",
+            "on-surface-variant": "#404943",
+            "inverse-primary": "#95d4b3",
+            "surface-container": "#ccf8df",
+            "inverse-surface": "#0e3727",
+            "primary-fixed-dim": "#95d4b3",
+            "on-tertiary-fixed": "#002113",
+            "primary": "#0f5238",
+            "secondary-fixed": "#92f7c3",
+            "primary-fixed": "#b1f0ce",
+            "error": "#ba1a1a",
+            "secondary-container": "#92f7c3",
+            "outline": "#707973",
+            "outline-variant": "#bfc9c1",
+            "on-tertiary-fixed-variant": "#0c5136",
+            "on-primary-fixed": "#002114",
+            "on-primary-container": "#a8e7c5",
+            "tertiary": "#0d5237",
+            "secondary-fixed-dim": "#75daa8",
+            "on-surface": "#002114",
+            "primary-container": "#2d6a4f",
+            "surface-container-highest": "#c1ecd4"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "margin-mobile": "1rem",
+            "space-xs": "0.25rem",
+            "margin": "2rem",
+            "space-sm": "0.5rem",
+            "gutter-mobile": "1rem",
+            "gutter": "1.5rem",
+            "space-md": "1rem",
+            "space-xl": "2.5rem"
+          },
+          "fontFamily": {
+            "body-lg": ["Inter"],
+            "label-md": ["Inter"],
+            "headline-lg": ["Inter"],
+            "label-sm": ["Inter"],
+            "body-md": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "body-sm": ["Inter"],
+            "title-sm": ["Inter"],
+            "headline-md": ["Inter"],
+            "label-lg": ["Inter"],
+            "headline-sm": ["Inter"],
+            "display-lg": ["Inter"],
+            "title-md": ["Inter"],
+            "display-lg-mobile": ["Inter"]
+          },
+          "fontSize": {
+            "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0", "fontWeight": "400"}],
+            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+            "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+            "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+            "body-md": ["15px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}],
+            "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "body-sm": ["13px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+            "title-sm": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600"}],
+            "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+            "headline-sm": ["20px", {"lineHeight": "28px", "letterSpacing": "0", "fontWeight": "600"}],
+            "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "title-md": ["18px", {"lineHeight": "26px", "letterSpacing": "0", "fontWeight": "600"}],
+            "display-lg-mobile": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .badge-glow {
+      box-shadow: 0 4px 14px -1px rgba(82, 183, 136, 0.35);
+    }
+  </style>
+</head>
+<body class="bg-surface-container-low text-on-surface antialiased min-h-screen flex justify-center selection:bg-secondary-container">
+<!-- Mobile Viewport Shell (390px Max Container) -->
+<div class="w-full max-w-[390px] min-h-screen bg-surface-container-lowest flex flex-col relative pb-24 shadow-2xl">
+<!-- Status Bar (iOS / Android Native Frame) -->
+<header class="w-full pt-3 px-6 pb-2 flex justify-between items-center text-on-surface bg-surface-container-lowest select-none sticky top-0 z-50">
+<span class="text-body-sm font-body-sm font-semibold tracking-tight">09:41</span>
+<div class="flex items-center space-x-2 text-on-surface">
+<span class="material-symbols-outlined text-[15px]" data-icon="signal_cellular_4_bar">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[15px]" data-icon="wifi">wifi</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="battery_full">battery_full</span>
+</div>
+</header>
+<!-- Header & Navigation Bar -->
+<nav class="flex items-center justify-between px-margin-mobile py-space-sm bg-surface-container-lowest/90 backdrop-blur-md sticky top-[38px] z-40">
+<button aria-label="Geri" class="w-10 h-10 rounded-full flex items-center justify-center text-primary hover:bg-surface-container-low active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[24px]" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="text-center">
+<h1 class="text-title-md font-title-md font-bold text-primary tracking-tight">Rozetlerim</h1>
+<p class="text-label-sm font-label-sm text-on-surface-variant -mt-0.5">Sürdürülebilirlik Yolculuğun</p>
+</div>
+<button aria-label="Sıralama ve Bilgi" class="w-10 h-10 rounded-full flex items-center justify-center text-primary hover:bg-surface-container-low active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[22px]" data-icon="info">info</span>
+</button>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 px-margin-mobile pt-space-xs space-y-space-md">
+<!-- Motivation / Progress Summary Card -->
+<section class="bg-[#F0FFF4] rounded-2xl p-space-md border border-primary-container/20 shadow-sm relative overflow-hidden">
+<div class="absolute -right-6 -bottom-6 w-28 h-28 bg-secondary-fixed/40 rounded-full blur-2xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col space-y-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-space-xs">
+<span class="p-1.5 rounded-lg bg-surface-container-lowest text-primary shadow-xs">
+<span class="material-symbols-outlined text-[20px]" data-icon="military_tech" data-weight="fill" style="font-variation-settings: 'FILL' 1;">military_tech</span>
+</span>
+<span class="text-label-md font-label-md text-primary font-bold tracking-wide uppercase">Seviye 2 Kurtarıcı</span>
+</div>
+<span class="text-title-sm font-title-sm font-bold text-primary-container">3 / 8 Rozet</span>
+</div>
+<!-- Progress Bar Container -->
+<div>
+<div class="w-full h-2.5 bg-primary-container/10 rounded-full overflow-hidden p-0.5 flex items-center">
+<div class="h-full bg-gradient-to-r from-[#52B788] to-primary-container rounded-full transition-all duration-500" style="width: 38%"></div>
+</div>
+<div class="flex justify-between items-center mt-1.5">
+<span class="text-label-sm font-label-sm text-on-surface-variant">%38 Tamamlandı</span>
+<span class="text-label-sm font-label-sm font-semibold text-primary">Sonraki Rozet: 2 sipariş kaldı</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Segment Selector / Filter Tabs -->
+<section class="flex bg-surface-container rounded-xl p-1">
+<button class="flex-1 py-2 rounded-lg bg-surface-container-lowest text-primary font-semibold text-label-md font-label-md shadow-sm transition-all text-center" type="button">
+          Kazanılanlar (3)
+        </button>
+<button class="flex-1 py-2 rounded-lg text-on-surface-variant font-medium text-label-md font-label-md hover:text-primary transition-all text-center" type="button">
+          Kilitli Rozetler (5)
+        </button>
+</section>
+<!-- Kazanılan Rozetler (3 Sütun Grid) -->
+<section class="space-y-space-sm">
+<div class="flex items-center justify-between">
+<h2 class="text-title-sm font-title-sm text-primary flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-secondary" data-icon="verified" data-weight="fill" style="font-variation-settings: 'FILL' 1;">verified</span>
+            Kazanılan Rozetler
+          </h2>
+<span class="text-label-sm font-label-sm text-secondary font-semibold bg-secondary-container/50 px-2 py-0.5 rounded-full">3 Aktif</span>
+</div>
+<div class="grid grid-cols-3 gap-2.5">
+<!-- Badge 1: İlk Kurtarma -->
+<div class="bg-surface-container-lowest border border-secondary-container rounded-2xl p-2.5 flex flex-col items-center text-center relative badge-glow transition-transform active:scale-95">
+<div class="w-14 h-14 rounded-full bg-gradient-to-br from-[#F0FFF4] to-[#c6f2da] ring-2 ring-[#52B788] flex items-center justify-center mb-2 relative">
+<span class="material-symbols-outlined text-[30px] text-primary" data-icon="eco" data-weight="fill" style="font-variation-settings: 'FILL' 1;">eco</span>
+<div class="absolute -bottom-1 -right-1 bg-amber-400 text-amber-950 rounded-full p-0.5 border border-white shadow-xs">
+<span class="material-symbols-outlined text-[12px] block" data-icon="workspace_premium" data-weight="fill" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+</div>
+</div>
+<h3 class="text-label-md font-label-md text-on-surface font-bold leading-tight">İlk Kurtarma</h3>
+<p class="text-[10px] text-on-surface-variant mt-1 leading-tight line-clamp-2">1. siparişi başarıyla aldın.</p>
+<span class="mt-2 text-[9px] font-semibold text-primary bg-[#F0FFF4] border border-[#52B788]/30 px-1.5 py-0.5 rounded-full">12 Eki</span>
+</div>
+<!-- Badge 2: Karbon Dostu -->
+<div class="bg-surface-container-lowest border border-secondary-container rounded-2xl p-2.5 flex flex-col items-center text-center relative badge-glow transition-transform active:scale-95">
+<div class="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-50 to-teal-100 ring-2 ring-[#2D6A4F] flex items-center justify-center mb-2 relative">
+<span class="material-symbols-outlined text-[28px] text-secondary" data-icon="public" data-weight="fill" style="font-variation-settings: 'FILL' 1;">public</span>
+<div class="absolute -bottom-1 -right-1 bg-secondary text-white rounded-full p-0.5 border border-white shadow-xs">
+<span class="material-symbols-outlined text-[12px] block" data-icon="shield" data-weight="fill" style="font-variation-settings: 'FILL' 1;">shield</span>
+</div>
+</div>
+<h3 class="text-label-md font-label-md text-on-surface font-bold leading-tight">Karbon Dostu</h3>
+<p class="text-[10px] text-on-surface-variant mt-1 leading-tight line-clamp-2">25 kg CO₂ salınımı önlendi.</p>
+<span class="mt-2 text-[9px] font-semibold text-primary bg-[#F0FFF4] border border-[#52B788]/30 px-1.5 py-0.5 rounded-full">28 Eki</span>
+</div>
+<!-- Badge 3: Hızlı Kurtarıcı -->
+<div class="bg-surface-container-lowest border border-secondary-container rounded-2xl p-2.5 flex flex-col items-center text-center relative badge-glow transition-transform active:scale-95">
+<div class="w-14 h-14 rounded-full bg-gradient-to-br from-amber-50 to-emerald-100 ring-2 ring-amber-400 flex items-center justify-center mb-2 relative">
+<span class="material-symbols-outlined text-[30px] text-amber-500" data-icon="bolt" data-weight="fill" style="font-variation-settings: 'FILL' 1;">bolt</span>
+<div class="absolute -bottom-1 -right-1 bg-amber-500 text-white rounded-full p-0.5 border border-white shadow-xs">
+<span class="material-symbols-outlined text-[12px] block" data-icon="speed" data-weight="fill" style="font-variation-settings: 'FILL' 1;">speed</span>
+</div>
+</div>
+<h3 class="text-label-md font-label-md text-on-surface font-bold leading-tight">Hızlı Kurtarıcı</h3>
+<p class="text-[10px] text-on-surface-variant mt-1 leading-tight line-clamp-2">İlk 15 dk içinde rezerve.</p>
+<span class="mt-2 text-[9px] font-semibold text-primary bg-[#F0FFF4] border border-[#52B788]/30 px-1.5 py-0.5 rounded-full">02 Kas</span>
+</div>
+</div>
+</section>
+<!-- Kilitli / Kazanılabilecek Rozetler Bölümü -->
+<section class="space-y-space-sm pt-1">
+<div class="flex items-center justify-between">
+<h2 class="text-title-sm font-title-sm text-primary flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-outline" data-icon="lock">lock</span>
+            Kilitli Rozetler
+          </h2>
+<span class="text-label-sm font-label-sm text-on-surface-variant">5 Hedef Kaldı</span>
+</div>
+<div class="space-y-2.5">
+<!-- Locked 1: Fırın Tutkunu -->
+<div class="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-3 flex items-center space-x-3 opacity-80 hover:opacity-100 transition-opacity">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high/60 flex items-center justify-center text-on-surface-variant shrink-0 relative">
+<span class="material-symbols-outlined text-[24px]" data-icon="bakery_dining">bakery_dining</span>
+<span class="material-symbols-outlined text-[14px] absolute -top-1 -right-1 text-outline" data-icon="lock">lock</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-0.5">
+<h3 class="text-label-lg font-label-lg text-on-surface font-semibold truncate">Fırın Tutkunu</h3>
+<span class="text-label-sm font-label-sm font-semibold text-primary">3 / 5</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant text-[12px] truncate">Fırınlardan 5 sürpriz paket kurtar.</p>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden mt-1.5">
+<div class="h-full bg-secondary rounded-full" style="width: 60%"></div>
+</div>
+</div>
+</div>
+<!-- Locked 2: Gece Nöbetçisi -->
+<div class="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-3 flex items-center space-x-3 opacity-80 hover:opacity-100 transition-opacity">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high/60 flex items-center justify-center text-on-surface-variant shrink-0 relative">
+<span class="material-symbols-outlined text-[24px]" data-icon="dark_mode">dark_mode</span>
+<span class="material-symbols-outlined text-[14px] absolute -top-1 -right-1 text-outline" data-icon="lock">lock</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-0.5">
+<h3 class="text-label-lg font-label-lg text-on-surface font-semibold truncate">Gece Nöbetçisi</h3>
+<span class="text-label-sm font-label-sm font-semibold text-primary">1 / 3</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant text-[12px] truncate">21:00 sonrası 3 son dakika paketi kurtar.</p>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden mt-1.5">
+<div class="h-full bg-secondary rounded-full" style="width: 33.3%"></div>
+</div>
+</div>
+</div>
+<!-- Locked 3: Yeşil Kahraman -->
+<div class="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-3 flex items-center space-x-3 opacity-80 hover:opacity-100 transition-opacity">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high/60 flex items-center justify-center text-on-surface-variant shrink-0 relative">
+<span class="material-symbols-outlined text-[24px]" data-icon="nutrition">nutrition</span>
+<span class="material-symbols-outlined text-[14px] absolute -top-1 -right-1 text-outline" data-icon="lock">lock</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-0.5">
+<h3 class="text-label-lg font-label-lg text-on-surface font-semibold truncate">Yeşil Kahraman</h3>
+<span class="text-label-sm font-label-sm font-semibold text-primary">2 / 5</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant text-[12px] truncate">5 manav/organik pazar paketi al.</p>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden mt-1.5">
+<div class="h-full bg-secondary rounded-full" style="width: 40%"></div>
+</div>
+</div>
+</div>
+<!-- Locked 4: Sıfır İsraf Şampiyonu -->
+<div class="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-3 flex items-center space-x-3 opacity-80 hover:opacity-100 transition-opacity">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high/60 flex items-center justify-center text-on-surface-variant shrink-0 relative">
+<span class="material-symbols-outlined text-[24px]" data-icon="crown">crown</span>
+<span class="material-symbols-outlined text-[14px] absolute -top-1 -right-1 text-outline" data-icon="lock">lock</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-0.5">
+<h3 class="text-label-lg font-label-lg text-on-surface font-semibold truncate">Sıfır İsraf Şampiyonu</h3>
+<span class="text-label-sm font-label-sm font-semibold text-primary">12.5 / 50 kg</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant text-[12px] truncate">Toplam 50 kg gıda kurtar.</p>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden mt-1.5">
+<div class="h-full bg-secondary rounded-full" style="width: 25%"></div>
+</div>
+</div>
+</div>
+<!-- Locked 5: Paylaşımcı Ruh -->
+<div class="bg-surface-container-lowest border border-outline-variant/40 rounded-xl p-3 flex items-center space-x-3 opacity-80 hover:opacity-100 transition-opacity">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high/60 flex items-center justify-center text-on-surface-variant shrink-0 relative">
+<span class="material-symbols-outlined text-[24px]" data-icon="group_add">group_add</span>
+<span class="material-symbols-outlined text-[14px] absolute -top-1 -right-1 text-outline" data-icon="lock">lock</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-baseline mb-0.5">
+<h3 class="text-label-lg font-label-lg text-on-surface font-semibold truncate">Paylaşımcı Ruh</h3>
+<span class="text-label-sm font-label-sm font-semibold text-primary">0 / 3</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant text-[12px] truncate">Uygulamayı 3 arkadaşına öner.</p>
+<div class="w-full h-1.5 bg-surface-container rounded-full overflow-hidden mt-1.5">
+<div class="h-full bg-secondary rounded-full" style="width: 0%"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Rozet Seviyesi ve Ayrıcalıkları Bilgi Kutusu -->
+<section class="bg-surface-container-low rounded-2xl p-space-md border border-[#52B788]/20 flex items-start space-x-3">
+<div class="p-2 bg-surface-container-lowest rounded-xl text-primary shrink-0 shadow-xs">
+<span class="material-symbols-outlined text-[22px]" data-icon="stars" data-weight="fill" style="font-variation-settings: 'FILL' 1;">stars</span>
+</div>
+<div class="space-y-1">
+<h4 class="text-label-lg font-label-lg text-primary font-bold">Rozet Seviyesi ve Ayrıcalıkları</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant text-[12px] leading-relaxed">
+            Kazandığın her rozet sana sürpriz restoranlarda özel indirim kuponları ve son dakika paketlerinde erken rezervasyon önceliği sağlar!
+          </p>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar (From Shared Components JSON) -->
+<!-- Destination count: 5. Active: "Profil" (Current User Section Context) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-space-xs py-space-xs pb-safe bg-surface-container-lowest shadow-md border-t border-primary/10 max-w-[390px] mx-auto right-0">
+<!-- Tab 1: Keşfet (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-space-sm py-space-xs font-medium hover:bg-surface-container-low transition-colors duration-150 active:scale-90" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="explore">explore</span>
+<span class="text-label-sm font-label-sm mt-0.5">Keşfet</span>
+</a>
+<!-- Tab 2: Ara (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-space-sm py-space-xs font-medium hover:bg-surface-container-low transition-colors duration-150 active:scale-90" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="search">search</span>
+<span class="text-label-sm font-label-sm mt-0.5">Ara</span>
+</a>
+<!-- Tab 3: Rezervasyonlar (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-space-sm py-space-xs font-medium hover:bg-surface-container-low transition-colors duration-150 active:scale-90" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="receipt_long">receipt_long</span>
+<span class="text-label-sm font-label-sm mt-0.5">Rezervasyonlar</span>
+</a>
+<!-- Tab 4: Bildirimler (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-space-sm py-space-xs font-medium hover:bg-surface-container-low transition-colors duration-150 active:scale-90" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="notifications">notifications</span>
+<span class="text-label-sm font-label-sm mt-0.5">Bildirimler</span>
+</a>
+<!-- Tab 5: Profil (ACTIVE) -->
+<a class="flex flex-col items-center justify-center text-primary bg-secondary-container/40 rounded-xl px-space-sm py-space-xs font-semibold active:scale-90 transition-transform duration-150 ease-out" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="person" data-weight="fill" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="text-label-sm font-label-sm mt-0.5">Profil</span>
+</a>
+</nav>
+</div>
+</body></html>

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Bildirimler &amp; Hatırlatmalar - GıdaKöprüsü</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration verbatim -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary-container": "#a8e7c5",
+            "surface-container": "#ccf8df",
+            "secondary-container": "#92f7c3",
+            "secondary-fixed": "#92f7c3",
+            "outline-variant": "#bfc9c1",
+            "primary-fixed-dim": "#95d4b3",
+            "error-container": "#ffdad6",
+            "on-error": "#ffffff",
+            "on-tertiary-container": "#a7e7c4",
+            "error": "#ba1a1a",
+            "on-secondary-container": "#00734d",
+            "surface-container-highest": "#c1ecd4",
+            "primary": "#0f5238",
+            "on-tertiary": "#ffffff",
+            "tertiary-fixed": "#b0f1cc",
+            "on-primary-fixed": "#002114",
+            "on-tertiary-fixed-variant": "#0c5136",
+            "on-error-container": "#93000a",
+            "surface-dim": "#b8e4cc",
+            "surface-container-lowest": "#ffffff",
+            "on-secondary-fixed": "#002113",
+            "on-surface-variant": "#404943",
+            "secondary": "#006c48",
+            "on-secondary": "#ffffff",
+            "surface-container-high": "#c6f2da",
+            "surface": "#e8fff0",
+            "secondary-fixed-dim": "#75daa8",
+            "on-background": "#002114",
+            "tertiary-container": "#2c6a4e",
+            "surface-container-low": "#d1fee5",
+            "on-primary-fixed-variant": "#0e5138",
+            "on-tertiary-fixed": "#002113",
+            "on-surface": "#002114",
+            "outline": "#707973",
+            "primary-container": "#2d6a4f",
+            "inverse-primary": "#95d4b3",
+            "inverse-on-surface": "#cffbe2",
+            "inverse-surface": "#0e3727",
+            "surface-tint": "#2c694e",
+            "surface-bright": "#e8fff0",
+            "tertiary-fixed-dim": "#94d4b1",
+            "surface-variant": "#c1ecd4",
+            "tertiary": "#0d5237",
+            "on-primary": "#ffffff",
+            "on-secondary-fixed-variant": "#005235",
+            "background": "#e8fff0",
+            "primary-fixed": "#b1f0ce"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter-mobile": "1rem",
+            "margin": "2rem",
+            "space-sm": "0.5rem",
+            "space-xl": "2.5rem",
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "gutter": "1.5rem",
+            "margin-mobile": "1rem",
+            "space-xs": "0.25rem"
+          },
+          "fontFamily": {
+            "body-sm": [
+              "Inter"
+            ],
+            "label-lg": [
+              "Inter"
+            ],
+            "body-lg": [
+              "Inter"
+            ],
+            "body-md": [
+              "Inter"
+            ],
+            "headline-sm": [
+              "Inter"
+            ],
+            "title-md": [
+              "Inter"
+            ],
+            "headline-lg-mobile": [
+              "Inter"
+            ],
+            "label-sm": [
+              "Inter"
+            ],
+            "headline-lg": [
+              "Inter"
+            ],
+            "headline-md": [
+              "Inter"
+            ],
+            "label-md": [
+              "Inter"
+            ],
+            "display-lg-mobile": [
+              "Inter"
+            ],
+            "title-sm": [
+              "Inter"
+            ],
+            "display-lg": [
+              "Inter"
+            ]
+          },
+          "fontSize": {
+            "body-sm": [
+              "13px",
+              {
+                "lineHeight": "20px",
+                "letterSpacing": "0",
+                "fontWeight": "400"
+              }
+            ],
+            "label-lg": [
+              "14px",
+              {
+                "lineHeight": "20px",
+                "letterSpacing": "0.01em",
+                "fontWeight": "600"
+              }
+            ],
+            "body-lg": [
+              "18px",
+              {
+                "lineHeight": "28px",
+                "letterSpacing": "0",
+                "fontWeight": "400"
+              }
+            ],
+            "body-md": [
+              "15px",
+              {
+                "lineHeight": "24px",
+                "letterSpacing": "0",
+                "fontWeight": "400"
+              }
+            ],
+            "headline-sm": [
+              "20px",
+              {
+                "lineHeight": "28px",
+                "letterSpacing": "0",
+                "fontWeight": "600"
+              }
+            ],
+            "title-md": [
+              "18px",
+              {
+                "lineHeight": "26px",
+                "letterSpacing": "0",
+                "fontWeight": "600"
+              }
+            ],
+            "headline-lg-mobile": [
+              "24px",
+              {
+                "lineHeight": "32px",
+                "letterSpacing": "-0.01em",
+                "fontWeight": "700"
+              }
+            ],
+            "label-sm": [
+              "11px",
+              {
+                "lineHeight": "14px",
+                "letterSpacing": "0.02em",
+                "fontWeight": "500"
+              }
+            ],
+            "headline-lg": [
+              "32px",
+              {
+                "lineHeight": "40px",
+                "letterSpacing": "-0.015em",
+                "fontWeight": "700"
+              }
+            ],
+            "headline-md": [
+              "24px",
+              {
+                "lineHeight": "32px",
+                "letterSpacing": "-0.01em",
+                "fontWeight": "700"
+              }
+            ],
+            "label-md": [
+              "12px",
+              {
+                "lineHeight": "16px",
+                "letterSpacing": "0.02em",
+                "fontWeight": "600"
+              }
+            ],
+            "display-lg-mobile": [
+              "30px",
+              {
+                "lineHeight": "38px",
+                "letterSpacing": "-0.02em",
+                "fontWeight": "700"
+              }
+            ],
+            "title-sm": [
+              "16px",
+              {
+                "lineHeight": "24px",
+                "letterSpacing": "0",
+                "fontWeight": "600"
+              }
+            ],
+            "display-lg": [
+              "40px",
+              {
+                "lineHeight": "48px",
+                "letterSpacing": "-0.02em",
+                "fontWeight": "700"
+              }
+            ]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col font-body-md text-body-md selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TOP APP BAR (Shared Component: TopNavBar with Exact Execution) -->
+<header class="sticky top-0 z-50 w-full h-[72px] bg-surface-container-lowest/90 backdrop-blur-md border-b border-outline-variant/20 shadow-sm">
+<div class="max-w-7xl mx-auto px-margin flex items-center justify-between h-full">
+<!-- Brand Logo -->
+<div class="flex items-center gap-space-lg">
+<a class="text-title-md font-title-md font-bold text-primary flex items-center gap-space-xs transition-transform duration-200 active:scale-95 group" href="#">
+<span class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-on-primary shadow-sm group-hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined text-[22px]" data-icon="eco">eco</span>
+</span>
+<span class="tracking-tight text-primary">GıdaKöprüsü</span>
+</a>
+<!-- Global Horizontal Navigation Links (NO SIDEBARS) -->
+<nav class="hidden lg:flex items-center gap-1 xl:gap-2 ml-4">
+<a class="px-3 py-2 text-label-lg font-label-lg text-on-surface-variant font-medium hover:text-primary hover:bg-surface-container/50 rounded-xl transition-colors duration-150" href="#">Keşfet</a>
+<a class="px-3 py-2 text-label-lg font-label-lg text-on-surface-variant font-medium hover:text-primary hover:bg-surface-container/50 rounded-xl transition-colors duration-150" href="#">İlanları Ara</a>
+<a class="px-3 py-2 text-label-lg font-label-lg text-on-surface-variant font-medium hover:text-primary hover:bg-surface-container/50 rounded-xl transition-colors duration-150" href="#">Rezervasyonlarım</a>
+<a class="px-3 py-2 text-label-lg font-label-lg text-on-surface-variant font-medium hover:text-primary hover:bg-surface-container/50 rounded-xl transition-colors duration-150" href="#">Favorilerim</a>
+<a class="px-3 py-2 text-label-lg font-label-lg text-on-surface-variant font-medium hover:text-primary hover:bg-surface-container/50 rounded-xl transition-colors duration-150" href="#">Rozetlerim</a>
+</nav>
+</div>
+<!-- Trailing Controls: Search, Notifications with Badge, User Profile -->
+<div class="flex items-center gap-3">
+<!-- Search Bar (on_right) -->
+<div class="relative hidden sm:block w-48 md:w-60">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-[19px]" data-icon="search">search</span>
+</span>
+<input class="w-full h-10 pl-9 pr-3 rounded-xl bg-surface-container-low border border-outline-variant/40 text-body-sm font-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all" placeholder="İlan veya fırın ara..." type="text"/>
+</div>
+<!-- Notification Bell Action with active indicator -->
+<div class="relative">
+<button aria-label="Bildirimler" class="relative w-10 h-10 rounded-xl bg-surface-container-high/60 hover:bg-surface-container-highest text-primary flex items-center justify-center transition-colors active:scale-95">
+<span class="material-symbols-outlined text-[22px]" data-icon="notifications" data-weight="fill" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<!-- Red Badge Notification Dot with subtle ping -->
+<span class="absolute top-2 right-2 w-2.5 h-2.5 bg-error rounded-full ring-2 ring-surface-container-lowest"></span>
+</button>
+</div>
+<!-- User Profile Avatar Pill -->
+<div class="flex items-center gap-2 pl-1 border-l border-outline-variant/30">
+<button class="flex items-center gap-2.5 p-1 rounded-xl hover:bg-surface-container/50 transition-colors group text-left">
+<div class="w-9 h-9 rounded-full ring-2 ring-primary-container/30 overflow-hidden bg-primary-container/10 flex items-center justify-center">
+<img alt="Ayşe profil avatarı" class="w-full h-full object-cover" data-alt="A candid, warm, natural studio portrait of a young Turkish female logistics coordinator named Ayse with neat hair, wearing an eco-friendly moss green linen shirt against a soft bright daylight backdrop." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3cI6_T1cMYW5_TgNbotELEOsvcaTycVcGCJUf5CUdr8fJzdbE2vbUIVinn8poHyYANy2MsI7ZzdWYMOpqcxEHwOJuzG1oX0lM4PzSjePOOhCzavOAFz6JSI796iQPrW2qvPRtqQZjfGDIlGBqTSQG-ccJJbx0LGUxCAb_28mO1IkKGanA6CCuGWCLorufCuLZjgQ9XTo-lRkxRkiWWr77yofArP5mG5CDP6jWQyOkEHtkYZRUGyQ4"/>
+</div>
+<div class="hidden md:flex flex-col pr-1">
+<span class="text-label-md font-label-md text-on-surface font-semibold group-hover:text-primary transition-colors">Ayşe Yılmaz</span>
+<span class="text-label-sm font-label-sm text-outline">Gıda Koruyucu</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[18px] hidden md:inline-block" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<!-- MAIN CANVAS (Max 1280px container, max-w-4xl focused content area) -->
+<main class="flex-grow w-full max-w-7xl mx-auto px-margin py-8">
+<div class="max-w-4xl mx-auto">
+<!-- Top Title and Quick Controls Section -->
+<section class="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<div class="flex items-center gap-2 mb-1.5">
+<span class="px-2.5 py-0.5 rounded-full text-label-sm font-label-sm bg-surface-container-highest text-primary font-semibold flex items-center gap-1.5 w-fit">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+              Canlı Akış
+            </span>
+<span class="text-label-sm font-label-sm text-outline">3 yeni bildirim</span>
+</div>
+<h1 class="text-headline-lg font-headline-lg text-primary tracking-tight">Bildirimler &amp; Hatırlatmalar</h1>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">Gıda kurtarma durumları, acil ilan duyuruları ve kazandığınız rozetler.</p>
+</div>
+<!-- Quick actions -->
+<div class="flex items-center gap-3 shrink-0">
+<button class="px-3.5 py-2 rounded-xl text-label-md font-label-md text-primary hover:text-primary-container hover:bg-surface-container/60 transition-colors flex items-center gap-1.5 font-semibold" id="mark-all-read">
+<span class="material-symbols-outlined text-[18px]" data-icon="done_all">done_all</span>
+<span>Tümünü Okundu İşaretle</span>
+</button>
+<a class="px-3.5 py-2 rounded-xl border border-outline-variant/40 hover:border-primary-container bg-surface-container-lowest text-label-md font-label-md text-on-surface-variant hover:text-primary transition-all flex items-center gap-1.5 shadow-sm" href="#">
+<span class="material-symbols-outlined text-[18px] text-outline" data-icon="settings">settings</span>
+<span>Bildirim Tercihleri</span>
+</a>
+</div>
+</section>
+<!-- Filter Tabs Strip -->
+<nav aria-label="Bildirim Filtreleri" class="flex items-center gap-2 overflow-x-auto pb-2 mb-6 border-b border-outline-variant/30 scrollbar-none">
+<button class="px-4 py-2 rounded-xl text-label-md font-label-md bg-primary-container text-on-primary font-semibold shadow-sm transition-all whitespace-nowrap flex items-center gap-1.5">
+<span>Tümü</span>
+<span class="px-1.5 py-0.5 rounded-full text-[11px] bg-primary text-on-primary">12</span>
+</button>
+<button class="px-4 py-2 rounded-xl text-label-md font-label-md bg-surface-container-lowest text-on-surface-variant hover:text-primary hover:bg-surface-container-low border border-outline-variant/30 transition-colors whitespace-nowrap flex items-center gap-1.5">
+<span>Okunmamış</span>
+<span class="px-1.5 py-0.5 rounded-full text-[11px] bg-secondary-container text-on-secondary-container font-bold">3</span>
+</button>
+<button class="px-4 py-2 rounded-xl text-label-md font-label-md bg-surface-container-lowest text-on-surface-variant hover:text-primary hover:bg-surface-container-low border border-outline-variant/30 transition-colors whitespace-nowrap">
+          Rezervasyonlar
+        </button>
+<button class="px-4 py-2 rounded-xl text-label-md font-label-md bg-surface-container-lowest text-on-surface-variant hover:text-primary hover:bg-surface-container-low border border-outline-variant/30 transition-colors whitespace-nowrap">
+          Yeni İlanlar
+        </button>
+<button class="px-4 py-2 rounded-xl text-label-md font-label-md bg-surface-container-lowest text-on-surface-variant hover:text-primary hover:bg-surface-container-low border border-outline-variant/30 transition-colors whitespace-nowrap">
+          Rozetler &amp; Etki
+        </button>
+</nav>
+<!-- Notifications List Container -->
+<div class="space-y-8">
+<!-- BÖLÜM 1: BUGÜN -->
+<section class="space-y-3">
+<div class="flex items-center justify-between px-1">
+<h2 class="text-title-sm font-title-sm text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-secondary" data-icon="today">today</span>
+<span>Bugün</span>
+</h2>
+<span class="text-label-sm font-label-sm text-outline">Son Gelenler</span>
+</div>
+<div class="space-y-3">
+<!-- Card 1: Okunmamış Rezervasyon (Açık yeşil #F0FFF4 arka plan, sol kenarda kalın koyu yeşil #2D6A4F vurgu çizgisi, sağda yeşil dot) -->
+<article class="relative bg-[#F0FFF4] rounded-2xl border border-primary-container/20 border-l-[5px] border-l-[#2D6A4F] p-5 shadow-sm hover:shadow-md transition-all duration-200">
+<div class="flex items-start gap-4">
+<!-- Icon: Fırın paketi -->
+<div class="w-12 h-12 rounded-2xl bg-primary-container/15 text-primary-container flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[26px]" data-icon="bakery_dining">bakery_dining</span>
+</div>
+<!-- Content -->
+<div class="flex-grow pr-6">
+<div class="flex items-center gap-2 flex-wrap mb-1">
+<span class="px-2 py-0.5 rounded-full text-label-sm font-label-sm bg-primary-container/10 text-primary-container font-semibold">Rezervasyon Durumu</span>
+<span class="text-label-sm font-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+                      15 dakika önce
+                    </span>
+</div>
+<h3 class="text-title-md font-title-md text-on-surface font-semibold mb-1">Rezervasyonun Hazır! Teslim Zamanı Yaklaşıyor</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mb-4 leading-relaxed">
+<strong class="text-on-surface">Lezzet Fırını</strong>'ndan aldığınız <span class="text-primary font-medium">"Sürpriz Artisan Fırın Paketi"</span> için teslim alma saati 19:00'da başlıyor. 6 haneli kodunuz: <span class="inline-block px-2.5 py-0.5 bg-surface-container font-mono font-bold text-primary rounded-md tracking-wider">AK7M2X</span>.
+                  </p>
+<!-- Actions -->
+<div class="flex items-center gap-3 flex-wrap">
+<button class="px-4 py-2 rounded-xl bg-primary-container text-on-primary text-label-md font-label-md font-semibold hover:bg-primary transition-colors shadow-sm flex items-center gap-1.5 active:scale-95">
+<span class="material-symbols-outlined text-[18px]" data-icon="qr_code_2">qr_code_2</span>
+<span>Kodu Gör</span>
+</button>
+<button class="px-4 py-2 rounded-xl bg-surface-container-lowest border border-outline-variant/50 text-primary-container text-label-md font-label-md font-semibold hover:bg-surface-container-low transition-colors flex items-center gap-1.5 active:scale-95">
+<span class="material-symbols-outlined text-[18px]" data-icon="directions">directions</span>
+<span>Yol Tarifi Al</span>
+</button>
+</div>
+</div>
+<!-- Unread Green Dot -->
+<div class="absolute top-5 right-5" title="Okunmadı">
+<span class="w-3 h-3 rounded-full bg-secondary block shadow-sm ring-4 ring-[#F0FFF4]"></span>
+</div>
+</div>
+</article>
+<!-- Card 2: Okunmamış Yeni İlan -->
+<article class="relative bg-[#F0FFF4] rounded-2xl border border-primary-container/20 border-l-[5px] border-l-[#2D6A4F] p-5 shadow-sm hover:shadow-md transition-all duration-200">
+<div class="flex items-start gap-4">
+<!-- Icon: Canlı yeşil yaprak / eko -->
+<div class="w-12 h-12 rounded-2xl bg-secondary-container/50 text-secondary flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[26px]" data-icon="nutrition">nutrition</span>
+</div>
+<!-- Content -->
+<div class="flex-grow pr-6">
+<div class="flex items-center gap-2 flex-wrap mb-1">
+<span class="px-2 py-0.5 rounded-full text-label-sm font-label-sm bg-secondary-container/60 text-on-secondary-container font-semibold">Acil İlan</span>
+<span class="text-label-sm font-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+                      42 dakika önce
+                    </span>
+</div>
+<h3 class="text-title-md font-title-md text-on-surface font-semibold mb-1">Yeni İlan: Yakınınızda Taze Sebze Sepeti Açıldı</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mb-4 leading-relaxed">
+<strong class="text-on-surface">Yeşil Bakkal Organik</strong> (Moda, 0.8 km) 1 kasa mevsim yeşillikleri için ücretsiz ilan paylaştı. Tükenmeden inceleyin!
+                  </p>
+<!-- Actions -->
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 rounded-xl bg-primary-container text-on-primary text-label-md font-label-md font-semibold hover:bg-primary transition-colors shadow-sm flex items-center gap-1.5 active:scale-95">
+<span class="material-symbols-outlined text-[18px]" data-icon="visibility">visibility</span>
+<span>İlanı İncele</span>
+</button>
+</div>
+</div>
+<!-- Unread Green Dot -->
+<div class="absolute top-5 right-5" title="Okunmadı">
+<span class="w-3 h-3 rounded-full bg-secondary block shadow-sm ring-4 ring-[#F0FFF4]"></span>
+</div>
+</div>
+</article>
+<!-- Card 3: Okunmuş Bildirim (Rozet) -->
+<article class="relative bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-5 shadow-sm hover:shadow-md transition-all duration-200">
+<div class="flex items-start gap-4">
+<!-- Icon: Altın sarısı kupa ikonu -->
+<div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[26px]" data-icon="emoji_events" data-weight="fill" style="font-variation-settings: 'FILL' 1;">emoji_events</span>
+</div>
+<!-- Content -->
+<div class="flex-grow">
+<div class="flex items-center gap-2 flex-wrap mb-1">
+<span class="px-2 py-0.5 rounded-full text-label-sm font-label-sm bg-amber-50 text-amber-800 border border-amber-200 font-semibold">Tebrikler</span>
+<span class="text-label-sm font-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+                      3 saat önce
+                    </span>
+</div>
+<h3 class="text-title-md font-title-md text-on-surface font-semibold mb-1">Tebrikler! 'Çevre Dostu Seviye 2' Rozetini Kazandınız 🎉</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mb-4 leading-relaxed">
+                    Toplamda <strong>25 kg CO₂</strong> salınımını önlediniz. Profil rozetiniz güncellendi ve topluluk lider panosunda yükseldiniz.
+                  </p>
+<!-- Actions -->
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 rounded-xl bg-surface-container-low hover:bg-surface-container text-primary text-label-md font-label-md font-semibold transition-colors flex items-center gap-1.5 active:scale-95">
+<span class="material-symbols-outlined text-[18px]" data-icon="military_tech">military_tech</span>
+<span>Rozetlerime Git</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+</div>
+</section>
+<!-- BÖLÜM 2: DÜN -->
+<section class="space-y-3">
+<div class="flex items-center justify-between px-1">
+<h2 class="text-title-sm font-title-sm text-on-surface-variant flex items-center gap-2 font-medium">
+<span class="material-symbols-outlined text-[18px] text-outline" data-icon="history">history</span>
+<span>Dün</span>
+</h2>
+<span class="text-label-sm font-label-sm text-outline">Geçmiş Aktiviteler</span>
+</div>
+<div class="space-y-3">
+<!-- Card 4: Teslimat Başarıyla Onaylandı -->
+<article class="relative bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-5 shadow-sm hover:shadow-md transition-all duration-200">
+<div class="flex items-start gap-4">
+<!-- Icon: Yeşil onay ikonu -->
+<div class="w-12 h-12 rounded-2xl bg-surface-container text-secondary flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[26px]" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<!-- Content -->
+<div class="flex-grow">
+<div class="flex items-center gap-2 flex-wrap mb-1">
+<span class="px-2 py-0.5 rounded-full text-label-sm font-label-sm bg-surface-container-low text-primary font-semibold">Teslimat Tamamlandı</span>
+<span class="text-label-sm font-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+                      Dün 20:15
+                    </span>
+</div>
+<h3 class="text-title-md font-title-md text-on-surface font-semibold mb-1">Teslimat Başarıyla Onaylandı</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mb-4 leading-relaxed">
+<strong class="text-on-surface">Bereket Lokantası</strong> siparişiniz teslim edildi. İşletmeyi değerlendirerek topluluğa katkı sağlayabilirsiniz.
+                  </p>
+<!-- Actions -->
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 rounded-xl bg-surface-container-low hover:bg-surface-container text-primary text-label-md font-label-md font-semibold transition-colors flex items-center gap-1.5 active:scale-95">
+<span class="material-symbols-outlined text-[18px] text-amber-500" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span>Değerlendir (⭐)</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+<!-- Card 5: Haftalık Etki Bülteni -->
+<article class="relative bg-surface-container-lowest rounded-2xl border border-outline-variant/30 p-5 shadow-sm hover:shadow-md transition-all duration-200">
+<div class="flex items-start gap-4">
+<!-- Icon: Mavi saat / rapor ikonu -->
+<div class="w-12 h-12 rounded-2xl bg-sky-100 text-sky-700 flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[26px]" data-icon="query_builder">query_builder</span>
+</div>
+<!-- Content -->
+<div class="flex-grow">
+<div class="flex items-center gap-2 flex-wrap mb-1">
+<span class="px-2 py-0.5 rounded-full text-label-sm font-label-sm bg-sky-50 text-sky-800 border border-sky-200 font-semibold">Sürdürülebilirlik Raporu</span>
+<span class="text-label-sm font-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+                      Dün 09:00
+                    </span>
+</div>
+<h3 class="text-title-md font-title-md text-on-surface font-semibold mb-1">Haftalık Etki Bülteniniz Hazır</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mb-4 leading-relaxed">
+                    Bu hafta <strong class="text-primary">4.2 kg gıda</strong> kurtararak <strong>3 öğünün</strong> çöpe gitmesini engellediniz. Çevreye kattığınız değer için teşekkür ederiz.
+                  </p>
+<!-- Actions -->
+<div class="flex items-center gap-3">
+<button class="px-4 py-2 rounded-xl bg-surface-container-lowest border border-outline-variant/50 hover:bg-surface-container-low text-primary text-label-md font-label-md font-semibold transition-colors flex items-center gap-1.5 active:scale-95">
+<span class="material-symbols-outlined text-[18px]" data-icon="analytics">analytics</span>
+<span>Özeti İncele</span>
+</button>
+</div>
+</div>
+</div>
+</article>
+</div>
+</section>
+<!-- Load More Button Section -->
+<div class="pt-2 text-center">
+<button class="px-6 py-3 rounded-xl bg-surface-container-lowest border border-outline-variant/40 hover:border-primary text-primary text-label-lg font-label-lg font-semibold shadow-sm hover:shadow-md hover:bg-surface-container-low transition-all duration-200 inline-flex items-center gap-2 active:scale-95">
+<span class="material-symbols-outlined text-[20px]" data-icon="expand_more">expand_more</span>
+<span>Daha Eski Bildirimleri Yükle</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- WEB FOOTER (Shared Component: Footer with Exact Execution) -->
+<footer class="w-full py-space-xl bg-surface-container-low border-t border-outline-variant/30 mt-16">
+<div class="max-w-7xl mx-auto px-margin flex flex-col md:flex-row justify-between items-center gap-space-md">
+<!-- Brand & Copyright -->
+<div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center sm:text-left">
+<a class="text-title-md font-title-md font-bold text-primary flex items-center gap-space-xs" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="eco">eco</span>
+<span>GıdaKöprüsü</span>
+</a>
+<span class="hidden sm:inline-block text-outline-variant">•</span>
+<p class="text-body-sm font-body-sm text-on-surface-variant">© 2024 GıdaKöprüsü. Tüm hakları saklıdır.</p>
+</div>
+<!-- Links (Immutable exact strings from JSON) -->
+<div class="flex items-center flex-wrap justify-center gap-x-6 gap-y-2">
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Hakkımızda</a>
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Nasıl Çalışır?</a>
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Sürdürülebilirlik</a>
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Yardım Merkezi</a>
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Gizlilik Sözleşmesi</a>
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">İletişim</a>
+</div>
+</div>
+</footer>
+<!-- Micro-interaction JS -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const markAllReadBtn = document.getElementById('mark-all-read');
+      if (markAllReadBtn) {
+        markAllReadBtn.addEventListener('click', () => {
+          // Remove unread dots
+          document.querySelectorAll('[title="Okunmadı"]').forEach(el => el.remove());
+          
+          // Switch card styles to read state
+          document.querySelectorAll('.bg-\\[\\#F0FFF4\\]').forEach(card => {
+            card.classList.remove('bg-[#F0FFF4]', 'border-l-[5px]', 'border-l-[#2D6A4F]');
+            card.classList.add('bg-surface-container-lowest', 'border-outline-variant/30');
+          });
+
+          // Feedback toast or text update
+          markAllReadBtn.innerHTML = '<span class="material-symbols-outlined text-[18px]">done</span><span>Tümü Okundu</span>';
+          markAllReadBtn.classList.add('opacity-75', 'pointer-events-none');
+        });
+      }
+    });
+  </script>
+</body></html>

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gelen Rezervasyonlar &amp; Teslimat Onayı - GıdaKöprüsü</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Inter Font -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration verbatim as provided -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-tint": "#2c694e",
+            "surface-bright": "#e8fff0",
+            "surface": "#e8fff0",
+            "on-primary-fixed": "#002114",
+            "inverse-on-surface": "#cffbe2",
+            "on-surface": "#002114",
+            "secondary-container": "#92f7c3",
+            "on-tertiary": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "secondary-fixed-dim": "#75daa8",
+            "surface-variant": "#c1ecd4",
+            "primary-fixed": "#b1f0ce",
+            "on-background": "#002114",
+            "secondary": "#006c48",
+            "on-secondary-container": "#00734d",
+            "on-primary-fixed-variant": "#0e5138",
+            "tertiary-fixed-dim": "#94d4b1",
+            "on-tertiary-container": "#a7e7c4",
+            "on-error": "#ffffff",
+            "on-secondary": "#ffffff",
+            "surface-container-high": "#c6f2da",
+            "on-primary": "#ffffff",
+            "surface-container-highest": "#c1ecd4",
+            "on-secondary-fixed-variant": "#005235",
+            "primary": "#0f5238",
+            "on-tertiary-fixed-variant": "#0c5136",
+            "on-primary-container": "#a8e7c5",
+            "tertiary-fixed": "#b0f1cc",
+            "error": "#ba1a1a",
+            "inverse-primary": "#95d4b3",
+            "on-surface-variant": "#404943",
+            "tertiary": "#0d5237",
+            "secondary-fixed": "#92f7c3",
+            "on-secondary-fixed": "#002113",
+            "primary-container": "#2d6a4f",
+            "surface-container": "#ccf8df",
+            "tertiary-container": "#2c6a4e",
+            "surface-dim": "#b8e4cc",
+            "outline-variant": "#bfc9c1",
+            "outline": "#707973",
+            "error-container": "#ffdad6",
+            "on-tertiary-fixed": "#002113",
+            "inverse-surface": "#0e3727",
+            "surface-container-low": "#d1fee5",
+            "primary-fixed-dim": "#95d4b3",
+            "on-error-container": "#93000a",
+            "background": "#e8fff0"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "1.5rem",
+            "space-md": "1rem",
+            "space-xl": "2.5rem",
+            "gutter-mobile": "1rem",
+            "margin": "2rem",
+            "space-lg": "1.5rem",
+            "margin-mobile": "1rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "display-lg": ["Inter"],
+            "headline-lg": ["Inter"],
+            "headline-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "headline-sm": ["Inter"],
+            "body-md": ["Inter"],
+            "label-md": ["Inter"],
+            "display-lg-mobile": ["Inter"],
+            "title-md": ["Inter"],
+            "body-lg": ["Inter"],
+            "title-sm": ["Inter"],
+            "label-lg": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "label-sm": ["Inter"],
+            "mono": ["JetBrains Mono", "monospace"]
+          },
+          "fontSize": {
+            "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+            "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "body-sm": ["13px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+            "headline-sm": ["20px", {"lineHeight": "28px", "letterSpacing": "0", "fontWeight": "600"}],
+            "body-md": ["15px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}],
+            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+            "display-lg-mobile": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "title-md": ["18px", {"lineHeight": "26px", "letterSpacing": "0", "fontWeight": "600"}],
+            "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0", "fontWeight": "400"}],
+            "title-sm": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600"}],
+            "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+            "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500"}]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-[#F0FFF4] text-on-surface antialiased min-h-screen flex flex-col font-body-md text-body-md selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- ================= TOP NAV BAR COMPONENT (SHARED COMPONENT JSON) ================= -->
+<header class="sticky top-0 z-50 w-full h-[72px] bg-surface-container-lowest/90 backdrop-blur-md border-b border-outline-variant/20 shadow-sm">
+<div class="max-w-7xl mx-auto px-margin flex items-center justify-between h-full">
+<!-- Brand Logo -->
+<a class="text-title-md font-title-md font-bold text-primary flex items-center gap-space-xs transition-all duration-200 active:scale-95" href="#">
+<span class="material-symbols-outlined text-primary text-[28px]" data-icon="eco" style="font-variation-settings: 'FILL' 1;">eco</span>
+<span>GıdaKöprüsü</span>
+</a>
+<!-- Horizontal Navigation Links -->
+<nav class="hidden md:flex items-center space-x-1 lg:space-x-4 h-full">
+<!-- Keşfet -->
+<a class="text-on-surface-variant font-medium hover:text-primary hover:bg-surface-container/50 rounded-xl px-3 py-2 transition-colors duration-150 text-label-lg font-label-lg" href="#">
+          Keşfet
+        </a>
+<!-- İlanları Ara -->
+<a class="text-on-surface-variant font-medium hover:text-primary hover:bg-surface-container/50 rounded-xl px-3 py-2 transition-colors duration-150 text-label-lg font-label-lg" href="#">
+          İlanları Ara
+        </a>
+<!-- Rezervasyonlarım (ACTIVE) -->
+<a class="text-primary font-semibold relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-primary after:rounded-full h-full flex items-center px-3 text-label-lg font-label-lg" href="#">
+          Rezervasyonlarım
+        </a>
+<!-- Favorilerim -->
+<a class="text-on-surface-variant font-medium hover:text-primary hover:bg-surface-container/50 rounded-xl px-3 py-2 transition-colors duration-150 text-label-lg font-label-lg" href="#">
+          Favorilerim
+        </a>
+<!-- Rozetlerim -->
+<a class="text-on-surface-variant font-medium hover:text-primary hover:bg-surface-container/50 rounded-xl px-3 py-2 transition-colors duration-150 text-label-lg font-label-lg" href="#">
+          Rozetlerim
+        </a>
+</nav>
+<!-- Right Area: Trailing Actions, Search & Profile Avatar -->
+<div class="flex items-center gap-space-sm sm:gap-space-md">
+<!-- Notification Action -->
+<button aria-label="Bildirimler" class="w-10 h-10 rounded-xl flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container/50 transition-colors duration-150 relative" type="button">
+<span class="material-symbols-outlined text-[24px]" data-icon="notifications">notifications</span>
+<span class="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-error ring-2 ring-surface-container-lowest"></span>
+</button>
+<!-- Divider -->
+<div class="h-6 w-px bg-outline-variant/30 hidden sm:block"></div>
+<!-- User Profile Avatar Pill -->
+<button class="flex items-center gap-space-sm p-1.5 pr-3 rounded-full hover:bg-surface-container/50 transition-all duration-200" type="button">
+<img alt="Ayşe profil avatarı" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary/20" data-alt="Close up photographic portrait of Ayşe, an eco-friendly food donation coordinator in Istanbul, looking warmly at the camera with soft daylighting and modern natural light aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtHuZVESbJH467oUw2gqPdiKXgQHpyAKDhunGDdJlx0GVZhJiBb4tKaTScygIft5Y07yPFzEEyAfZYOBgogrkwTRI2fhjTEPBxLR7eAI43Ir4Jdjai3-GaRA5TpUbwBFId3JHLqbQzxBpx-SdrQ-Qibc_iCdNZRfcNKLcKGNKWfkmHLWXl8V5QBVHJWnLcfJ4dYPpc46qYEjvWNVdKq7ysqf4lz5jI5fF2S-DvwvMR7KefQ1rp7uDr"/>
+<span class="text-label-md font-label-md text-primary font-semibold hidden sm:inline-block">Ayşe Y.</span>
+<span class="material-symbols-outlined text-[18px] text-outline hidden sm:inline-block" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+</div>
+</header>
+<!-- ================= MAIN CONTENT CANVAS (HORIZONTAL-FIRST, NO SIDEBAR) ================= -->
+<main class="flex-1 max-w-7xl w-full mx-auto px-margin py-8 flex flex-col gap-8">
+<!-- Page Header & Live Status Badge -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<div class="flex items-center gap-2 mb-1.5">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-[#F0FFF4] text-primary border border-secondary/30">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+            Canlı Teslimat Masası Aktif
+          </span>
+<span class="text-body-sm font-body-sm text-outline">• Kadıköy Şubesi</span>
+</div>
+<h1 class="text-headline-lg font-headline-lg text-[#1B4332]">Gelen Rezervasyonlar &amp; Teslimat Masası</h1>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">Alıcıların getirdiği teslimat kodunu doğrulayarak gıda israfını önleyin ve stokları senkronize edin.</p>
+</div>
+<!-- Quick Action / Support Badge -->
+<div class="flex items-center gap-3">
+<button class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-lowest text-primary hover:bg-[#F0FFF4] text-label-md font-label-md transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="history">history</span>
+          Senkronizasyon Geçmişi
+        </button>
+</div>
+</div>
+<!-- Segmented Navigation Filter Tabs -->
+<div class="flex items-center gap-2 border-b border-outline-variant/20 pb-3 overflow-x-auto no-scrollbar">
+<!-- Tab 1: Active -->
+<button class="flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-white text-label-md font-label-md shadow-sm font-semibold whitespace-nowrap">
+<span class="material-symbols-outlined text-[18px]" data-icon="pending_actions">pending_actions</span>
+        Teslim Bekleyen (5)
+      </button>
+<!-- Tab 2: Secondary -->
+<button class="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-container-lowest text-on-surface-variant hover:text-primary hover:bg-surface-container/60 text-label-md font-label-md font-medium border border-outline-variant/20 whitespace-nowrap transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="task_alt">task_alt</span>
+        Bugün Teslim Edilenler (12)
+      </button>
+<!-- Tab 3: Secondary -->
+<button class="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface-container-lowest text-on-surface-variant hover:text-primary hover:bg-surface-container/60 text-label-md font-label-md font-medium border border-outline-variant/20 whitespace-nowrap transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="calendar_month">calendar_month</span>
+        Tüm Geçmiş
+      </button>
+</div>
+<!-- Main Two-Column Layout (60% Pending Cards / 40% Verification Panel) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- ================= SOL KOLON (%60 - 7 cols on desktop) ================= -->
+<section class="lg:col-span-7 flex flex-col gap-4">
+<div class="flex items-center justify-between mb-1">
+<h2 class="text-title-md font-title-md text-[#1B4332] flex items-center gap-2">
+<span>Sırada Bekleyen Teslimatlar</span>
+<span class="w-6 h-6 rounded-full bg-secondary-container text-on-secondary-container text-label-sm font-label-sm flex items-center justify-center font-bold">3</span>
+</h2>
+<span class="text-label-sm font-label-sm text-outline flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="schedule">schedule</span>
+            Otomatik yenileniyor
+          </span>
+</div>
+<!-- REZERVASYON KARTI 1 (ÖNE ÇIKAN - SEÇİLİ AKTİF DOĞRULAMA) -->
+<article class="bg-surface-container-lowest rounded-2xl p-5 border-2 border-primary/40 shadow-md relative overflow-hidden transition-all duration-200">
+<div class="absolute top-0 left-0 bottom-0 w-2 bg-primary"></div>
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pl-2">
+<!-- Left Info Area -->
+<div class="flex items-start gap-3.5">
+<img alt="Ayşe Yılmaz avatar" class="w-12 h-12 rounded-xl object-cover ring-2 ring-primary/20 shrink-0" data-alt="Bright natural lighting portrait of Ayşe Yılmaz, a smiling recipient wearing a mint green scarf, clean modern background with warm friendly expression, high visual fidelity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBhnclK1xOeFVeHiI2AD5SA2ybpTrMR_hyOy0feAOqb73pGl9JG_AWmwBRRWCikCNUni2QcjM--AIblcl8aPBg-qzrs62TVq-GfCCNmIDyJmDrcEPRFdm1w-rIcStxzBPzuGut4huCS1yCQigO1jPE5uW2B21gWeiPd9Qgu5nJNLO2wrqQbq9uclFIyR_9Ta-bSp34LOW8ee3lGxMMLap9k-qXzfdh63q-lkoK_NXCLKX3HaimLwWJ_"/>
+<div>
+<div class="flex items-center gap-2 flex-wrap">
+<span class="font-title-sm text-title-sm text-[#1B4332] font-semibold">Ayşe Yılmaz</span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-label-sm font-label-sm bg-surface-container text-primary font-bold">
+<span class="material-symbols-outlined text-[14px]" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+                    %99 Güven Skoru
+                  </span>
+</div>
+<h3 class="text-body-md font-body-md font-semibold text-primary mt-1">Sürpriz Artisan Fırın Paketi (5 Porsiyon)</h3>
+<div class="flex items-center gap-3 mt-1.5 text-body-sm font-body-sm text-outline-variant/90 text-on-surface-variant flex-wrap">
+<span class="font-mono font-medium text-[#1B4332]">Sipariş: #GK-88492</span>
+<span>•</span>
+<span class="font-semibold text-primary">₺25 (Alırken Ödeme)</span>
+</div>
+</div>
+</div>
+<!-- Right Badge & Action -->
+<div class="flex flex-col sm:items-end justify-between self-stretch gap-3 pl-2 sm:pl-0">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-label-sm font-label-sm bg-[#FEF3C7] text-[#B45309] font-semibold self-start sm:self-end">
+<span class="w-2 h-2 rounded-full bg-[#F59E0B] animate-ping"></span>
+                35 dakika kaldı
+              </span>
+<button class="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-primary text-white text-label-md font-label-md font-semibold shadow-sm hover:bg-[#1B4332] transition-colors active:scale-95">
+<span class="material-symbols-outlined text-[18px]" data-icon="qr_code_scanner">qr_code_scanner</span>
+                Teslimatı Doğrula
+              </button>
+</div>
+</div>
+<!-- Micro Logistics Hint -->
+<div class="mt-4 pt-3 border-t border-outline-variant/15 flex items-center justify-between text-body-sm font-body-sm text-on-surface-variant pl-2">
+<span class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-[16px]" data-icon="inventory_2">inventory_2</span>
+              Hazır Paket: Fırın Reyonu / Askı #04
+            </span>
+<span class="text-label-sm font-label-sm text-secondary font-medium">Doğrulama Masasında Seçili</span>
+</div>
+</article>
+<!-- REZERVASYON KARTI 2 -->
+<article class="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/20 shadow-sm hover:shadow-md transition-all duration-200">
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+<div class="flex items-start gap-3.5">
+<img alt="Burak Demir avatar" class="w-12 h-12 rounded-xl object-cover ring-1 ring-outline-variant/30 shrink-0" data-alt="Portrait photo of Burak Demir wearing a casual neutral grey shirt, pleasant daylight photography with natural soft shadows and eco-modern clean background tone." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCu4lCV7UeizR6PWDFK4elDZLeZDOI8wK6BrDu_E37oTQrEINPcGeoeRNSGIQVs1lpGUYnqd71rk5CFtqtHRGW0I9Kwv5nnuyHoJFzKA2jHuxEIK5GY5wUjlsjTuZP6oIHTFys4_cBxJ1QBx9f41UM4g2p3aoZ26a0GYfcZifWjHPUpN_d_3ca5UuiFz2HlC5mc6boLDPCfoUoxHfCFVL24kWKQB3ZbfroMpqjhvzuE0l-f6NuBxRpN"/>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-title-sm text-title-sm text-[#1B4332] font-semibold">Burak Demir</span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-label-sm font-label-sm bg-surface-container-low text-primary font-medium">
+                    %96 Güven
+                  </span>
+</div>
+<h3 class="text-body-md font-body-md font-semibold text-on-surface mt-1">Taş Fırın Ekşi Mayalı Ekmek</h3>
+<div class="flex items-center gap-3 mt-1.5 text-body-sm font-body-sm text-on-surface-variant flex-wrap">
+<span class="font-mono font-medium text-outline">Sipariş: #GK-88487</span>
+<span>•</span>
+<span class="font-semibold text-primary">₺15 (Online Ödendi)</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col sm:items-end justify-between self-stretch gap-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-label-sm font-label-sm bg-[#F0FFF4] text-primary font-semibold self-start sm:self-end">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                1 saat kaldı
+              </span>
+<button class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl border border-primary text-primary hover:bg-[#F0FFF4] text-label-md font-label-md font-semibold transition-colors">
+                Kodu Gir
+              </button>
+</div>
+</div>
+</article>
+<!-- REZERVASYON KARTI 3 -->
+<article class="bg-surface-container-lowest rounded-2xl p-5 border border-outline-variant/20 shadow-sm hover:shadow-md transition-all duration-200">
+<div class="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+<div class="flex items-start gap-3.5">
+<img alt="Selin Kaya avatar" class="w-12 h-12 rounded-xl object-cover ring-1 ring-outline-variant/30 shrink-0" data-alt="Portrait photography of Selin Kaya with bright gentle daylight, neutral warm indoor backdrop, professional yet compassionate appearance, eco food app persona." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZJZq2szPKvOP7Rvarrq9uZyy428b8dUBnQfowAwr2_xUPaWsRwYRNanQEPmbwvVBkAFnbkpCJdh_-O8-1vV1jJHFNyuNFu7TytFiAJu3pX0jnPf_b7bZkXLU8SNYx6CjBex2TKHEr7IWA4u3b9rQk_6Dqms60lzbjwpcEsNwvAvCp8ETv5Ri_l9PSMoP1Hkjt-EuGdnRmJjWe33ZqMGYAUETIn0GnDGb8VHWptL7xTJJ7bRlMz4DA"/>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-title-sm text-title-sm text-[#1B4332] font-semibold">Selin Kaya</span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-label-sm font-label-sm bg-secondary-fixed text-on-secondary-fixed font-bold">
+                    🌱 Dayanışma Alıcısı
+                  </span>
+</div>
+<h3 class="text-body-md font-body-md font-semibold text-on-surface mt-1">Simit &amp; Poğaça Sepeti (Ücretsiz Bağış)</h3>
+<div class="flex items-center gap-3 mt-1.5 text-body-sm font-body-sm text-on-surface-variant flex-wrap">
+<span class="font-mono font-medium text-outline">Sipariş: #GK-88481</span>
+<span>•</span>
+<span class="font-bold text-secondary">Ücretsiz Dayanışma Paketi</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col sm:items-end justify-between self-stretch gap-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-label-sm font-label-sm bg-[#F0FFF4] text-primary font-semibold self-start sm:self-end">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                1 saat 20 dk kaldı
+              </span>
+<button class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl border border-primary text-primary hover:bg-[#F0FFF4] text-label-md font-label-md font-semibold transition-colors">
+                Kodu Gir
+              </button>
+</div>
+</div>
+</article>
+</section>
+<!-- ================= SAĞ KOLON (%40 - 5 cols on desktop) HIZLI DOĞRULAMA MODALI / PANELİ ================= -->
+<section class="lg:col-span-5 sticky top-[92px]">
+<div class="bg-surface-container-lowest rounded-3xl p-6 shadow-md border border-outline-variant/30 flex flex-col gap-5">
+<!-- Mode Toggle Tabs (Kod vs QR) -->
+<div class="grid grid-cols-2 p-1.5 bg-surface-container rounded-2xl">
+<button class="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-surface-container-lowest text-primary font-semibold text-label-md font-label-md shadow-sm transition-all">
+<span class="text-base">🔢</span>
+<span>6 Haneli Kod Gir</span>
+</button>
+<button class="flex items-center justify-center gap-2 py-2.5 rounded-xl text-on-surface-variant hover:text-primary font-medium text-label-md font-label-md transition-all">
+<span class="text-base">📷</span>
+<span>QR Kod Tara (Kamera)</span>
+</button>
+</div>
+<!-- Section Headline -->
+<div class="text-center pt-1">
+<h2 class="text-headline-sm font-headline-sm text-[#1B4332]">Alıcının Teslimat Kodunu Doğrulayın</h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">Alıcının GıdaKöprüsü mobil uygulamasındaki 6 haneli kodu yazın.</p>
+</div>
+<!-- 6-Haneli Kod Giriş Kutuları -->
+<div class="flex items-center justify-center gap-2 sm:gap-3 my-2">
+<input class="w-11 h-14 sm:w-12 sm:h-16 text-center text-2xl font-mono font-bold text-[#1B4332] bg-[#F0FFF4] border-2 border-secondary rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" maxlength="1" readonly="" type="text" value="A"/>
+<input class="w-11 h-14 sm:w-12 sm:h-16 text-center text-2xl font-mono font-bold text-[#1B4332] bg-[#F0FFF4] border-2 border-secondary rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" maxlength="1" readonly="" type="text" value="K"/>
+<input class="w-11 h-14 sm:w-12 sm:h-16 text-center text-2xl font-mono font-bold text-[#1B4332] bg-[#F0FFF4] border-2 border-secondary rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" maxlength="1" readonly="" type="text" value="7"/>
+<input class="w-11 h-14 sm:w-12 sm:h-16 text-center text-2xl font-mono font-bold text-[#1B4332] bg-[#F0FFF4] border-2 border-secondary rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" maxlength="1" readonly="" type="text" value="M"/>
+<input class="w-11 h-14 sm:w-12 sm:h-16 text-center text-2xl font-mono font-bold text-[#1B4332] bg-[#F0FFF4] border-2 border-secondary rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" maxlength="1" readonly="" type="text" value="2"/>
+<input class="w-11 h-14 sm:w-12 sm:h-16 text-center text-2xl font-mono font-bold text-[#1B4332] bg-[#F0FFF4] border-2 border-secondary rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary" maxlength="1" readonly="" type="text" value="X"/>
+</div>
+<!-- Canlı Eşleşen Bilgi Kartı -->
+<div class="bg-[#F0FFF4] border border-[#52B788]/40 rounded-2xl p-4 flex flex-col gap-2.5">
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center gap-1.5 text-label-md font-label-md text-primary font-bold">
+<span class="material-symbols-outlined text-[20px] text-secondary" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                ✓ Kod Ayşe Yılmaz / #GK-88492 ile eşleşti!
+              </span>
+<span class="text-label-sm font-label-sm bg-surface-container-high px-2 py-0.5 rounded-full text-primary font-semibold">Doğrulandı</span>
+</div>
+<!-- Paket İçeriği Özeti -->
+<div class="bg-surface-container-lowest/80 rounded-xl p-3 border border-outline-variant/20 text-body-sm font-body-sm">
+<div class="text-[#1B4332] font-semibold mb-1 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="bakery_dining">bakery_dining</span>
+                Paket İçeriği Özeti
+              </div>
+<p class="text-on-surface-variant">5 porsiyon taze unlu mamul (2 adet kruvasan, 1 ekşi mayalı baget ekmek, 2 zeytinli açma).</p>
+<div class="mt-2 text-label-sm font-label-sm text-outline flex items-center justify-between">
+<span>Son Tüketim: Bugün 23:59</span>
+<span class="font-bold text-[#1B4332]">Ödeme Durumu: Teslimatta ₺25</span>
+</div>
+</div>
+</div>
+<!-- Büyük Onay Butonu -->
+<button class="w-full bg-[#2D6A4F] hover:bg-[#1B4332] text-white py-4 rounded-2xl font-bold text-lg shadow-sm transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[22px]" data-icon="task_alt">task_alt</span>
+            ✓ Paketi Teslim Et ve Onayla
+          </button>
+<!-- Kamera & Alternatif Link -->
+<div class="flex items-center justify-center pt-1">
+<button class="text-label-md font-label-md text-primary hover:text-[#1B4332] flex items-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="photo_camera">photo_camera</span>
+<span>Kamerayı Aç ve QR Tara</span>
+</button>
+</div>
+<!-- Micro Security Info -->
+<div class="border-t border-outline-variant/20 pt-3 text-center text-label-sm font-label-sm text-outline">
+            🔒 Güvenli Dağıtım: Teslimat onayı sonrasında stok ve bağış makbuzu otomatik güncellenir.
+          </div>
+</div>
+</section>
+</div>
+<!-- ================= ALT BÖLÜM: BUGÜN BAŞARIYLA TESLİM EDİLEN SON PAKETLER ================= -->
+<section class="mt-4 bg-surface-container-lowest rounded-2xl p-6 border border-outline-variant/20 shadow-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+<div>
+<h2 class="text-title-md font-title-md text-[#1B4332] flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[22px]" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+            Bugün Başarıyla Teslim Edilen Son Paketler
+          </h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Son 12 saat içerisinde Kadıköy merkez fırından teslim alınan gıdalar.</p>
+</div>
+<a class="text-label-md font-label-md text-primary font-semibold hover:underline flex items-center gap-1" href="#">
+          Raporu Dışa Aktar (.CSV)
+          <span class="material-symbols-outlined text-[16px]" data-icon="download">download</span>
+</a>
+</div>
+<!-- Kompakt Liste Tablosu / Izgara Görünümü -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Teslimat 1 -->
+<div class="p-3.5 rounded-xl bg-[#F0FFF4] border border-outline-variant/20 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]" data-icon="check">check</span>
+</div>
+<div>
+<div class="text-label-lg font-label-lg text-[#1B4332] font-semibold">Caner Aydın</div>
+<div class="text-body-sm font-body-sm text-on-surface-variant">Günün Sebzeli Çorbası (2L)</div>
+</div>
+</div>
+<div class="text-right">
+<span class="text-label-sm font-label-sm font-mono font-semibold text-primary block">14:22</span>
+<span class="text-label-sm font-label-sm text-outline">Kod: #9X2K</span>
+</div>
+</div>
+<!-- Teslimat 2 -->
+<div class="p-3.5 rounded-xl bg-[#F0FFF4] border border-outline-variant/20 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]" data-icon="check">check</span>
+</div>
+<div>
+<div class="text-label-lg font-label-lg text-[#1B4332] font-semibold">Elif Şen</div>
+<div class="text-body-sm font-body-sm text-on-surface-variant">Glutensiz Ekmek &amp; Kurabiye</div>
+</div>
+</div>
+<div class="text-right">
+<span class="text-label-sm font-label-sm font-mono font-semibold text-primary block">13:48</span>
+<span class="text-label-sm font-label-sm text-outline">Kod: #4B1L</span>
+</div>
+</div>
+<!-- Teslimat 3 -->
+<div class="p-3.5 rounded-xl bg-[#F0FFF4] border border-outline-variant/20 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]" data-icon="check">check</span>
+</div>
+<div>
+<div class="text-label-lg font-label-lg text-[#1B4332] font-semibold">Mert Öztürk</div>
+<div class="text-body-sm font-body-sm text-on-surface-variant">Meyveli Yoğurt &amp; Granola</div>
+</div>
+</div>
+<div class="text-right">
+<span class="text-label-sm font-label-sm font-mono font-semibold text-primary block">12:15</span>
+<span class="text-label-sm font-label-sm text-outline">Kod: #7M8Q</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- ================= FOOTER COMPONENT (SHARED COMPONENT JSON) ================= -->
+<footer class="w-full py-space-xl bg-surface-container-low border-t border-outline-variant/30 mt-12">
+<div class="max-w-7xl mx-auto px-margin flex flex-col md:flex-row justify-between items-center gap-space-md">
+<!-- Brand Logo in Footer -->
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[24px]" data-icon="eco" style="font-variation-settings: 'FILL' 1;">eco</span>
+<span class="text-title-md font-title-md font-bold text-primary">GıdaKöprüsü</span>
+</div>
+<!-- Links from JSON -->
+<nav class="flex flex-wrap justify-center items-center gap-x-6 gap-y-2">
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Hakkımızda</a>
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Nasıl Çalışır?</a>
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Sürdürülebilirlik</a>
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Yardım Merkezi</a>
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Gizlilik Sözleşmesi</a>
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">İletişim</a>
+</nav>
+<!-- Copyright text from JSON -->
+<div class="text-body-sm font-body-sm text-on-surface-variant">
+        © 2024 GıdaKöprüsü. Tüm hakları saklıdır.
+      </div>
+</div>
+</footer>
+</body></html>

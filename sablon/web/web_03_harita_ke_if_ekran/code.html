@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GıdaKöprüsü - Harita &amp; Keşif Ekranı</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Inter Google Font -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with Forms & Container Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-surface": "#002114",
+            "on-tertiary-fixed": "#002113",
+            "surface-variant": "#c1ecd4",
+            "on-background": "#002114",
+            "on-error-container": "#93000a",
+            "on-tertiary-fixed-variant": "#0c5136",
+            "on-primary-container": "#a8e7c5",
+            "on-secondary-container": "#00734d",
+            "error": "#ba1a1a",
+            "outline-variant": "#bfc9c1",
+            "primary-fixed": "#b1f0ce",
+            "on-error": "#ffffff",
+            "on-surface-variant": "#404943",
+            "on-secondary-fixed": "#002113",
+            "surface-bright": "#e8fff0",
+            "tertiary": "#0d5237",
+            "on-primary": "#ffffff",
+            "inverse-surface": "#0e3727",
+            "on-tertiary-container": "#a7e7c4",
+            "on-tertiary": "#ffffff",
+            "surface-container-high": "#c6f2da",
+            "surface-container-highest": "#c1ecd4",
+            "primary-fixed-dim": "#95d4b3",
+            "surface-container": "#ccf8df",
+            "surface": "#e8fff0",
+            "tertiary-fixed-dim": "#94d4b1",
+            "primary": "#0f5238",
+            "surface-container-lowest": "#ffffff",
+            "primary-container": "#2d6a4f",
+            "on-primary-fixed": "#002114",
+            "error-container": "#ffdad6",
+            "outline": "#707973",
+            "background": "#e8fff0",
+            "surface-tint": "#2c694e",
+            "secondary-fixed-dim": "#75daa8",
+            "surface-dim": "#b8e4cc",
+            "tertiary-fixed": "#b0f1cc",
+            "tertiary-container": "#2c6a4e",
+            "surface-container-low": "#d1fee5",
+            "secondary-container": "#92f7c3",
+            "on-secondary-fixed-variant": "#005235",
+            "on-secondary": "#ffffff",
+            "inverse-primary": "#95d4b3",
+            "secondary-fixed": "#92f7c3",
+            "on-primary-fixed-variant": "#0e5138",
+            "secondary": "#006c48",
+            "inverse-on-surface": "#cffbe2"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "margin-mobile": "1rem",
+            "space-xl": "2.5rem",
+            "gutter-mobile": "1rem",
+            "gutter": "1.5rem",
+            "space-sm": "0.5rem",
+            "space-xs": "0.25rem",
+            "space-md": "1rem",
+            "margin": "2rem"
+          },
+          "fontFamily": {
+            "display-lg": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "label-sm": ["Inter"],
+            "headline-lg": ["Inter"],
+            "title-sm": ["Inter"],
+            "body-md": ["Inter"],
+            "label-md": ["Inter"],
+            "title-md": ["Inter"],
+            "headline-sm": ["Inter"],
+            "body-lg": ["Inter"],
+            "display-lg-mobile": ["Inter"],
+            "body-sm": ["Inter"],
+            "headline-md": ["Inter"],
+            "label-lg": ["Inter"]
+          },
+          "fontSize": {
+            "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+            "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+            "title-sm": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600"}],
+            "body-md": ["15px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}],
+            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+            "title-md": ["18px", {"lineHeight": "26px", "letterSpacing": "0", "fontWeight": "600"}],
+            "headline-sm": ["20px", {"lineHeight": "28px", "letterSpacing": "0", "fontWeight": "600"}],
+            "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0", "fontWeight": "400"}],
+            "display-lg-mobile": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "body-sm": ["13px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+            "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    /* Custom Map Graphic Grid Styling */
+    .map-canvas-grid {
+      background-color: #f4fbf6;
+      background-image: 
+        radial-gradient(#b8e4cc 1.2px, transparent 1.2px), 
+        linear-gradient(to right, rgba(45, 106, 79, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(45, 106, 79, 0.05) 1px, transparent 1px);
+      background-size: 32px 32px, 96px 96px, 96px 96px;
+    }
+    
+    /* Subtle custom scrollbar for listing panel */
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #f1f8f4;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #b1f0ce;
+      border-radius: 9999px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: #2d6a4f;
+    }
+
+    /* Range slider custom styling */
+    input[type=range]::-webkit-slider-thumb {
+      appearance: none;
+      height: 18px;
+      width: 18px;
+      border-radius: 50%;
+      background: #0f5238;
+      cursor: pointer;
+      box-shadow: 0 0 0 4px #b1f0ce;
+      transition: all 0.15s ease-in-out;
+    }
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TOP APP BAR (Standard TopNavBar from Shared Components) -->
+<header class="sticky top-0 z-50 w-full h-[72px] bg-surface-container-lowest/90 dark:bg-inverse-surface/90 backdrop-blur-md border-b border-outline-variant/20 dark:border-outline/20 shadow-sm">
+<div class="max-w-7xl mx-auto px-margin flex items-center justify-between h-full">
+<!-- Brand Logo Anchor -->
+<div class="flex items-center gap-space-lg">
+<a class="text-title-md font-title-md font-bold text-primary dark:text-inverse-primary flex items-center gap-space-xs tracking-tight" href="#">
+<span class="flex items-center justify-center w-10 h-10 rounded-xl bg-primary-fixed text-primary">
+<span class="material-symbols-outlined" data-icon="eco" style="font-variation-settings: 'FILL' 1;">eco</span>
+</span>
+<span>GıdaKöprüsü</span>
+</a>
+<!-- Horizontal Nav Links (No Sidebar!) -->
+<nav class="hidden md:flex items-center space-x-1 pl-4">
+<!-- Active Tab: Keşfet -->
+<a class="px-3.5 py-2 rounded-xl text-primary dark:text-inverse-primary font-semibold relative after:absolute after:bottom-[-16px] after:left-0 after:w-full after:h-[3px] after:bg-primary dark:after:bg-inverse-primary after:rounded-full transition-colors duration-150" href="#">
+            Keşfet
+          </a>
+<!-- Inactive Tab: İlanları Ara -->
+<a class="px-3.5 py-2 text-on-surface-variant dark:text-surface-variant font-medium hover:text-primary dark:hover:text-inverse-primary hover:bg-surface-container/50 dark:hover:bg-surface-container-highest/20 rounded-xl transition-colors duration-150" href="#">
+            İlanları Ara
+          </a>
+<!-- Inactive Tab: Rezervasyonlarım -->
+<a class="px-3.5 py-2 text-on-surface-variant dark:text-surface-variant font-medium hover:text-primary dark:hover:text-inverse-primary hover:bg-surface-container/50 dark:hover:bg-surface-container-highest/20 rounded-xl transition-colors duration-150" href="#">
+            Rezervasyonlarım
+          </a>
+<!-- Inactive Tab: Favorilerim -->
+<a class="px-3.5 py-2 text-on-surface-variant dark:text-surface-variant font-medium hover:text-primary dark:hover:text-inverse-primary hover:bg-surface-container/50 dark:hover:bg-surface-container-highest/20 rounded-xl transition-colors duration-150" href="#">
+            Favorilerim
+          </a>
+<!-- Inactive Tab: Rozetlerim -->
+<a class="px-3.5 py-2 text-on-surface-variant dark:text-surface-variant font-medium hover:text-primary dark:hover:text-inverse-primary hover:bg-surface-container/50 dark:hover:bg-surface-container-highest/20 rounded-xl transition-colors duration-150" href="#">
+            Rozetlerim
+          </a>
+</nav>
+</div>
+<!-- Right Header Actions: Trailing Action & Profile -->
+<div class="flex items-center gap-space-md">
+<!-- Notification Action -->
+<button aria-label="Bildirimler" class="w-10 h-10 rounded-xl flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container/50 transition-colors relative" type="button">
+<span class="material-symbols-outlined text-[22px]" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full ring-2 ring-surface-container-lowest"></span>
+</button>
+<!-- Divider -->
+<div class="h-6 w-px bg-outline-variant/30 hidden sm:block"></div>
+<!-- Profile Avatar & Details -->
+<div class="flex items-center gap-3 pl-1">
+<div class="w-10 h-10 rounded-full ring-2 ring-primary-fixed overflow-hidden bg-surface-container-high flex-shrink-0">
+<img alt="Ayşe profil avatarı" class="w-full h-full object-cover" data-alt="A warm, professional portrait photo of a cheerful female food logistician in an eco-friendly community distribution center. Natural sunlight streams onto her softly styled dark hair and confident smile. The background shows pristine wooden shelves filled with fresh fruits and artisanal bread under bright morning illumination, reflecting sustainable green and earth tones with refined visual depth." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBErOlLshoh-uyvWTBzWkoxShJ7TCEflONHLsUDszoVCWOlMIfj3FBek742DDrjSVKZdphW9H-r1DuQEGu5kNohxbIElMwL5e9Fi9cxBVxaNvEI66QSPY6zBy5NfqHQHwc8-AEZfJ5tNh9EIAU1qPCq9jiO4bnIuRmrJym7tZEIoj7PjK6p0r7oXQq3_4kEsfuN7Q3thL1QxNO25cTBTmZZXhNlNXDxLrnR1nVBE-H8PFxMcgNg85tP"/>
+</div>
+<div class="hidden lg:flex flex-col">
+<span class="text-label-md font-label-md text-on-surface">Ayşe Yılmaz</span>
+<span class="text-label-sm font-label-sm text-outline">Gönüllü Dağıtıcı</span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- MAIN TWO-COLUMN DISCOVERY INTERFACE (calc(100vh - 72px)) -->
+<main class="w-full h-[calc(100vh-72px)] flex flex-col md:flex-row overflow-hidden bg-surface-container-lowest">
+<!-- LEFT COLUMN: 38% WIDTH SCROLLABLE LISTING PANEL -->
+<section class="w-full md:w-[38%] h-full bg-surface-container-lowest border-r border-outline-variant/30 flex flex-col z-20 shadow-[4px_0_24px_rgba(27,67,50,0.03)]">
+<!-- Top Filters Container (Fixed Header inside panel) -->
+<div class="p-5 border-b border-outline-variant/20 flex flex-col gap-4 bg-surface-container-lowest/95 backdrop-blur-sm">
+<!-- Search Bar with Location Pin icon -->
+<div class="relative w-full">
+<div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-[20px]" data-icon="search">search</span>
+</div>
+<input class="w-full h-[44px] pl-10 pr-10 bg-white border border-outline-variant/50 rounded-xl text-on-surface placeholder:text-outline text-body-sm font-body-sm focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none" placeholder="Semt, mahalle veya yemek ara..." type="text"/>
+<div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+<button aria-label="Mevcut Konumu Kullan" class="text-primary hover:text-tertiary transition-colors" title="Mevcut Konumu Kullan" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="my_location">my_location</span>
+</button>
+</div>
+</div>
+<!-- Category Chips (Horizontal Scroll/Wrap) -->
+<div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 text-label-md font-label-md">
+<!-- Active Chip -->
+<button class="px-3.5 py-1.5 rounded-full bg-primary-container text-white font-semibold shadow-sm flex items-center gap-1.5 flex-shrink-0 transition-transform active:scale-95" type="button">
+<span>Tümü</span>
+</button>
+<!-- Inactive Chips -->
+<button class="px-3.5 py-1.5 rounded-full bg-surface-container/60 hover:bg-surface-container text-on-surface-variant flex items-center gap-1 flex-shrink-0 border border-outline-variant/30 transition-colors" type="button">
+<span>🍞 Ekmek</span>
+</button>
+<button class="px-3.5 py-1.5 rounded-full bg-surface-container/60 hover:bg-surface-container text-on-surface-variant flex items-center gap-1 flex-shrink-0 border border-outline-variant/30 transition-colors" type="button">
+<span>🍲 Hazır Yemek</span>
+</button>
+<button class="px-3.5 py-1.5 rounded-full bg-surface-container/60 hover:bg-surface-container text-on-surface-variant flex items-center gap-1 flex-shrink-0 border border-outline-variant/30 transition-colors" type="button">
+<span>🧁 Tatlı</span>
+</button>
+<button class="px-3.5 py-1.5 rounded-full bg-surface-container/60 hover:bg-surface-container text-on-surface-variant flex items-center gap-1 flex-shrink-0 border border-outline-variant/30 transition-colors" type="button">
+<span>🥗 Sebze/Meyve</span>
+</button>
+</div>
+<!-- Secondary Controls: Distance Slider & Price Filters -->
+<div class="grid grid-cols-1 gap-3 pt-1">
+<!-- Distance Slider -->
+<div class="flex flex-col gap-1.5 bg-surface-bright/50 p-2.5 rounded-xl border border-surface-container-high/60">
+<div class="flex justify-between items-center text-label-sm font-label-sm">
+<span class="text-on-surface-variant flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-[15px] text-primary" data-icon="near_me">near_me</span>
+                Mesafe Menzili
+              </span>
+<span class="font-bold text-primary bg-primary-fixed/60 px-2 py-0.5 rounded-md" id="distance-val">5 km</span>
+</div>
+<div class="relative flex items-center">
+<input class="w-full h-1.5 bg-surface-container-high rounded-lg appearance-none cursor-pointer accent-primary" id="distance-range" max="25" min="1" oninput="document.getElementById('distance-val').innerText = this.value + ' km'" type="range" value="5"/>
+</div>
+<div class="flex justify-between text-[10px] text-outline px-0.5">
+<span>1 km</span>
+<span>10 km</span>
+<span>25 km</span>
+</div>
+</div>
+<!-- Price & Availability Row -->
+<div class="flex items-center justify-between gap-2">
+<!-- Price Filters Buttons -->
+<div class="flex items-center gap-1 bg-surface-container/40 p-1 rounded-xl border border-outline-variant/20">
+<button class="px-2.5 py-1 text-label-sm font-label-sm rounded-lg bg-surface-container-lowest text-primary font-semibold shadow-xs" type="button">
+                Ücretsiz
+              </button>
+<button class="px-2.5 py-1 text-label-sm font-label-sm rounded-lg text-on-surface-variant hover:text-primary transition-colors" type="button">
+                ₺0-25
+              </button>
+<button class="px-2.5 py-1 text-label-sm font-label-sm rounded-lg text-on-surface-variant hover:text-primary transition-colors" type="button">
+                ₺25-50
+              </button>
+</div>
+<!-- Instant Delivery Switch -->
+<label class="flex items-center gap-2 cursor-pointer select-none">
+<span class="text-label-sm font-label-sm text-on-surface font-medium hidden sm:inline">Teslimata Açık</span>
+<div class="relative">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-9 h-5 bg-outline-variant/50 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary-container"></div>
+</div>
+</label>
+</div>
+</div>
+</div>
+<!-- Listing Cards Vertical Flow (Scrollable) -->
+<div class="flex-1 overflow-y-auto custom-scroll p-5 space-y-4">
+<!-- Summary Micro Header -->
+<div class="flex items-center justify-between text-label-sm font-label-sm text-outline px-1">
+<span>Kadıköy Çevresi (4 Öne Çıkan İlan)</span>
+<button class="text-primary hover:underline flex items-center gap-0.5 font-medium">
+<span>Sırala: Yakınlığa Göre</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</button>
+</div>
+<!-- KART 1: Seçili / Vurgulu Kart -->
+<article class="relative bg-[#F0FFF4] border-2 border-[#52B788] rounded-2xl p-4 flex gap-4 transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer group">
+<!-- Active Badge Pin Indicator -->
+<div class="absolute -top-2.5 -right-2.5 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container animate-pulse"></span>
+            Haritada Seçili
+          </div>
+<div class="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-surface-container relative">
+<img alt="Lezzet Fırını taze ekmek sepeti" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="An inviting, warmly lit assortment of freshly baked artisan sourdough bread, golden savory buns, and sesame simit resting in a rustic woven wicker basket on a clean wooden countertop. Soft directional bakery morning lighting enhances the crisp crust texture. The scene conveys freshness, wholesome organic quality, and appetizing abundance in rich golden wheat tones and soft green hues." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCx1oz9TftDM3CBrU9gXJD0GyjT8rSinyUj5ECq_p9-WJu6POoFP7H-5KwE3YRD80i20J4KOn03CFmoMlh6_Xvw3QIX0LDvk5b5lMMpC_dqUaFOcbk5Ci8ipkiRlOtqoHZl7CtFoErQXfZny8mZsd9lK8tt8jcM2JWppJRLsiKNZl_TR7uI_PuMTHMTi478HcKxSMEyJJVaAe82009iEIBvVyj-1Osht7xew362hsbuMpJN4KIp7AV-"/>
+<span class="absolute bottom-1 left-1 bg-black/60 text-white text-[9px] px-1.5 py-0.5 rounded backdrop-blur-xs font-medium">Fırın</span>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-start justify-between gap-1">
+<span class="text-label-sm font-label-sm text-primary font-bold uppercase tracking-wider">Lezzet Fırını</span>
+<span class="text-label-md font-label-md text-primary font-bold bg-primary-fixed/80 px-2 py-0.5 rounded-lg">₺25</span>
+</div>
+<h3 class="text-title-sm font-title-sm text-on-surface line-clamp-1 mt-0.5">Günün Taze Ekmek &amp; Poğaça Paketi</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[15px] text-primary" data-icon="location_on">location_on</span>
+<span>1.2 km • Kadıköy Caferağa</span>
+</p>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-primary/10 mt-2">
+<span class="inline-flex items-center gap-1 text-label-sm font-label-sm text-error font-medium">
+<span class="material-symbols-outlined text-[14px]" data-icon="timer">timer</span>
+                45 dk kaldı
+              </span>
+<button class="px-3 py-1 bg-primary text-white text-label-sm font-label-sm font-semibold rounded-lg hover:bg-tertiary transition-colors flex items-center gap-1 shadow-xs" type="button">
+<span>Detay</span>
+<span class="material-symbols-outlined text-[13px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</article>
+<!-- KART 2: Mevsim Yeşillikleri (Ücretsiz) -->
+<article class="bg-white border border-outline-variant/30 hover:border-[#95d4b3] rounded-2xl p-4 flex gap-4 transition-all duration-200 hover:shadow-md cursor-pointer group">
+<div class="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-surface-container relative">
+<img alt="Mevsim Yeşillikleri ve Narenciye paketi" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="A lush, freshly gathered crate overflowing with vibrant green organic leafy produce, crisp romaine lettuce, bundles of fragrant dill, and bright orange Mediterranean mandarins with dew drops. Photographed under clean, diffused natural daylight in a bright, modern eco-grocery market setting with delicate depth of field highlighting botanical freshness and nutritious sustainable food surplus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzEnvY0Hil8npZWIzfkwkMJZZWZq743UOuLK-fBAPm3WCcN_aXKPqYsguc431P2-9lqM5CJYtXCikrp-kI-rqSXUUvyAVzpYXgpH24B-45yvrM5nEg7ql0W39FO2qw1hwUf4oR8U4TcPZd7XXahr4XlJIWD7_evkwW2dPvukw0cefp9bfO2zK0Da6Yn7sNCxeFBnxVWKXP2eJnMrCJW909icW21smlVYR1YlAIsVr2kskU3VEcfmGt"/>
+<span class="absolute bottom-1 left-1 bg-black/60 text-white text-[9px] px-1.5 py-0.5 rounded backdrop-blur-xs font-medium">Manav</span>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-start justify-between gap-1">
+<span class="text-label-sm font-label-sm text-outline font-medium">Yeşil Bakkal</span>
+<span class="text-label-md font-label-md text-secondary font-bold bg-surface-container-high px-2 py-0.5 rounded-lg">Ücretsiz</span>
+</div>
+<h3 class="text-title-sm font-title-sm text-on-surface line-clamp-1 mt-0.5">Mevsim Yeşillikleri ve Narenciye</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[15px] text-outline" data-icon="location_on">location_on</span>
+<span>0.9 km • Moda</span>
+</p>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-outline-variant/20 mt-2">
+<span class="inline-flex items-center gap-1 text-label-sm font-label-sm text-outline font-medium">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+                1 saat 20 dk kaldı
+              </span>
+<button class="px-3 py-1 bg-surface-container/70 text-primary text-label-sm font-label-sm font-semibold rounded-lg hover:bg-surface-container transition-colors" type="button">
+                Detay
+              </button>
+</div>
+</div>
+</article>
+<!-- KART 3: Ev Yemekleri Menüsü -->
+<article class="bg-white border border-outline-variant/30 hover:border-[#95d4b3] rounded-2xl p-4 flex gap-4 transition-all duration-200 hover:shadow-md cursor-pointer group">
+<div class="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-surface-container relative">
+<img alt="Bereket Lokantası sıcak ev yemekleri" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="A wholesome, neatly portioned traditional lunch set packed in biodegradable kraft food containers, containing savory stuffed bell peppers, freshly cooked lentil soup in a sealed bowl, fragrant rice pilaf, and organic yogurt. Styled on a rustic light pine table bathed in gentle ambient lunch hour illumination, evoking homemade comfort, warmth, and reliable meal redistribution." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEwdvZJgENf_lhSaVvlQwhg7bGv80EKWvF6sIC4ggWxltFtYhFCwuxN-aiVIkYRiEpN_IH_xV0JPMcCNtUkp5FIpJXDg2LN_HgqXfsrgLoChZffsfJqaVsT5E5sbnm_-sn4TegysFLUeYrKDg3sTppf3mQ6slA3tBRvtHkISlzDQHQS7O2Ba7Qj7E7XLE8XMqHjU5B0Mvdgbrhk9MEVeglWrFJ90rNtVnL7GO5NqhSjfr4Uif-K0RK"/>
+<span class="absolute bottom-1 left-1 bg-black/60 text-white text-[9px] px-1.5 py-0.5 rounded backdrop-blur-xs font-medium">Restoran</span>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-start justify-between gap-1">
+<span class="text-label-sm font-label-sm text-outline font-medium">Bereket Lokantası</span>
+<span class="text-label-md font-label-md text-primary font-bold bg-primary-fixed/50 px-2 py-0.5 rounded-lg">₺30</span>
+</div>
+<h3 class="text-title-sm font-title-sm text-on-surface line-clamp-1 mt-0.5">Ev Yemekleri Menüsü (4 Çeşit)</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[15px] text-outline" data-icon="location_on">location_on</span>
+<span>2.4 km • Söğütlüçeşme</span>
+</p>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-outline-variant/20 mt-2">
+<span class="inline-flex items-center gap-1 text-label-sm font-label-sm text-outline font-medium">
+<span class="material-symbols-outlined text-[14px]" data-icon="schedule">schedule</span>
+                2 saat kaldı
+              </span>
+<button class="px-3 py-1 bg-surface-container/70 text-primary text-label-sm font-label-sm font-semibold rounded-lg hover:bg-surface-container transition-colors" type="button">
+                Detay
+              </button>
+</div>
+</div>
+</article>
+<!-- KART 4: Toplu Kuru Bakliyat (STK Bağışı) -->
+<article class="bg-white border border-outline-variant/30 hover:border-[#95d4b3] rounded-2xl p-4 flex gap-4 transition-all duration-200 hover:shadow-md cursor-pointer group">
+<div class="w-24 h-24 rounded-xl overflow-hidden flex-shrink-0 bg-surface-container relative">
+<img alt="Kadıköy Dayanışma Ağı toplu gıda kolisi" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" data-alt="Neatly arranged large community pantry aid cartons containing bulk packages of red lentils, whole grains, chickpeas, and packaged sourdough loaves stacked ready for distribution in a clean humanitarian logistic warehouse. Balanced high-key lighting casts gentle shadows across eco-friendly cardboard packaging, expressing organized community solidarity, transparency, and dignity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPmPFaJe0Kfiq3Wz_Vh3pI4vZofGKBrbQc9C-vTnD1m49Of_EEpABZewZIdSKBcdvHxEtWaxDRW2qAkrxAlT3Nfjl5I8yraek7Bx-78GfwrTQ2MUAKt44yQjICSvZ5E_43RSodp9jP6hlHi6AwZvKBmE3R-1BJndYs90U4MXlWRyQ0LGhYLgpNSKHMaqzlOAO8TDfa3m4AVk0lcRn6gGZV5SnwFl5gJgnMAVYmfgSi0wZMyenlAhdl"/>
+<span class="absolute bottom-1 left-1 bg-blue-600 text-white text-[9px] px-1.5 py-0.5 rounded backdrop-blur-xs font-semibold">STK</span>
+</div>
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-start justify-between gap-1">
+<span class="text-label-sm font-label-sm text-blue-700 font-semibold">Kadıköy Dayanışma Ağı</span>
+<span class="text-label-sm font-label-sm text-blue-800 font-bold bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-lg">Ücretsiz Toplu</span>
+</div>
+<h3 class="text-title-sm font-title-sm text-on-surface line-clamp-1 mt-0.5">Toplu Kuru Bakliyat &amp; Ekmek (STK Bağışı)</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[15px] text-outline" data-icon="location_on">location_on</span>
+<span>3.1 km • Fikirtepe</span>
+</p>
+</div>
+<div class="flex items-center justify-between pt-2 border-t border-outline-variant/20 mt-2">
+<span class="inline-flex items-center gap-1 text-label-sm font-label-sm text-on-surface-variant font-medium">
+<span class="material-symbols-outlined text-[14px] text-primary" data-icon="event">event</span>
+                Yarın 11:00
+              </span>
+<button class="px-3 py-1 bg-surface-container/70 text-primary text-label-sm font-label-sm font-semibold rounded-lg hover:bg-surface-container transition-colors" type="button">
+                Detay
+              </button>
+</div>
+</div>
+</article>
+</div>
+</section>
+<!-- RIGHT COLUMN: 62% WIDTH INTERACTIVE MAP CANVAS -->
+<section class="w-full md:w-[62%] h-full relative overflow-hidden map-canvas-grid flex items-center justify-center select-none" data-location="Kadıköy, İstanbul">
+<!-- Vectorized Map Background Arteries & Water Representation -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none opacity-60" fill="none" preserveaspectratio="none" viewbox="0 0 1000 800">
+<!-- Sea / Coastline Area -->
+<path d="M 0,0 L 260,0 C 230,180 180,320 220,490 C 260,650 140,750 100,800 L 0,800 Z" fill="#d9f3e5"></path>
+<path d="M 260,0 C 230,180 180,320 220,490 C 260,650 140,750 100,800" stroke="#a7e7c4" stroke-dasharray="8 6" stroke-width="4"></path>
+<!-- Major Roads & Avenues -->
+<path d="M 220,490 Q 450,470 700,530 T 1000,560" stroke="#e2ece5" stroke-linecap="round" stroke-width="14"></path>
+<path d="M 220,490 Q 450,470 700,530 T 1000,560" stroke="#ffffff" stroke-linecap="round" stroke-width="9"></path>
+<path d="M 380,80 L 390,800" stroke="#e2ece5" stroke-width="10"></path>
+<path d="M 380,80 L 390,800" stroke="#ffffff" stroke-width="6"></path>
+<path d="M 250,220 C 400,210 650,260 900,180" stroke="#ffffff" stroke-linecap="round" stroke-width="8"></path>
+<path d="M 520,120 C 510,340 560,600 620,800" stroke="#ffffff" stroke-width="7"></path>
+<path d="M 320,380 Q 580,330 840,430" stroke="#ffffff" stroke-width="6"></path>
+<!-- Green Park Area Polygonal shapes -->
+<polygon fill="#ccf8df" opacity="0.8" points="410,230 490,210 510,290 430,310"></polygon>
+<polygon fill="#ccf8df" opacity="0.8" points="680,380 770,360 810,440 710,470"></polygon>
+<polygon fill="#ccf8df" opacity="0.8" points="280,560 360,540 370,640 290,650"></polygon>
+</svg>
+<!-- Neighborhood Typography Labels (CartoDB Map Style) -->
+<div class="absolute inset-0 pointer-events-none">
+<span class="absolute top-[28%] left-[27%] text-[13px] font-bold tracking-widest text-[#2d6a4f]/40 uppercase">Kadıköy İskele</span>
+<span class="absolute top-[58%] left-[34%] text-[13px] font-bold tracking-widest text-[#2d6a4f]/40 uppercase">Moda</span>
+<span class="absolute top-[22%] left-[54%] text-[13px] font-bold tracking-widest text-[#2d6a4f]/40 uppercase">Caferağa</span>
+<span class="absolute top-[48%] left-[68%] text-[13px] font-bold tracking-widest text-[#2d6a4f]/40 uppercase">Rasimpaşa</span>
+<span class="absolute top-[72%] left-[60%] text-[13px] font-bold tracking-widest text-[#2d6a4f]/40 uppercase">Söğütlüçeşme</span>
+</div>
+<!-- MAP CONTROLS (Top Right) -->
+<div class="absolute top-5 right-5 z-30 flex flex-col gap-2">
+<div class="bg-white rounded-xl shadow-md border border-outline-variant/30 overflow-hidden flex flex-col">
+<button aria-label="Haritayı Yakınlaştır" class="w-10 h-10 flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors" title="Yakınlaştır" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+</button>
+<div class="w-full h-px bg-outline-variant/20"></div>
+<button aria-label="Haritayı Uzaklaştır" class="w-10 h-10 flex items-center justify-center text-on-surface hover:bg-surface-container transition-colors" title="Uzaklaştır" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="remove">remove</span>
+</button>
+</div>
+<button aria-label="Mevcut Konuma Odaklan" class="w-10 h-10 bg-white rounded-xl shadow-md border border-outline-variant/30 flex items-center justify-center text-primary hover:bg-surface-container-low transition-colors" title="Konumuma Git" type="button">
+<span class="material-symbols-outlined text-[22px]" data-icon="explore">explore</span>
+</button>
+<button aria-label="Harita Katmanları" class="w-10 h-10 bg-white rounded-xl shadow-md border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors" title="Katmanlar" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="layers">layers</span>
+</button>
+</div>
+<!-- MAP BOTTOM LEFT STATUS BANNER -->
+<div class="absolute bottom-5 left-5 z-30 bg-white/90 backdrop-blur-md px-4 py-2 rounded-xl shadow-md border border-outline-variant/30 flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary animate-ping"></span>
+<span class="text-label-md font-label-md text-on-surface font-semibold">📍 Haritada 24 aktif gıda ilanı gösteriliyor</span>
+</div>
+<!-- MAP MARKER: USER LOCATION (Kadıköy İskele - Pulsing Blue Dot) -->
+<div class="absolute top-[34%] left-[29%] z-20 flex flex-col items-center pointer-events-auto cursor-pointer group">
+<div class="relative flex items-center justify-center">
+<span class="absolute w-8 h-8 rounded-full bg-blue-500/30 animate-ping"></span>
+<span class="relative w-4 h-4 rounded-full bg-blue-600 ring-4 ring-white shadow-md"></span>
+</div>
+<div class="mt-1 px-2 py-0.5 rounded-md bg-white/90 backdrop-blur-xs text-[10px] font-semibold text-blue-900 shadow-sm border border-blue-100 whitespace-nowrap">
+          Siz (Kadıköy İskele)
+        </div>
+</div>
+<!-- MAP MARKER: 🟢 Green Pin (Ücretsiz Bağış Noktası - Yeşil Bakkal) -->
+<div class="absolute top-[62%] left-[38%] z-20 pointer-events-auto cursor-pointer group transition-transform hover:scale-110">
+<div class="w-9 h-9 rounded-full bg-[#2D6A4F] text-white flex items-center justify-center shadow-lg ring-2 ring-white">
+<span class="material-symbols-outlined text-[20px]" data-icon="eco">eco</span>
+</div>
+<span class="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-white text-primary text-[10px] font-bold px-1.5 py-0.5 rounded shadow whitespace-nowrap border border-outline-variant/20">
+          Ücretsiz
+        </span>
+</div>
+<!-- MAP MARKER: 🟡 Yellow Pin (İndirimli Sürpriz Paket Noktası - Bereket Lokantası) -->
+<div class="absolute top-[68%] left-[72%] z-20 pointer-events-auto cursor-pointer group transition-transform hover:scale-110">
+<div class="w-9 h-9 rounded-full bg-amber-500 text-white flex items-center justify-center shadow-lg ring-2 ring-white">
+<span class="material-symbols-outlined text-[20px]" data-icon="restaurant">restaurant</span>
+</div>
+<span class="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-white text-amber-800 text-[10px] font-bold px-1.5 py-0.5 rounded shadow whitespace-nowrap border border-outline-variant/20">
+          ₺30 Menü
+        </span>
+</div>
+<!-- MAP MARKER: 🔵 Blue Pin (STK Toplu Bağış Noktası - Kadıköy Dayanışma Ağı) -->
+<div class="absolute top-[26%] left-[78%] z-20 pointer-events-auto cursor-pointer group transition-transform hover:scale-110">
+<div class="w-9 h-9 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-lg ring-2 ring-white">
+<span class="material-symbols-outlined text-[20px]" data-icon="volunteer_activism">volunteer_activism</span>
+</div>
+<span class="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-blue-900 text-white text-[10px] font-bold px-1.5 py-0.5 rounded shadow whitespace-nowrap">
+          Toplu STK
+        </span>
+</div>
+<!-- MAP MARKER: CLUSTER ROZETİ (+12 İlan Kadıköy Merkez) -->
+<div class="absolute top-[42%] left-[48%] z-20 pointer-events-auto cursor-pointer group transition-transform hover:scale-110">
+<div class="w-12 h-12 rounded-full bg-primary-container text-white flex flex-col items-center justify-center font-bold text-label-md shadow-xl ring-4 ring-primary-fixed">
+<span>+12</span>
+<span class="text-[8px] uppercase tracking-tighter opacity-90">İlan</span>
+</div>
+<div class="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-white text-on-surface text-[10px] font-medium px-2 py-0.5 rounded-full shadow border border-outline-variant/30 whitespace-nowrap">
+          Kadıköy Merkez
+        </div>
+</div>
+<!-- SEÇİLİ İLAN İÇİN HARİTA ÜSTÜ AÇIK KART (POPUP - Lezzet Fırını) -->
+<div class="absolute top-[18%] left-[45%] z-30 w-72 bg-white rounded-2xl p-3.5 shadow-2xl border border-primary/20 pointer-events-auto animate-fade-in">
+<!-- Close micro-button -->
+<button aria-label="Kapat" class="absolute top-2 right-2 w-6 h-6 rounded-full bg-surface-container flex items-center justify-center text-outline hover:text-on-surface" type="button">
+<span class="material-symbols-outlined text-[14px]" data-icon="close">close</span>
+</button>
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2.5 h-2.5 rounded-full bg-[#52B788]"></span>
+<span class="text-label-sm font-label-sm text-primary font-bold">Lezzet Fırını (Seçili)</span>
+</div>
+<div class="relative w-full h-28 rounded-xl overflow-hidden mb-2.5 bg-surface-container">
+<img alt="Günün Taze Ekmek Paketi detay görseli" class="w-full h-full object-cover" data-alt="Close up photography of golden crust artisan bread rolls, freshly baked sesame simit, and flaky pastries wrapped neatly in sustainable wax-lined paper bags. The setting features warm ambient bakery tones, a soft green background wash, and sharp appetizing crust texture indicating fresh preparation." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAloPHRpBc5v_tVovvqHM94X64A0yR_S1fH3Ql0rDMOxz1RI3zCu-c1GRJ1_CP-8vtwBlw1qf0LL3rn-a_i7wxPgyiZM8d5BmKEyzMe7HgCRdIIVhKGcEWRoEA2SpOL__A8NKqnNQLJcfzYI7dKLiw9j-AEw8aRqVa6GoTKC0f9nXzXF7u7Jg3jGM5srEcJFW4lQWVFmedzVQUa2TOyUUWJ2R9u0fgSBwQ9f3CglUTUVgkm8iWZWiUG"/>
+<span class="absolute top-2 left-2 bg-[#2D6A4F] text-white text-[10px] font-bold px-2 py-0.5 rounded-md shadow-xs">
+            ₺25 Paket
+          </span>
+</div>
+<div class="mb-3">
+<h4 class="text-title-sm font-title-sm text-on-surface leading-tight">Günün Taze Ekmek Paketi</h4>
+<p class="text-body-sm font-body-sm text-outline flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[14px] text-primary" data-icon="pin_drop">pin_drop</span>
+<span>Caferağa Mah. 1.2 km mesafede</span>
+</p>
+</div>
+<!-- Popup Action Buttons -->
+<div class="flex items-center gap-2">
+<button class="flex-1 py-2 bg-primary-container text-white text-label-sm font-label-sm font-semibold rounded-xl hover:bg-tertiary transition-colors flex items-center justify-center gap-1.5 shadow-sm" type="button">
+<span>Detayı Gör</span>
+<span class="material-symbols-outlined text-[15px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<button aria-label="Yol Tarifi Al" class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-primary hover:bg-surface-container-high transition-colors" title="Yol Tarifi Al" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="directions">directions</span>
+</button>
+</div>
+<!-- Anchor Pointer Triangle below Popup -->
+<div class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[10px] border-t-white"></div>
+</div>
+<!-- MAP PIN ANCHOR FOR POPUP (Pointing directly under the popup) -->
+<div class="absolute top-[48%] left-[55%] z-20 -translate-x-1/2 pointer-events-auto">
+<div class="relative flex items-center justify-center">
+<span class="w-8 h-8 rounded-full bg-[#52B788]/40 animate-ping absolute"></span>
+<div class="w-10 h-10 rounded-full bg-[#2D6A4F] text-white flex items-center justify-center shadow-2xl ring-4 ring-white">
+<span class="material-symbols-outlined text-[22px]" data-icon="bakery_dining">bakery_dining</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Lightweight inline interaction script for distance display and chips -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Allow dynamic chip switching
+      const chips = document.querySelectorAll('section button span');
+      chips.forEach(chip => {
+        chip.parentElement.addEventListener('click', () => {
+          // Micro interaction feedback
+          chip.parentElement.classList.add('scale-95');
+          setTimeout(() => chip.parentElement.classList.remove('scale-95'), 150);
+        });
+      });
+    });
+  </script>
+</body></html>

@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GıdaKöprüsü - İşletme Dashboard</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Inter Google Font -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Configuration -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-tint": "#2c694e",
+            "surface-bright": "#e8fff0",
+            "surface": "#e8fff0",
+            "on-primary-fixed": "#002114",
+            "inverse-on-surface": "#cffbe2",
+            "on-surface": "#002114",
+            "secondary-container": "#92f7c3",
+            "on-tertiary": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "secondary-fixed-dim": "#75daa8",
+            "surface-variant": "#c1ecd4",
+            "primary-fixed": "#b1f0ce",
+            "on-background": "#002114",
+            "secondary": "#006c48",
+            "on-secondary-container": "#00734d",
+            "on-primary-fixed-variant": "#0e5138",
+            "tertiary-fixed-dim": "#94d4b1",
+            "on-tertiary-container": "#a7e7c4",
+            "on-error": "#ffffff",
+            "on-secondary": "#ffffff",
+            "surface-container-high": "#c6f2da",
+            "on-primary": "#ffffff",
+            "surface-container-highest": "#c1ecd4",
+            "on-secondary-fixed-variant": "#005235",
+            "primary": "#0f5238",
+            "on-tertiary-fixed-variant": "#0c5136",
+            "on-primary-container": "#a8e7c5",
+            "tertiary-fixed": "#b0f1cc",
+            "error": "#ba1a1a",
+            "inverse-primary": "#95d4b3",
+            "on-surface-variant": "#404943",
+            "tertiary": "#0d5237",
+            "secondary-fixed": "#92f7c3",
+            "on-secondary-fixed": "#002113",
+            "primary-container": "#2d6a4f",
+            "surface-container": "#ccf8df",
+            "tertiary-container": "#2c6a4e",
+            "surface-dim": "#b8e4cc",
+            "outline-variant": "#bfc9c1",
+            "outline": "#707973",
+            "error-container": "#ffdad6",
+            "on-tertiary-fixed": "#002113",
+            "inverse-surface": "#0e3727",
+            "surface-container-low": "#d1fee5",
+            "primary-fixed-dim": "#95d4b3",
+            "on-error-container": "#93000a",
+            "background": "#e8fff0"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter": "1.5rem",
+            "space-md": "1rem",
+            "space-xl": "2.5rem",
+            "gutter-mobile": "1rem",
+            "margin": "2rem",
+            "space-lg": "1.5rem",
+            "margin-mobile": "1rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "display-lg": ["Inter"],
+            "headline-lg": ["Inter"],
+            "headline-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "headline-sm": ["Inter"],
+            "body-md": ["Inter"],
+            "label-md": ["Inter"],
+            "display-lg-mobile": ["Inter"],
+            "title-md": ["Inter"],
+            "body-lg": ["Inter"],
+            "title-sm": ["Inter"],
+            "label-lg": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "label-sm": ["Inter"]
+          },
+          "fontSize": {
+            "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+            "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "body-sm": ["13px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+            "headline-sm": ["20px", {"lineHeight": "28px", "letterSpacing": "0", "fontWeight": "600"}],
+            "body-md": ["15px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}],
+            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+            "display-lg-mobile": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "title-md": ["18px", {"lineHeight": "26px", "letterSpacing": "0", "fontWeight": "600"}],
+            "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0", "fontWeight": "400"}],
+            "title-sm": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600"}],
+            "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+            "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500"}]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-[#F0FFF4] font-body-md text-on-surface antialiased min-h-screen flex flex-col selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- TopNavBar (Shared Component JSON Blueprint + Business Mode Integration) -->
+<header class="sticky top-0 z-50 w-full h-[72px] bg-surface-container-lowest/90 backdrop-blur-md border-b border-outline-variant/20 shadow-sm">
+<div class="max-w-7xl mx-auto px-margin flex items-center justify-between h-full">
+<!-- Brand & Branch Switcher -->
+<div class="flex items-center gap-space-lg">
+<a class="text-title-md font-title-md font-bold text-primary flex items-center gap-space-xs transition-transform duration-200 active:scale-95" href="#">
+<span class="material-symbols-outlined text-[28px] text-primary-container" data-icon="eco">eco</span>
+<span>GıdaKöprüsü</span>
+</a>
+<!-- Branch Selector Dropdown Pill -->
+<div class="hidden sm:flex items-center gap-2 bg-surface-container-low px-3 py-1.5 rounded-full border border-primary/10">
+<span class="material-symbols-outlined text-[18px] text-primary" data-icon="storefront">storefront</span>
+<span class="text-label-md font-label-md text-primary font-semibold">Lezzet Fırını - Kadıköy Şubesi</span>
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant cursor-pointer hover:text-primary transition-colors" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<!-- Navigation Links (Horizontal First Layout) -->
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-on-surface-variant font-label-lg text-label-lg hover:text-primary hover:bg-surface-container/50 rounded-xl px-3 py-2 transition-colors duration-150" href="#">Keşfet</a>
+<a class="text-on-surface-variant font-label-lg text-label-lg hover:text-primary hover:bg-surface-container/50 rounded-xl px-3 py-2 transition-colors duration-150" href="#">İlanları Ara</a>
+<a class="text-primary font-label-lg text-label-lg font-semibold relative after:absolute after:bottom-[-20px] after:left-0 after:w-full after:h-[3px] after:bg-primary after:rounded-full px-3 py-2" href="#">Rezervasyonlar</a>
+<a class="text-on-surface-variant font-label-lg text-label-lg hover:text-primary hover:bg-surface-container/50 rounded-xl px-3 py-2 transition-colors duration-150" href="#">Favorilerim</a>
+<a class="text-on-surface-variant font-label-lg text-label-lg hover:text-primary hover:bg-surface-container/50 rounded-xl px-3 py-2 transition-colors duration-150" href="#">Rozetlerim</a>
+</nav>
+<!-- Right Utility Actions -->
+<div class="flex items-center gap-4">
+<!-- Search bar anchor -->
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]" data-icon="search">search</span>
+<input class="h-[42px] w-56 pl-10 pr-4 text-body-sm font-body-sm rounded-xl border border-outline-variant/50 focus:border-primary-container focus:ring-2 focus:ring-primary/20 bg-surface-container-lowest transition-all" placeholder="İlan veya rezervasyon no..." type="text"/>
+</div>
+<!-- Notification Icon -->
+<button aria-label="Bildirimler" class="relative p-2 rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container/50 transition-colors">
+<span class="material-symbols-outlined text-[24px]" data-icon="notifications">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span>
+</button>
+<!-- Profile Avatar & Business Info -->
+<div class="flex items-center gap-3 pl-2 border-l border-outline-variant/30">
+<img class="w-10 h-10 rounded-full object-cover ring-2 ring-primary/20" data-alt="Close-up portrait of a friendly Turkish bakery shop manager Ayşe in a modern clean bakery environment with natural light and fresh sourdough loaves in the background, warm documentary style, photorealistic, cinematic depth." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1yOAYFO2NVRWhyBdv4Ge42OkH5e1b38IDz6Tg-b2fEvFxO61JOvyAAvdy5yUDsRtm-IWeml3Eifh1SkIYjKNdYOtkxI8Y9VhpdoUMlCz7d-Zxag6G-ZoHiosuZXTOAtiOLdhgUf4MFHWnPvR0N2wOAWh5Zet2McQQPDieiTn5U1NVjq2_M-Te8J_sh8-jj72XmWUcHzDAoXYIqOgAMwAptsFWNrU7O8ean-_jcAg3ncAxuAJ4srC9"/>
+<div class="hidden xl:flex flex-col text-left">
+<span class="text-label-md font-label-md text-on-surface font-semibold">Ayşe Yılmaz</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Mağaza Yetkilisi</span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Container -->
+<main class="flex-grow max-w-7xl w-full mx-auto px-margin py-8 flex flex-col gap-8">
+<!-- Hero Banner & Quick Actions -->
+<section class="bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-sm border border-primary/10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative overflow-hidden">
+<div class="absolute -right-16 -top-16 w-64 h-64 bg-secondary-container/20 rounded-full blur-3xl pointer-events-none"></div>
+<div class="flex flex-col sm:flex-row items-start sm:items-center gap-5 z-10">
+<div class="w-16 h-16 rounded-2xl bg-[#F0FFF4] border border-primary/20 flex items-center justify-center shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-[36px] text-primary" data-icon="bakery_dining">bakery_dining</span>
+</div>
+<div>
+<div class="flex flex-wrap items-center gap-3 mb-1">
+<h1 class="text-headline-md font-headline-md text-on-surface">Lezzet Fırını'na Hoş Geldiniz 👋</h1>
+<!-- Trust Score Badge -->
+<div class="inline-flex items-center gap-1.5 bg-[#F0FFF4] text-primary px-3 py-1 rounded-full border border-primary/20 shadow-sm">
+<span class="material-symbols-outlined text-[18px] text-primary font-bold" data-icon="verified">verified</span>
+<span class="text-label-md font-label-md">Güven Skoru: %94</span>
+<span class="text-label-sm font-label-sm text-secondary font-semibold bg-white px-1.5 py-0.5 rounded-full ml-1">Mükemmel İşletme</span>
+</div>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant">Kadıköy Şubesi gıda kurtarma akışları ve anlık teslimat durumunu canlı olarak yönetin.</p>
+</div>
+</div>
+<!-- Action Button -->
+<div class="flex items-center gap-3 shrink-0 z-10 w-full sm:w-auto">
+<button class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#2D6A4F] text-white px-6 py-3 rounded-xl shadow-sm hover:bg-[#1b4332] active:scale-95 transition-all duration-200 text-label-lg font-label-lg">
+<span class="material-symbols-outlined text-[20px]" data-icon="add_circle">add_circle</span>
+<span>+ Yeni İlan Oluştur</span>
+</button>
+</div>
+</section>
+<!-- 4 Ana İstatistik Kartı -->
+<section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+<!-- Kart 1: Bugün Kurtarılan Gıda -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-primary/10 flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between mb-4">
+<span class="text-label-lg font-label-lg text-on-surface-variant">Bugün Kurtarılan Gıda</span>
+<div class="w-10 h-10 rounded-xl bg-[#F0FFF4] flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]" data-icon="eco">eco</span>
+</div>
+</div>
+<div>
+<div class="text-headline-lg font-headline-lg text-primary mb-1">8.5 kg</div>
+<div class="flex items-center gap-1.5 text-label-md font-label-md text-secondary">
+<span class="material-symbols-outlined text-[16px]" data-icon="trending_up">trending_up</span>
+<span>↑ %14 düne göre</span>
+</div>
+</div>
+</div>
+<!-- Kart 2: Aktif İlanlar -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-primary/10 flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between mb-4">
+<span class="text-label-lg font-label-lg text-on-surface-variant">Aktif İlanlar</span>
+<div class="w-10 h-10 rounded-xl bg-[#F0FFF4] flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]" data-icon="bakery_dining">bakery_dining</span>
+</div>
+</div>
+<div>
+<div class="text-headline-lg font-headline-lg text-on-surface mb-1">3 İlan</div>
+<div class="text-body-sm font-body-sm text-on-surface-variant">
+            18 porsiyon satışta/bağışta
+          </div>
+</div>
+</div>
+<!-- Kart 3: Bekleyen Teslimler -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-primary/10 flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between mb-4">
+<span class="text-label-lg font-label-lg text-on-surface-variant">Bekleyen Teslimler</span>
+<div class="w-10 h-10 rounded-xl bg-[#FEF3C7] flex items-center justify-center text-[#B45309]">
+<span class="material-symbols-outlined text-[24px]" data-icon="package_2">package_2</span>
+</div>
+</div>
+<div>
+<div class="text-headline-lg font-headline-lg text-on-surface mb-1">5 Rezervasyon</div>
+<div class="flex items-center gap-1.5 text-label-md font-label-md text-[#B45309]">
+<span class="w-2 h-2 rounded-full bg-[#F59E0B] animate-pulse"></span>
+<span>QR tarama bekliyor</span>
+</div>
+</div>
+</div>
+<!-- Kart 4: Bu Ay Toplam Kurtarma -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-primary/10 flex flex-col justify-between hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between mb-4">
+<span class="text-label-lg font-label-lg text-on-surface-variant">Bu Ay Toplam Kurtarma</span>
+<div class="w-10 h-10 rounded-xl bg-[#F0FFF4] flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]" data-icon="public">public</span>
+</div>
+</div>
+<div>
+<div class="text-headline-lg font-headline-lg text-primary mb-1">142.0 kg</div>
+<div class="flex items-center gap-1.5 text-label-md font-label-md text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="co2">co2</span>
+<span>Eşdeğer: 355 kg CO₂ tasarrufu</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Orta Bölüm: 2 Kolonlu Canlı Operasyon Grid -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Sol Kolon: Canlı Aktif İlanlar (7 Kolon) -->
+<div class="lg:col-span-7 bg-surface-container-lowest rounded-2xl p-6 shadow-sm border border-primary/10 flex flex-col gap-6">
+<div class="flex items-center justify-between border-b border-outline-variant/20 pb-4">
+<div>
+<h2 class="text-title-md font-title-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[22px]" data-icon="store">store</span>
+<span>Canlı Aktif İlanlar</span>
+</h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Şu an kullanıcılar tarafından rezerve edilebilir durumdaki ürünler.</p>
+</div>
+<span class="text-label-md font-label-md bg-[#F0FFF4] text-primary px-3 py-1 rounded-full border border-primary/20">3 Aktif Liste</span>
+</div>
+<div class="space-y-4">
+<!-- İlan Kartı 1 -->
+<div class="p-4 rounded-xl border border-primary/10 bg-surface-container-lowest hover:border-primary/30 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<img class="w-16 h-16 rounded-xl object-cover ring-1 ring-black/5" data-alt="Artisanal freshly baked bread and pastries arranged in an eco-friendly kraft bag on a rustic wooden bakery countertop, warm daylight, commercial food photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfdKPjAFlAUi3CgqYXv6rBGh9k6jjILhJKcTYYRw6c9ozNz3CoKVHGmrequ0B293sguLaB4nyuy09VzTzmJnO9bjQHhapht-wTlqpYud4iWja4jMEkHdkfKR3x6N84UKrLvuhvYH44jT3esOU_IpVHF6uQ805sekmaxGUhs3RmrLxLZyQe-ouWQBtN4TTDCrM_Abl5i_UbdtuijDL5MS48aUB3wEEP6bD5SpdvRbaylFxz0mZWHuVH"/>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="text-title-sm font-title-sm text-on-surface font-semibold">Günün Sürpriz Artisan Paketi</h3>
+<span class="bg-[#FEF3C7] text-[#B45309] text-[11px] font-semibold px-2 py-0.5 rounded-full">2 paket kaldı</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">Son teslim saati: <span class="font-medium text-on-surface">Bugün 21:00'e kadar</span></p>
+<div class="mt-2 flex items-center gap-3">
+<span class="text-label-md font-label-md text-primary font-bold">45.00 ₺</span>
+<span class="text-body-sm font-body-sm text-outline line-through">120.00 ₺</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 w-full sm:w-auto justify-end pt-2 sm:pt-0 border-t sm:border-0 border-outline-variant/10">
+<button class="px-3 py-1.5 rounded-lg border border-outline-variant text-label-md font-label-md text-on-surface hover:bg-surface-container-high transition-colors">Düzenle</button>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container-highest text-error text-label-md font-label-md hover:bg-error-container hover:text-on-error-container transition-colors">Durdur</button>
+</div>
+</div>
+<!-- İlan Kartı 2 -->
+<div class="p-4 rounded-xl border border-primary/10 bg-surface-container-lowest hover:border-primary/30 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<img class="w-16 h-16 rounded-xl object-cover ring-1 ring-black/5" data-alt="A bundle of traditional Turkish sesame simit and assorted savory pogaca buns displayed neatly inside a clean bakery display tray, warm golden glow, pristine depth." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDSK-wvPICKk_F5ZCVsoho1Mwiy6e06h9X8x-iHbFJ6LtIFcJuNVWflrv9u2i-uz660Bhlfv03ZkGnYQ-ycNJox9DDu9M9kXixCbhGSSMzKdiYf1tHrZNpCw6_PwraWgPpuP7lKIdYfGdgXXleCpFxDNq2IAE1voSadv5beT3VpPdWUNkfJxyD_hrHxuEGXXUuD4QJ0v-jdqaSBRw_8kJPhLT8cL3QQj8uDrr71eV6rHWoPeyqA9Ywn"/>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="text-title-sm font-title-sm text-on-surface font-semibold">Simit &amp; Poğaça Sepeti</h3>
+<span class="bg-[#F0FFF4] text-primary text-[11px] font-semibold px-2 py-0.5 rounded-full">4 paket kaldı</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">Son teslim saati: <span class="font-medium text-on-surface">Bugün 20:30'a kadar</span></p>
+<div class="mt-2 flex items-center gap-3">
+<span class="text-label-md font-label-md text-primary font-bold">35.00 ₺</span>
+<span class="text-body-sm font-body-sm text-outline line-through">90.00 ₺</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 w-full sm:w-auto justify-end pt-2 sm:pt-0 border-t sm:border-0 border-outline-variant/10">
+<button class="px-3 py-1.5 rounded-lg border border-outline-variant text-label-md font-label-md text-on-surface hover:bg-surface-container-high transition-colors">Düzenle</button>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container-highest text-error text-label-md font-label-md hover:bg-error-container hover:text-on-error-container transition-colors">Durdur</button>
+</div>
+</div>
+<!-- İlan Kartı 3 -->
+<div class="p-4 rounded-xl border border-primary/10 bg-surface-container-lowest hover:border-primary/30 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+<div class="flex items-center gap-4">
+<img class="w-16 h-16 rounded-xl object-cover ring-1 ring-black/5" data-alt="Crispy golden French baguettes stacked diagonally inside an organic bakery paper wrapper, soft morning light, hyperrealistic food photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsOF07isZF_1E9YtA4uvQs3-8Qnb-Bc7PBph_yezd3rgtZilcIH8AWho11ULUHe3lw3bUDNwTC-AFvfoGmn9wImoM0nRJyThxYb2WNlRUIYN9Mk2ALTqopGBvVx3UPrm7a79U1QSbSvDHJePTIN6xEJkgCszt1I_aW8KLA-eLO93LWTT1t5YiXUUB190x1Od8f02TWS1WXAQsgEkYOXRasdY11rKf79yToSiGfP3usfcxBd3wmKvPF"/>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="text-title-sm font-title-sm text-on-surface font-semibold">Baget Ekmek Fazlası</h3>
+<span class="bg-[#F0FFF4] text-primary text-[11px] font-semibold px-2 py-0.5 rounded-full">6 adet kaldı</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">Son teslim saati: <span class="font-medium text-on-surface">Bugün 22:00'ye kadar</span></p>
+<div class="mt-2 flex items-center gap-3">
+<span class="text-label-md font-label-md text-primary font-bold">15.00 ₺</span>
+<span class="text-body-sm font-body-sm text-outline line-through">40.00 ₺</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 w-full sm:w-auto justify-end pt-2 sm:pt-0 border-t sm:border-0 border-outline-variant/10">
+<button class="px-3 py-1.5 rounded-lg border border-outline-variant text-label-md font-label-md text-on-surface hover:bg-surface-container-high transition-colors">Düzenle</button>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container-highest text-error text-label-md font-label-md hover:bg-error-container hover:text-on-error-container transition-colors">Durdur</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Sağ Kolon: Bekleyen Teslimatlar (5 Kolon) -->
+<div class="lg:col-span-5 bg-surface-container-lowest rounded-2xl p-6 shadow-sm border border-primary/10 flex flex-col gap-6">
+<div class="flex items-center justify-between border-b border-outline-variant/20 pb-4">
+<div>
+<h2 class="text-title-md font-title-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-[#B45309] text-[22px]" data-icon="qr_code_scanner">qr_code_scanner</span>
+<span>Bekleyen Teslimatlar</span>
+</h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Müşteri teslim kodunu doğrulayın ve paketi verin.</p>
+</div>
+<span class="text-label-md font-label-md bg-[#FEF3C7] text-[#B45309] px-2.5 py-1 rounded-full font-semibold">5 Hazır</span>
+</div>
+<div class="space-y-4">
+<!-- Teslimat 1 (Öne Çıkan Aktif Doğrulama) -->
+<div class="p-4 rounded-xl bg-[#F0FFF4] border border-primary/20 flex flex-col gap-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center text-label-lg">
+                  MK
+                </div>
+<div>
+<h4 class="text-title-sm font-title-sm text-on-surface font-semibold">Mehmet K.</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Günün Sürpriz Artisan Paketi (1x)</p>
+</div>
+</div>
+<span class="text-label-sm font-label-sm text-[#B45309] bg-[#FEF3C7] px-2 py-0.5 rounded">Bekliyor</span>
+</div>
+<div class="bg-white p-3 rounded-lg border border-primary/10 flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Müşteri Güvenlik Kodu:</span>
+<span class="font-mono font-bold text-headline-sm text-primary tracking-wider">AK7M2X</span>
+</div>
+<button class="bg-[#2D6A4F] text-white px-4 py-2 rounded-lg text-label-md font-label-md hover:bg-[#1b4332] transition-colors flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="qr_code_scanner">qr_code_scanner</span>
+<span>Kodu Doğrula / QR Tara</span>
+</button>
+</div>
+</div>
+<!-- Teslimat 2 -->
+<div class="p-4 rounded-xl border border-outline-variant/30 flex items-center justify-between hover:bg-surface-container/20 transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high text-on-surface font-bold flex items-center justify-center text-label-lg">
+                ZT
+              </div>
+<div>
+<h4 class="text-title-sm font-title-sm text-on-surface font-semibold">Zeynep T.</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Simit &amp; Poğaça Sepeti (2x)</p>
+</div>
+</div>
+<div class="text-right">
+<span class="font-mono font-bold text-label-lg text-on-surface block">TR88B1</span>
+<span class="text-label-sm font-label-sm text-outline">Gelmek üzere</span>
+</div>
+</div>
+<!-- Teslimat 3 -->
+<div class="p-4 rounded-xl border border-outline-variant/30 flex items-center justify-between hover:bg-surface-container/20 transition-colors">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high text-on-surface font-bold flex items-center justify-center text-label-lg">
+                CD
+              </div>
+<div>
+<h4 class="text-title-sm font-title-sm text-on-surface font-semibold">Caner D.</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Baget Ekmek Fazlası (2x)</p>
+</div>
+</div>
+<div class="text-right">
+<span class="font-mono font-bold text-label-lg text-on-surface block">KP39L0</span>
+<span class="text-label-sm font-label-sm text-outline">19:45 Tahmini</span>
+</div>
+</div>
+</div>
+<button class="w-full py-2.5 rounded-xl border border-primary/20 text-primary font-label-md font-semibold hover:bg-[#F0FFF4] transition-colors text-center">
+          Tüm Teslimat Geçmişini Gör (24)
+        </button>
+</div>
+</section>
+<!-- Alt Bölüm: Haftalık Gıda Kurtarma & İsraf Önleme Grafiği -->
+<section class="bg-surface-container-lowest rounded-2xl p-6 sm:p-8 shadow-sm border border-primary/10 flex flex-col gap-6">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-outline-variant/20 pb-4">
+<div>
+<h2 class="text-title-md font-title-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[24px]" data-icon="bar_chart">bar_chart</span>
+<span>Haftalık Gıda Kurtarma &amp; İsraf Önleme Grafiği</span>
+</h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Bu hafta Lezzet Fırını Kadıköy Şubesi tarafından çöpe gitmesi önlenen gıda miktarı (kg).</p>
+</div>
+<div class="flex items-center gap-4 text-label-sm font-label-sm">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded bg-[#52B788]"></span>
+<span>Kurtarılan Gıda (kg)</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded bg-primary-container"></span>
+<span>Hedeflenen (15 kg/gün)</span>
+</div>
+</div>
+</div>
+<!-- Çubuk Grafik Görselleştirmesi -->
+<div class="pt-6 pb-2">
+<div class="h-64 w-full flex items-end justify-between gap-3 sm:gap-6 px-2 sm:px-6 relative border-b border-outline-variant/30">
+<!-- Arka Plan Kılavuz Çizgileri -->
+<div class="absolute inset-x-0 top-0 border-b border-dashed border-outline-variant/20 pointer-events-none flex justify-between">
+<span class="text-[11px] text-outline -translate-y-4">25 kg</span>
+</div>
+<div class="absolute inset-x-0 top-1/2 border-b border-dashed border-outline-variant/20 pointer-events-none flex justify-between">
+<span class="text-[11px] text-outline -translate-y-4">12.5 kg</span>
+</div>
+<!-- Pazartesi -->
+<div class="flex-1 flex flex-col items-center gap-2 group h-full justify-end z-10">
+<div class="text-label-xs font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity">14.2 kg</div>
+<div class="w-full max-w-[48px] bg-[#52B788] rounded-t-xl group-hover:bg-primary transition-all duration-300" style="height: 56%;"></div>
+<span class="text-label-md font-label-md text-on-surface-variant group-hover:text-primary mt-1">Pzt</span>
+</div>
+<!-- Salı -->
+<div class="flex-1 flex flex-col items-center gap-2 group h-full justify-end z-10">
+<div class="text-label-xs font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity">18.5 kg</div>
+<div class="w-full max-w-[48px] bg-[#52B788] rounded-t-xl group-hover:bg-primary transition-all duration-300" style="height: 74%;"></div>
+<span class="text-label-md font-label-md text-on-surface-variant group-hover:text-primary mt-1">Sal</span>
+</div>
+<!-- Çarşamba -->
+<div class="flex-1 flex flex-col items-center gap-2 group h-full justify-end z-10">
+<div class="text-label-xs font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity">12.0 kg</div>
+<div class="w-full max-w-[48px] bg-[#52B788] rounded-t-xl group-hover:bg-primary transition-all duration-300" style="height: 48%;"></div>
+<span class="text-label-md font-label-md text-on-surface-variant group-hover:text-primary mt-1">Çar</span>
+</div>
+<!-- Perşembe -->
+<div class="flex-1 flex flex-col items-center gap-2 group h-full justify-end z-10">
+<div class="text-label-xs font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity">21.4 kg</div>
+<div class="w-full max-w-[48px] bg-[#52B788] rounded-t-xl group-hover:bg-primary transition-all duration-300" style="height: 85%;"></div>
+<span class="text-label-md font-label-md text-on-surface-variant group-hover:text-primary mt-1">Per</span>
+</div>
+<!-- Cuma -->
+<div class="flex-1 flex flex-col items-center gap-2 group h-full justify-end z-10">
+<div class="text-label-xs font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity">24.0 kg</div>
+<div class="w-full max-w-[48px] bg-[#52B788] rounded-t-xl group-hover:bg-primary transition-all duration-300" style="height: 96%;"></div>
+<span class="text-label-md font-label-md text-on-surface-variant group-hover:text-primary mt-1">Cum</span>
+</div>
+<!-- Cumartesi -->
+<div class="flex-1 flex flex-col items-center gap-2 group h-full justify-end z-10">
+<div class="text-label-xs font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity">19.8 kg</div>
+<div class="w-full max-w-[48px] bg-[#52B788] rounded-t-xl group-hover:bg-primary transition-all duration-300" style="height: 79%;"></div>
+<span class="text-label-md font-label-md text-on-surface-variant group-hover:text-primary mt-1">Cmt</span>
+</div>
+<!-- Pazar (Bugün - Vurgulu) -->
+<div class="flex-1 flex flex-col items-center gap-2 group h-full justify-end z-10">
+<div class="text-label-xs font-semibold text-primary">8.5 kg (Şu An)</div>
+<div class="w-full max-w-[48px] bg-primary-container rounded-t-xl relative group-hover:bg-primary transition-all duration-300 ring-2 ring-primary/30" style="height: 34%;">
+<span class="absolute -top-2 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-secondary-fixed-dim animate-ping"></span>
+</div>
+<span class="text-label-md font-label-md text-primary font-bold mt-1">Paz</span>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 p-4 rounded-xl bg-surface-container-low/60 border border-primary/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-[28px]" data-icon="energy_savings_leaf">energy_savings_leaf</span>
+<div>
+<h4 class="text-title-sm font-title-sm text-on-surface font-semibold">Tebrikler! Haftalık Kurtarma Hedefinin %118'ine Ulaşıldı</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Bu hafta 118.4 kg gıdanın çöpe atılması önlenerek 296 kg karbon salınımı engellendi.</p>
+</div>
+</div>
+<button class="shrink-0 px-4 py-2 rounded-xl bg-white border border-primary/20 text-primary font-label-md font-semibold hover:bg-surface-container-high transition-colors">
+            Detaylı Rapor İndir (PDF)
+          </button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer (Shared Component JSON Blueprint) -->
+<footer class="w-full py-space-xl bg-surface-container-low border-t border-outline-variant/30 mt-12">
+<div class="max-w-7xl mx-auto px-margin flex flex-col md:flex-row justify-between items-center gap-space-md">
+<!-- Brand & Copyright -->
+<div class="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+<span class="text-title-md font-title-md font-bold text-primary flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[24px]" data-icon="eco">eco</span>
+          GıdaKöprüsü
+        </span>
+<span class="hidden sm:inline text-outline-variant">•</span>
+<p class="text-body-sm font-body-sm text-on-surface-variant">© 2024 GıdaKöprüsü. Tüm hakları saklıdır.</p>
+</div>
+<!-- Footer Navigation Links -->
+<div class="flex flex-wrap items-center justify-center gap-6">
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Hakkımızda</a>
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Nasıl Çalışır?</a>
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Sürdürülebilirlik</a>
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Yardım Merkezi</a>
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">Gizlilik Sözleşmesi</a>
+<a class="text-label-md font-label-md text-on-surface-variant hover:text-primary transition-colors duration-150" href="#">İletişim</a>
+</div>
+</div>
+</footer>
+</body></html>

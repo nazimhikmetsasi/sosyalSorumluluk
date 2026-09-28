@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GıdaKöprüsü - Bildirimler</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "inverse-on-surface": "#cffbe2",
+            "secondary-fixed": "#92f7c3",
+            "on-primary-container": "#a8e7c5",
+            "surface-container-high": "#c6f2da",
+            "tertiary-fixed-dim": "#94d4b1",
+            "outline-variant": "#bfc9c1",
+            "on-secondary": "#ffffff",
+            "on-tertiary-container": "#a7e7c4",
+            "primary-container": "#2d6a4f",
+            "on-tertiary-fixed-variant": "#0c5136",
+            "inverse-surface": "#0e3727",
+            "on-primary": "#ffffff",
+            "primary-fixed": "#b1f0ce",
+            "secondary": "#006c48",
+            "inverse-primary": "#95d4b3",
+            "surface-container-highest": "#c1ecd4",
+            "surface-container-lowest": "#ffffff",
+            "on-background": "#002114",
+            "on-error": "#ffffff",
+            "on-surface": "#002114",
+            "on-secondary-container": "#00734d",
+            "tertiary-fixed": "#b0f1cc",
+            "tertiary": "#0d5237",
+            "on-secondary-fixed-variant": "#005235",
+            "surface-container-low": "#d1fee5",
+            "primary": "#0f5238",
+            "surface-container": "#ccf8df",
+            "on-primary-fixed-variant": "#0e5138",
+            "secondary-fixed-dim": "#75daa8",
+            "surface-bright": "#e8fff0",
+            "on-surface-variant": "#404943",
+            "error-container": "#ffdad6",
+            "on-error-container": "#93000a",
+            "primary-fixed-dim": "#95d4b3",
+            "on-tertiary-fixed": "#002113",
+            "on-primary-fixed": "#002114",
+            "error": "#ba1a1a",
+            "surface-variant": "#c1ecd4",
+            "surface-dim": "#b8e4cc",
+            "on-secondary-fixed": "#002113",
+            "surface-tint": "#2c694e",
+            "outline": "#707973",
+            "tertiary-container": "#2c6a4e",
+            "on-tertiary": "#ffffff",
+            "background": "#e8fff0",
+            "secondary-container": "#92f7c3",
+            "surface": "#e8fff0"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "margin-mobile": "1rem",
+            "space-xl": "2.5rem",
+            "space-xs": "0.25rem",
+            "gutter": "1.5rem",
+            "space-sm": "0.5rem",
+            "gutter-mobile": "1rem",
+            "margin": "2rem"
+          },
+          "fontFamily": {
+            "title-sm": ["Inter"],
+            "display-lg-mobile": ["Inter"],
+            "headline-sm": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "label-md": ["Inter"],
+            "display-lg": ["Inter"],
+            "label-sm": ["Inter"],
+            "label-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "title-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "body-lg": ["Inter"],
+            "headline-lg": ["Inter"],
+            "headline-md": ["Inter"]
+          },
+          "fontSize": {
+            "title-sm": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+            "display-lg-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "0", "fontWeight": "600" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "body-md": ["15px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+            "title-md": ["18px", { "lineHeight": "26px", "letterSpacing": "0", "fontWeight": "600" }],
+            "body-sm": ["13px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "0", "fontWeight": "400" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased min-h-screen flex justify-center items-center p-0 md:p-6 selection:bg-secondary-container">
+<!-- Mobile Frame Container (iPhone Form Factor) -->
+<div class="relative w-full max-w-[412px] h-[892px] bg-surface-container-lowest overflow-hidden flex flex-col shadow-2xl md:rounded-[44px] border border-outline-variant/30">
+<!-- Top Status Bar (09:41) -->
+<header class="w-full pt-3 px-7 pb-2 flex justify-between items-center bg-surface-container-lowest/90 backdrop-blur-md z-40 select-none">
+<span class="text-[14px] font-semibold tracking-tight text-on-surface">09:41</span>
+<div class="w-28 h-5 bg-black rounded-full mx-auto -mt-1 hidden xs:block"></div>
+<div class="flex items-center space-x-2 text-on-surface">
+<span class="material-symbols-outlined text-[16px] leading-none" data-icon="signal_cellular_alt">signal_cellular_alt</span>
+<span class="material-symbols-outlined text-[16px] leading-none" data-icon="wifi">wifi</span>
+<span class="material-symbols-outlined text-[18px] leading-none" data-icon="battery_full" style="font-variation-settings: 'FILL' 1;">battery_full</span>
+</div>
+</header>
+<!-- Top App Bar & Screen Header -->
+<section class="px-5 pt-3 pb-3 bg-surface-container-lowest/90 backdrop-blur-md z-30">
+<div class="flex items-center justify-between mb-3">
+<h1 class="text-headline-lg-mobile font-headline-lg-mobile font-bold text-primary tracking-tight">Bildirimler</h1>
+<div class="flex items-center gap-3">
+<button class="text-label-md font-label-md text-primary hover:text-primary-container font-semibold transition-colors">Tümünü Oku</button>
+<button aria-label="Bildirim Ayarları" class="w-9 h-9 rounded-full bg-surface hover:bg-surface-container-high text-primary flex items-center justify-center transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+</button>
+</div>
+</div>
+<!-- Horizontal Filter Chips -->
+<nav aria-label="Bildirim Filtreleri" class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1">
+<button class="shrink-0 bg-primary-container text-on-primary rounded-full px-4 py-1.5 text-label-md font-label-md shadow-sm transition-transform active:scale-95">Tümü (12)</button>
+<button class="shrink-0 bg-surface-container hover:bg-surface-container-high text-on-surface-variant rounded-full px-3.5 py-1.5 text-label-md font-label-md transition-colors active:scale-95 flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+          Okunmamış (3)
+        </button>
+<button class="shrink-0 bg-surface-container hover:bg-surface-container-high text-on-surface-variant rounded-full px-3.5 py-1.5 text-label-md font-label-md transition-colors active:scale-95">Rezervasyonlar</button>
+<button class="shrink-0 bg-surface-container hover:bg-surface-container-high text-on-surface-variant rounded-full px-3.5 py-1.5 text-label-md font-label-md transition-colors active:scale-95">Fırsatlar</button>
+<button class="shrink-0 bg-surface-container hover:bg-surface-container-high text-on-surface-variant rounded-full px-3.5 py-1.5 text-label-md font-label-md transition-colors active:scale-95">Rozetler &amp; Etki</button>
+</nav>
+</section>
+<!-- Scrollable Notification Feed -->
+<main class="flex-1 overflow-y-auto px-4 pb-28 pt-2 no-scrollbar bg-surface/40">
+<!-- Section: Bugün -->
+<section class="mb-5">
+<div class="flex items-center justify-between px-1 mb-2.5">
+<h2 class="text-label-lg font-label-lg text-primary uppercase tracking-wider text-[11px] font-bold">Bugün</h2>
+<span class="text-label-sm font-label-sm text-outline">3 yeni bildirim</span>
+</div>
+<div class="space-y-2.5">
+<!-- Notification Card 1: Okunmamış Rezervasyon -->
+<article class="relative bg-surface-container-low/70 hover:bg-surface-container-low border border-secondary-container rounded-2xl p-4 transition-all duration-150 shadow-sm active:scale-[0.99] flex gap-3.5">
+<div class="shrink-0 w-11 h-11 rounded-full bg-secondary-fixed/50 text-primary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[22px]" data-icon="bakery_dining">bakery_dining</span>
+</div>
+<div class="flex-1 pr-4">
+<div class="flex items-center justify-between mb-0.5">
+<h3 class="text-title-sm font-title-sm text-primary leading-snug">Rezervasyonun Hazır!</h3>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant leading-relaxed mb-2">Lezzet Fırını için teslim alma saati 19:00'da başlıyor. Kodun: <span class="font-bold tracking-wider text-primary bg-secondary-container/50 px-1.5 py-0.5 rounded text-[12px]">AK7M2X</span></p>
+<div class="flex items-center gap-1.5 text-label-sm font-label-sm text-outline">
+<span class="material-symbols-outlined text-[13px]" data-icon="schedule">schedule</span>
+<span>15 dk önce</span>
+</div>
+</div>
+<span class="absolute top-4 right-4 w-2.5 h-2.5 bg-primary rounded-full ring-4 ring-surface-container-low"></span>
+</article>
+<!-- Notification Card 2: Okunmamış Fırsat -->
+<article class="relative bg-surface-container-low/70 hover:bg-surface-container-low border border-secondary-container rounded-2xl p-4 transition-all duration-150 shadow-sm active:scale-[0.99] flex gap-3.5">
+<div class="shrink-0 w-11 h-11 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[22px]" data-icon="local_fire_department" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</div>
+<div class="flex-1 pr-4">
+<h3 class="text-title-sm font-title-sm text-primary leading-snug mb-0.5">Yeni Ücretsiz Paket Açıldı! 🥦</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant leading-relaxed mb-2">Yeşil Bakkal Organik yakınınızda 1 kasa taze sebze paylaştı.</p>
+<div class="flex items-center gap-1.5 text-label-sm font-label-sm text-outline">
+<span class="material-symbols-outlined text-[13px]" data-icon="schedule">schedule</span>
+<span>42 dk önce</span>
+</div>
+</div>
+<span class="absolute top-4 right-4 w-2.5 h-2.5 bg-primary rounded-full ring-4 ring-surface-container-low"></span>
+</article>
+<!-- Notification Card 3: Rozet Tebriği -->
+<article class="bg-surface-container-lowest hover:bg-surface-container-lowest/80 border border-outline-variant/30 rounded-2xl p-4 transition-all duration-150 shadow-sm active:scale-[0.99] flex gap-3.5">
+<div class="shrink-0 w-11 h-11 rounded-full bg-purple-100 text-purple-800 flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[22px]" data-icon="military_tech" style="font-variation-settings: 'FILL' 1;">military_tech</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-0.5">
+<h3 class="text-title-sm font-title-sm text-primary leading-snug">Tebrikler! Çevre Dostu Seviye 2 Rozeti</h3>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant leading-relaxed mb-2">Toplamda 25 kg CO₂ salınımını önledin.</p>
+<div class="flex items-center gap-1.5 text-label-sm font-label-sm text-outline">
+<span class="material-symbols-outlined text-[13px]" data-icon="schedule">schedule</span>
+<span>3 saat önce</span>
+</div>
+</div>
+</article>
+</div>
+</section>
+<!-- Section: Dün -->
+<section class="mb-4">
+<div class="flex items-center justify-between px-1 mb-2.5">
+<h2 class="text-label-lg font-label-lg text-primary uppercase tracking-wider text-[11px] font-bold">Dün</h2>
+<span class="text-label-sm font-label-sm text-outline">Tümü okundu</span>
+</div>
+<div class="space-y-2.5">
+<!-- Notification Card 4: Okunmuş Teslimat Onayı -->
+<article class="bg-surface-container-lowest/90 border border-outline-variant/20 rounded-2xl p-4 transition-all duration-150 shadow-sm flex gap-3.5 opacity-90">
+<div class="shrink-0 w-11 h-11 rounded-full bg-secondary-container/40 text-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex-1">
+<h3 class="text-title-sm font-title-sm text-on-surface leading-snug mb-0.5">Teslimat Onaylandı</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant leading-relaxed mb-2.5">Bereket Lokantası siparişiniz teslim edildi. İşletmeyi değerlendirin.</p>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5 text-label-sm font-label-sm text-outline">
+<span class="material-symbols-outlined text-[13px]" data-icon="schedule">schedule</span>
+<span>Dün 20:15</span>
+</div>
+<button class="inline-flex items-center gap-1 bg-surface-container-low hover:bg-secondary-container/60 text-primary px-3 py-1 rounded-xl text-label-md font-label-md transition-colors active:scale-95">
+<span class="material-symbols-outlined text-[14px]" data-icon="star" style="font-variation-settings: 'FILL' 1;">star</span>
+<span>Değerlendir</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Notification Card 5: Okunmuş Bülten -->
+<article class="bg-surface-container-lowest/80 border border-outline-variant/20 rounded-2xl p-4 transition-all duration-150 shadow-sm flex gap-3.5 opacity-80">
+<div class="shrink-0 w-11 h-11 rounded-full bg-sky-100 text-sky-800 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]" data-icon="article">article</span>
+</div>
+<div class="flex-1">
+<h3 class="text-title-sm font-title-sm text-on-surface leading-snug mb-0.5">Haftalık Etki Bülteniniz</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant leading-relaxed mb-2">Bu hafta 4.2 kg gıda kurtararak 3 öğünün çöpe gitmesini engellediniz.</p>
+<div class="flex items-center gap-1.5 text-label-sm font-label-sm text-outline">
+<span class="material-symbols-outlined text-[13px]" data-icon="schedule">schedule</span>
+<span>Dün 09:00</span>
+</div>
+</div>
+</article>
+</div>
+</section>
+<!-- Impact Badge Promo Pill -->
+<section class="mt-4 p-4 rounded-2xl bg-gradient-to-r from-secondary-container/40 to-surface-container border border-secondary-container/50 flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]" data-icon="eco">eco</span>
+</div>
+<div>
+<h4 class="text-label-lg font-label-lg text-primary">Sıfır Atık Hedefiniz</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant text-[12px]">Bu ay 8 rezervasyonla %100 kurtarma sağlandı.</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="chevron_right">chevron_right</span>
+</section>
+</main>
+<!-- Bottom Navigation Bar (Docked Tab Bar from Shared Components) -->
+<nav aria-label="Ana Gezinti" class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-space-xs py-space-xs pb-safe bg-surface-container-lowest dark:bg-surface-container-lowest shadow-md max-w-[412px] left-1/2 -translate-x-1/2">
+<!-- Tab 1: Keşfet (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-space-sm py-space-xs font-medium hover:bg-surface-container-low dark:hover:bg-surface-container-low transition-colors duration-150 active:scale-90 transition-transform duration-150 ease-out">
+<span class="material-symbols-outlined text-[22px]" data-icon="explore">explore</span>
+<span class="text-label-sm font-label-sm mt-0.5">Keşfet</span>
+</button>
+<!-- Tab 2: Ara (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-space-sm py-space-xs font-medium hover:bg-surface-container-low dark:hover:bg-surface-container-low transition-colors duration-150 active:scale-90 transition-transform duration-150 ease-out">
+<span class="material-symbols-outlined text-[22px]" data-icon="search">search</span>
+<span class="text-label-sm font-label-sm mt-0.5">Ara</span>
+</button>
+<!-- Tab 3: Rezervasyonlar (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-space-sm py-space-xs font-medium hover:bg-surface-container-low dark:hover:bg-surface-container-low transition-colors duration-150 active:scale-90 transition-transform duration-150 ease-out">
+<span class="material-symbols-outlined text-[22px]" data-icon="receipt_long">receipt_long</span>
+<span class="text-label-sm font-label-sm mt-0.5">Rezervasyonlar</span>
+</button>
+<!-- Tab 4: Bildirimler (Active - MOB-10 Intent match) -->
+<button class="flex flex-col items-center justify-center text-primary dark:text-primary bg-secondary-container/40 dark:bg-secondary-container/40 rounded-xl px-space-sm py-space-xs font-semibold active:scale-90 transition-transform duration-150 ease-out">
+<span class="material-symbols-outlined text-[22px]" data-icon="notifications" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<span class="text-label-sm font-label-sm mt-0.5">Bildirimler</span>
+</button>
+<!-- Tab 5: Profil (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-space-sm py-space-xs font-medium hover:bg-surface-container-low dark:hover:bg-surface-container-low transition-colors duration-150 active:scale-90 transition-transform duration-150 ease-out">
+<span class="material-symbols-outlined text-[22px]" data-icon="person">person</span>
+<span class="text-label-sm font-label-sm mt-0.5">Profil</span>
+</button>
+</nav>
+<!-- iPhone Home Bar Indicator -->
+<div class="absolute bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-on-surface/20 rounded-full pointer-events-none z-50"></div>
+</div>
+</body></html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>GıdaKöprüsü - Splash Screen</title>
+<!-- Inter Google Font -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary-fixed-variant": "#0c5136",
+            "inverse-primary": "#95d4b3",
+            "primary": "#0f5238",
+            "on-surface-variant": "#404943",
+            "surface-tint": "#2c694e",
+            "on-secondary-container": "#00734d",
+            "primary-fixed": "#b1f0ce",
+            "surface-container-high": "#c6f2da",
+            "on-primary-container": "#a8e7c5",
+            "surface-variant": "#c1ecd4",
+            "on-error": "#ffffff",
+            "tertiary": "#0d5237",
+            "on-tertiary": "#ffffff",
+            "on-secondary-fixed": "#002113",
+            "secondary": "#006c48",
+            "surface-container": "#ccf8df",
+            "surface-bright": "#e8fff0",
+            "background": "#e8fff0",
+            "surface-container-highest": "#c1ecd4",
+            "secondary-container": "#92f7c3",
+            "surface-container-lowest": "#ffffff",
+            "inverse-surface": "#0e3727",
+            "error": "#ba1a1a",
+            "error-container": "#ffdad6",
+            "on-primary-fixed": "#002114",
+            "on-primary": "#ffffff",
+            "surface-container-low": "#d1fee5",
+            "secondary-fixed": "#92f7c3",
+            "on-tertiary-container": "#a7e7c4",
+            "secondary-fixed-dim": "#75daa8",
+            "on-background": "#002114",
+            "tertiary-fixed-dim": "#94d4b1",
+            "surface-dim": "#b8e4cc",
+            "on-surface": "#002114",
+            "primary-fixed-dim": "#95d4b3",
+            "on-secondary": "#ffffff",
+            "tertiary-container": "#2c6a4e",
+            "surface": "#e8fff0",
+            "outline-variant": "#bfc9c1",
+            "on-secondary-fixed-variant": "#005235",
+            "on-error-container": "#93000a",
+            "inverse-on-surface": "#cffbe2",
+            "outline": "#707973",
+            "primary-container": "#2d6a4f",
+            "on-primary-fixed-variant": "#0e5138",
+            "on-tertiary-fixed": "#002113",
+            "tertiary-fixed": "#b0f1cc"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "gutter-mobile": "1rem",
+            "space-xs": "0.25rem",
+            "gutter": "1.5rem",
+            "margin-mobile": "1rem",
+            "space-sm": "0.5rem",
+            "margin": "2rem",
+            "space-xl": "2.5rem"
+          },
+          "fontFamily": {
+            "label-lg": ["Inter"],
+            "headline-sm": ["Inter"],
+            "body-lg": ["Inter"],
+            "title-md": ["Inter"],
+            "display-lg-mobile": ["Inter"],
+            "title-sm": ["Inter"],
+            "body-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "headline-lg": ["Inter"],
+            "headline-md": ["Inter"],
+            "label-sm": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "display-lg": ["Inter"],
+            "label-md": ["Inter"]
+          },
+          "fontSize": {
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "0", "fontWeight": "600" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "0", "fontWeight": "400" }],
+            "title-md": ["18px", { "lineHeight": "26px", "letterSpacing": "0", "fontWeight": "600" }],
+            "display-lg-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "title-sm": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+            "body-md": ["15px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+            "body-sm": ["13px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+
+    @keyframes pulse-dot-1 {
+      0%, 100% { opacity: 0.3; transform: scale(0.85); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    @keyframes pulse-dot-2 {
+      0%, 100% { opacity: 0.3; transform: scale(0.85); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    @keyframes pulse-dot-3 {
+      0%, 100% { opacity: 0.3; transform: scale(0.85); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    .anim-dot-1 { animation: pulse-dot-1 1.4s infinite ease-in-out; }
+    .anim-dot-2 { animation: pulse-dot-2 1.4s infinite ease-in-out 0.2s; }
+    .anim-dot-3 { animation: pulse-dot-3 1.4s infinite ease-in-out 0.4s; }
+
+    /* Ambient organic glow rings */
+    @keyframes subtle-breath {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.06); opacity: 0.95; }
+    }
+    .anim-glow {
+      animation: subtle-breath 4s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-surface-container-high/40 min-h-screen flex items-center justify-center p-0 md:p-6 font-body-md text-on-surface select-none antialiased">
+<!-- Mobile Device Simulation Frame (MOB-01: Splash Screen ~390px width) -->
+<div class="relative w-full max-w-[390px] h-[844px] bg-surface-container-lowest shadow-2xl rounded-none md:rounded-[44px] overflow-hidden flex flex-col justify-between border-0 md:border-[8px] md:border-surface-variant/40">
+<!-- Organic Background Tonal Accents & Atmospheric Circles -->
+<div class="absolute -top-24 -left-20 w-80 h-80 rounded-full bg-surface-container-low/70 blur-3xl pointer-events-none"></div>
+<div class="absolute top-1/2 -right-24 w-72 h-72 rounded-full bg-secondary-container/25 blur-3xl pointer-events-none"></div>
+<div class="absolute -bottom-20 -left-16 w-80 h-80 rounded-full bg-surface-bright/90 blur-3xl pointer-events-none"></div>
+<!-- 1. Top Section: iOS Status Bar -->
+<header class="relative z-20 w-full pt-3 px-7 flex justify-between items-center text-primary font-semibold text-xs tracking-tight">
+<span class="text-[15px] font-semibold tracking-tight text-primary">09:41</span>
+<div class="flex items-center space-x-2 text-primary">
+<!-- Cellular Signal -->
+<span class="material-symbols-outlined !text-[17px] leading-none" data-icon="signal_cellular_4_bar" style="font-variation-settings: 'FILL' 1;">signal_cellular_4_bar</span>
+<!-- Wi-Fi -->
+<span class="material-symbols-outlined !text-[18px] leading-none" data-icon="wifi" style="font-variation-settings: 'FILL' 1;">wifi</span>
+<!-- Battery Level -->
+<span class="material-symbols-outlined !text-[20px] leading-none" data-icon="battery_full" style="font-variation-settings: 'FILL' 1;">battery_full</span>
+</div>
+</header>
+<!-- 2. Center Section: Main Brand Identity & Solidarity Emblem -->
+<main class="relative z-10 flex-1 flex flex-col items-center justify-center px-margin-mobile text-center -mt-6">
+<!-- Logo Container with Layered Organic Radiance -->
+<div class="relative mb-6 flex items-center justify-center">
+<!-- Outermost breathing ambient ring -->
+<div class="absolute w-36 h-36 rounded-full bg-surface-container-low/90 anim-glow"></div>
+<!-- Intermediate soft contrast ring -->
+<div class="absolute w-28 h-28 rounded-full bg-secondary-container/40"></div>
+<!-- Primary Brand Emblem Shell -->
+<div class="relative w-24 h-24 rounded-full bg-gradient-to-br from-primary via-primary-container to-secondary flex items-center justify-center shadow-lg shadow-primary/20 border-2 border-surface-container-lowest">
+<!-- Sprouting Leaf & Supportive Solidarity Hands Iconography -->
+<div class="relative flex items-center justify-center">
+<!-- Solidarity Shield / Hands Contour Aura -->
+<span class="material-symbols-outlined text-surface-container-high/40 !text-[56px] absolute select-none" data-icon="volunteer_activism" style="font-variation-settings: 'FILL' 1;">volunteer_activism</span>
+<!-- Sprouting Eco Leaf Emblem -->
+<span class="material-symbols-outlined text-surface-container-lowest !text-[44px] relative z-10 transform -rotate-6 drop-shadow-sm select-none" data-icon="eco" style="font-variation-settings: 'FILL' 1;">eco</span>
+</div>
+<!-- Micro Sparkle Badge -->
+<div class="absolute top-1 right-1 w-6 h-6 rounded-full bg-surface-bright flex items-center justify-center shadow-sm border border-secondary-fixed-dim/40">
+<span class="material-symbols-outlined text-primary !text-[14px]" data-icon="auto_awesome" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+</div>
+</div>
+<!-- App Name / Heavy Premium Anchor Headline -->
+<h1 class="text-display-lg-mobile font-display-lg-mobile text-primary tracking-tight font-extrabold mb-2 drop-shadow-sm">
+        GıdaKöprüsü
+      </h1>
+<!-- Slogan -->
+<p class="text-body-md font-body-md text-on-surface-variant max-w-[260px] leading-relaxed">
+        Gıda israfına birlikte son verelim
+      </p>
+<!-- Minimal Capsule Badge: Solidarity & Freshness -->
+<div class="mt-5 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-surface-bright text-primary border border-secondary-fixed-dim/50 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-secondary animate-ping"></span>
+<span class="text-label-sm font-label-sm tracking-wide">
+          Taze Kal, İsrafı Önle • Ulusal Dayanışma
+        </span>
+</div>
+<!-- Subtle Key Metric Micro-Card -->
+<div class="mt-8 px-5 py-2.5 rounded-xl bg-surface-container-lowest/80 border border-outline-variant/30 shadow-sm flex items-center gap-3 backdrop-blur-xs">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined !text-[18px]" data-icon="handshake" style="font-variation-settings: 'FILL' 1;">handshake</span>
+</div>
+<div class="text-left">
+<p class="text-label-sm font-label-sm text-on-surface-variant">Topluluk Ağı</p>
+<p class="text-label-md font-label-md text-primary font-bold">12.450+ Kg Kurtarıldı</p>
+</div>
+</div>
+</main>
+<!-- 3. Bottom Section: Progress Loading & Device Indicator -->
+<footer class="relative z-20 pb-2 px-margin-mobile flex flex-col items-center">
+<!-- Pulsing Triple Sync Dots -->
+<div aria-label="Yükleniyor" class="flex items-center justify-center space-x-2.5 mb-5">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary anim-dot-1"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-secondary anim-dot-2"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-secondary anim-dot-3"></span>
+</div>
+<!-- Version & Institutional Attribution -->
+<p class="text-label-sm font-label-sm text-outline tracking-normal text-center mb-5">
+        Sürüm 1.0.0 • Çevre ve Şehircilik Dostu
+      </p>
+<!-- iOS Home Indicator Bar -->
+<div class="w-36 h-1 bg-on-surface/20 rounded-full mb-2"></div>
+</footer>
+</div>
+</body></html>

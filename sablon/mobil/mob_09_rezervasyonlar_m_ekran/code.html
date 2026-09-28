@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Rezervasyonlarım - GıdaKöprüsü</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "inverse-on-surface": "#cffbe2",
+            "secondary-fixed": "#92f7c3",
+            "on-primary-container": "#a8e7c5",
+            "surface-container-high": "#c6f2da",
+            "tertiary-fixed-dim": "#94d4b1",
+            "outline-variant": "#bfc9c1",
+            "on-secondary": "#ffffff",
+            "on-tertiary-container": "#a7e7c4",
+            "primary-container": "#2d6a4f",
+            "on-tertiary-fixed-variant": "#0c5136",
+            "inverse-surface": "#0e3727",
+            "on-primary": "#ffffff",
+            "primary-fixed": "#b1f0ce",
+            "secondary": "#006c48",
+            "inverse-primary": "#95d4b3",
+            "surface-container-highest": "#c1ecd4",
+            "surface-container-lowest": "#ffffff",
+            "on-background": "#002114",
+            "on-error": "#ffffff",
+            "on-surface": "#002114",
+            "on-secondary-container": "#00734d",
+            "tertiary-fixed": "#b0f1cc",
+            "tertiary": "#0d5237",
+            "on-secondary-fixed-variant": "#005235",
+            "surface-container-low": "#d1fee5",
+            "primary": "#0f5238",
+            "surface-container": "#ccf8df",
+            "on-primary-fixed-variant": "#0e5138",
+            "secondary-fixed-dim": "#75daa8",
+            "surface-bright": "#e8fff0",
+            "on-surface-variant": "#404943",
+            "error-container": "#ffdad6",
+            "on-error-container": "#93000a",
+            "primary-fixed-dim": "#95d4b3",
+            "on-tertiary-fixed": "#002113",
+            "on-primary-fixed": "#002114",
+            "error": "#ba1a1a",
+            "surface-variant": "#c1ecd4",
+            "surface-dim": "#b8e4cc",
+            "on-secondary-fixed": "#002113",
+            "surface-tint": "#2c694e",
+            "outline": "#707973",
+            "tertiary-container": "#2c6a4e",
+            "on-tertiary": "#ffffff",
+            "background": "#e8fff0",
+            "secondary-container": "#92f7c3",
+            "surface": "#e8fff0"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "margin-mobile": "1rem",
+            "space-xl": "2.5rem",
+            "space-xs": "0.25rem",
+            "gutter": "1.5rem",
+            "space-sm": "0.5rem",
+            "gutter-mobile": "1rem",
+            "margin": "2rem"
+          },
+          "fontFamily": {
+            "title-sm": ["Inter"],
+            "display-lg-mobile": ["Inter"],
+            "headline-sm": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "label-md": ["Inter"],
+            "display-lg": ["Inter"],
+            "label-sm": ["Inter"],
+            "label-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "title-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "body-lg": ["Inter"],
+            "headline-lg": ["Inter"],
+            "headline-md": ["Inter"]
+          },
+          "fontSize": {
+            "title-sm": ["16px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600"}],
+            "display-lg-mobile": ["30px", {"lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "headline-sm": ["20px", {"lineHeight": "28px", "letterSpacing": "0", "fontWeight": "600"}],
+            "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600"}],
+            "display-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500"}],
+            "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+            "body-md": ["15px", {"lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400"}],
+            "title-md": ["18px", {"lineHeight": "26px", "letterSpacing": "0", "fontWeight": "600"}],
+            "body-sm": ["13px", {"lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400"}],
+            "body-lg": ["18px", {"lineHeight": "28px", "letterSpacing": "0", "fontWeight": "400"}],
+            "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.015em", "fontWeight": "700"}],
+            "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      line-height: 1;
+    }
+    .custom-shadow-olive {
+      box-shadow: 0 4px 16px -2px rgba(27, 67, 50, 0.08), 0 2px 6px -1px rgba(27, 67, 50, 0.04);
+    }
+  </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased min-h-screen flex justify-center selection:bg-secondary-fixed selection:text-on-secondary-fixed">
+<!-- Mobile App Frame Container (iPhone Form Factor) -->
+<div class="w-full max-w-[420px] bg-surface-container-lowest min-h-screen flex flex-col relative shadow-2xl overflow-hidden pb-28">
+<!-- Top Status Bar (iOS standard 09:41) -->
+<header class="w-full px-7 pt-3.5 pb-2 flex justify-between items-center text-on-surface select-none z-30 bg-surface-container-lowest/90 backdrop-blur-md">
+<span class="font-title-sm text-title-sm font-semibold tracking-tight">09:41</span>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[17px] text-on-surface">signal_cellular_alt</span>
+<span class="material-symbols-outlined text-[17px] text-on-surface">wifi</span>
+<span class="material-symbols-outlined text-[19px] text-on-surface" style="font-variation-settings: 'FILL' 1;">battery_full</span>
+</div>
+</header>
+<!-- Top Brand Mini Header with Help Action -->
+<div class="px-5 pt-3 pb-2 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">eco</span>
+</div>
+<span class="font-title-md text-title-md font-bold text-primary tracking-tight">GıdaKöprüsü</span>
+</div>
+<button aria-label="Yardım" class="w-9 h-9 rounded-full bg-surface-container-low flex items-center justify-center text-primary hover:bg-surface-container transition-colors" title="Yardım ve Bilgi">
+<span class="material-symbols-outlined text-xl">help_outline</span>
+</button>
+</div>
+<!-- Screen Title & Contextual Info -->
+<div class="px-5 pt-3 pb-2">
+<div class="flex items-baseline justify-between">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">Rezervasyonlarım</h1>
+<span class="font-label-md text-label-md text-on-surface-variant flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          2 Canlı Sipariş
+        </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Kurtardığınız gıdaları belirtilen teslimat aralığında almayı unutmayın.</p>
+</div>
+<!-- Segment Control (Sekme Seçici) -->
+<nav aria-label="Rezervasyon filtreleri" class="px-5 my-3">
+<div class="bg-gray-100/90 rounded-2xl p-1 flex items-center border border-primary/5">
+<button aria-current="page" class="bg-[#2D6A4F] text-white shadow-sm font-semibold rounded-xl py-2 flex-1 text-center text-sm transition-all flex items-center justify-center gap-1.5">
+<span>Aktif</span>
+<span class="px-1.5 py-0.2 bg-white/20 rounded-full text-[11px] font-bold">2</span>
+</button>
+<button class="text-gray-600 hover:text-gray-900 font-medium py-2 flex-1 text-center text-sm transition-all flex items-center justify-center gap-1">
+<span>Tamamlanan</span>
+<span class="text-xs text-gray-500">(14)</span>
+</button>
+<button class="text-gray-600 hover:text-gray-900 font-medium py-2 flex-1 text-center text-sm transition-all flex items-center justify-center gap-1">
+<span>İptal Edilen</span>
+<span class="text-xs text-gray-400">(1)</span>
+</button>
+</div>
+</nav>
+<!-- Main Content Area: Active Bookings List -->
+<main class="flex-1 px-5 pt-1 space-y-4">
+<!-- Card 1: Artisan Bakery Surplus Pack -->
+<article class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:border-primary/20 transition-all custom-shadow-olive relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1.5 h-full bg-[#2D6A4F]"></div>
+<!-- Header: Code & Status Badge -->
+<div class="flex items-center justify-between pl-1 pb-3 border-b border-gray-100/80">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-primary" style="font-variation-settings: 'FILL' 1;">qr_code_2</span>
+<span class="font-label-lg text-label-lg font-bold text-primary tracking-wide">RZ-202600042</span>
+</div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#F0FFF4] text-[#2D6A4F] border border-[#52B788]/20">
+<span class="w-2 h-2 rounded-full bg-[#52B788] animate-ping"></span>
+            Teslim Bekleniyor
+          </span>
+</div>
+<!-- Body: Image + Info -->
+<div class="flex gap-3.5 pt-3.5 pb-3 pl-1">
+<img class="w-20 h-20 rounded-xl object-cover flex-shrink-0 shadow-sm border border-black/5" data-alt="Close up photography of fresh artisan sourdough bread and golden flaky French croissants resting on organic baker linen cloth in a rustic clean kitchen. Warm natural morning sunlight highlighting textures with a soft focus background. Clean, appetizing and fresh bakery atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBluWN2REeplVHE6Q1zeBafQcQdLxjY6xzzVWCphfHuzMJA8rzdfH2QcpuRILo0ADModBkE6_yHBmp-o2iyse4n_ohqjj23HgluTd1HxRm5lU2ckACPdxj8UquFbkUfK-y2t0rLx2kNLAcc4tN2iUlkc83xaEd900oKFdkQ-tCqDPle9t189Kw_1j9ySad1qaLDKfmIDsaCih7pBKIuoSeHjDt_og0UwZhR3Ud4SZJDJCdF6JRvAueP"/>
+<div class="flex flex-col justify-between flex-1 min-w-0">
+<div>
+<h3 class="font-title-sm text-title-sm text-[#1B4332] font-bold leading-tight truncate">Günün Sürpriz Artisan Fırın Paketi</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[15px] text-[#2D6A4F]">storefront</span>
+<span class="truncate">Lezzet Fırını (Moda)</span>
+</p>
+</div>
+<div class="flex items-center gap-1 text-xs text-[#1B4332] font-medium pt-1">
+<span class="material-symbols-outlined text-[16px] text-[#2D6A4F]">schedule</span>
+<span>Bugün 19:00 - 21:00</span>
+</div>
+</div>
+</div>
+<!-- Remaining Time Band -->
+<div class="pl-1 mb-3">
+<div class="bg-[#F0FFF4] text-[#2D6A4F] font-mono font-semibold text-xs px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5 border border-[#52B788]/25">
+<span class="material-symbols-outlined text-[15px]">hourglass_top</span>
+<span>Kalan Süre: 01:24:15</span>
+</div>
+</div>
+<!-- Action CTA Button -->
+<button class="bg-[#2D6A4F] hover:bg-[#1B4332] active:scale-[0.98] text-white rounded-xl py-2.5 font-semibold text-sm w-full text-center flex items-center justify-center gap-2 transition-all shadow-sm">
+<span class="material-symbols-outlined text-lg">qr_code</span>
+<span>QR Kodu Göster (AK7M2X)</span>
+</button>
+</article>
+<!-- Card 2: Organic Veggie & Citrus Crate -->
+<article class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:border-primary/20 transition-all custom-shadow-olive relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1.5 h-full bg-[#52B788]"></div>
+<!-- Header: Code & Status Badge -->
+<div class="flex items-center justify-between pl-1 pb-3 border-b border-gray-100/80">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[18px] text-primary" style="font-variation-settings: 'FILL' 1;">qr_code_2</span>
+<span class="font-label-lg text-label-lg font-bold text-primary tracking-wide">RZ-202600039</span>
+</div>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#F0FFF4] text-[#2D6A4F] border border-[#52B788]/20">
+<span class="w-1.5 h-1.5 rounded-full bg-[#52B788]"></span>
+            Onaylandı
+          </span>
+</div>
+<!-- Body: Image + Info -->
+<div class="flex gap-3.5 pt-3.5 pb-3 pl-1">
+<img class="w-20 h-20 rounded-xl object-cover flex-shrink-0 shadow-sm border border-black/5" data-alt="A wooden crate overflowing with crisp green leafy vegetables, fresh organic kale, vibrant juicy oranges and lemons glistening with morning dew drops. Studio shot with bright luminous lighting and soft shadows, emphasizing eco-friendly fresh agricultural food surplus redistribution." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDUHztcCrhapw8NDs3jOdNPynar3e9nGYN93EM9glZ2K8twGmkerxCgMpxhZqiPXVzBGjUPUuDvAacHcI7v1fVjltrMQpiZXFe0FMOOv29i4oVbdIFI6mBibMpg5LZr9z5byoHF6SDREjHbXyjcghaMhT9bueo-M38IZNHFo9aIT8Cmo5n4CyImQYRMqjp8pOcShGE6G_eBfhA-MDpei9nCKxBE-NAsWpNOEIcRVuoIpkDdL4tpCa5v"/>
+<div class="flex flex-col justify-between flex-1 min-w-0">
+<div>
+<h3 class="font-title-sm text-title-sm text-[#1B4332] font-bold leading-tight truncate">Mevsim Yeşillikleri &amp; Narenciye Kasası</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1 mt-0.5">
+<span class="material-symbols-outlined text-[15px] text-[#2D6A4F]">storefront</span>
+<span class="truncate">Yeşil Bakkal Organik</span>
+</p>
+</div>
+<div class="flex items-center gap-1 text-xs text-[#1B4332] font-medium pt-1">
+<span class="material-symbols-outlined text-[16px] text-[#2D6A4F]">schedule</span>
+<span>Bugün 19:30 - 20:30</span>
+</div>
+</div>
+</div>
+<!-- Remaining Time Band -->
+<div class="pl-1 mb-3">
+<div class="bg-[#FEF3C7] text-[#B45309] font-mono font-semibold text-xs px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5 border border-[#F59E0B]/25">
+<span class="material-symbols-outlined text-[15px]">timer</span>
+<span>⏳ 45 dk kaldı</span>
+</div>
+</div>
+<!-- Action CTA Button -->
+<button class="bg-[#2D6A4F] hover:bg-[#1B4332] active:scale-[0.98] text-white rounded-xl py-2.5 font-semibold text-sm w-full text-center flex items-center justify-center gap-2 transition-all shadow-sm">
+<span class="material-symbols-outlined text-lg">qr_code</span>
+<span>QR Kodu Göster (TR88B1)</span>
+</button>
+</article>
+<!-- Section Delimiter / Context Note -->
+<div class="flex items-center gap-2 pt-2 pb-1">
+<span class="h-[1px] flex-1 bg-gray-200"></span>
+<span class="font-label-sm text-label-sm font-semibold text-on-surface-variant uppercase tracking-wider">Son Tamamlanan</span>
+<span class="h-[1px] flex-1 bg-gray-200"></span>
+</div>
+<!-- Card 3: Completed Summary Preview with Review Rating CTA -->
+<article class="bg-gray-50/90 rounded-2xl p-3.5 border border-gray-200/70 hover:bg-gray-50 transition-colors">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm text-gray-500 font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-emerald-600" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+            Dün Teslim Alındı
+          </span>
+<span class="font-label-sm text-label-sm text-gray-400">18:45</span>
+</div>
+<div class="flex items-center justify-between mb-3">
+<div>
+<h4 class="font-title-sm text-title-sm text-gray-800 font-semibold leading-tight">Ev Yemekleri Menüsü</h4>
+<p class="font-body-sm text-body-sm text-gray-600">Bereket Lokantası</p>
+</div>
+<span class="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md font-medium">3 Porsiyon</span>
+</div>
+<!-- Rating Prompt Banner & Button -->
+<div class="bg-amber-50/80 rounded-xl p-2.5 border border-amber-200/80 flex items-center justify-between gap-3">
+<div class="flex items-center gap-1.5 text-amber-900 text-xs font-medium">
+<span class="material-symbols-outlined text-[18px] text-amber-500" style="font-variation-settings: 'FILL' 1;">hotel_class</span>
+<span>⭐ Değerlendirme bekliyor</span>
+</div>
+<button class="bg-amber-100 hover:bg-amber-200 active:scale-95 text-amber-900 border border-amber-300 rounded-lg px-3 py-1.5 text-xs font-semibold transition-all">
+            Deneyimi Puanla
+          </button>
+</div>
+</article>
+<!-- Eco Impact Micro Note -->
+<div class="bg-surface-container-low/70 rounded-xl p-3 flex items-center gap-3 border border-primary/10">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-primary flex-shrink-0">
+<span class="material-symbols-outlined text-base">nest_eco_leaf</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-snug">
+          Bu 2 rezervasyonla <strong class="text-primary font-semibold">3.8 kg CO₂</strong> salımını ve gıda israfını engellediniz!
+        </p>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Docked full-width bottom-0, 5 destinations) -->
+<!-- Tab 3: Rezervasyonlar is ACTIVE -->
+<nav aria-label="Ana Gezinti" class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-space-xs py-space-xs pb-safe bg-surface-container-lowest dark:bg-surface-container-lowest shadow-md max-w-[420px] left-1/2 -translate-x-1/2">
+<!-- Dest 1: Keşfet (Inactive) -->
+<button aria-label="Keşfet" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-space-sm py-space-xs font-medium hover:bg-surface-container-low transition-colors duration-150 active:scale-90">
+<span class="material-symbols-outlined text-[22px]">explore</span>
+<span class="text-label-sm font-label-sm mt-0.5">Keşfet</span>
+</button>
+<!-- Dest 2: Ara (Inactive) -->
+<button aria-label="Ara" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-space-sm py-space-xs font-medium hover:bg-surface-container-low transition-colors duration-150 active:scale-90">
+<span class="material-symbols-outlined text-[22px]">search</span>
+<span class="text-label-sm font-label-sm mt-0.5">Ara</span>
+</button>
+<!-- Dest 3: Rezervasyonlar (ACTIVE as per JSON command & screen intent) -->
+<button aria-current="page" aria-label="Rezervasyonlar" class="flex flex-col items-center justify-center text-primary dark:text-primary bg-secondary-container/40 dark:bg-secondary-container/40 rounded-xl px-space-sm py-space-xs font-semibold hover:bg-surface-container-low transition-colors duration-150 active:scale-90 relative">
+<span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+<span class="text-label-sm font-label-sm mt-0.5">Rezervasyonlar</span>
+<span class="absolute top-1.5 right-2 w-2 h-2 rounded-full bg-primary ring-2 ring-white"></span>
+</button>
+<!-- Dest 4: Bildirimler (Inactive) -->
+<button aria-label="Bildirimler" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-space-sm py-space-xs font-medium hover:bg-surface-container-low transition-colors duration-150 active:scale-90">
+<span class="material-symbols-outlined text-[22px]">notifications</span>
+<span class="text-label-sm font-label-sm mt-0.5">Bildirimler</span>
+</button>
+<!-- Dest 5: Profil (Inactive) -->
+<button aria-label="Profil" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant px-space-sm py-space-xs font-medium hover:bg-surface-container-low transition-colors duration-150 active:scale-90">
+<span class="material-symbols-outlined text-[22px]">person</span>
+<span class="text-label-sm font-label-sm mt-0.5">Profil</span>
+</button>
+</nav>
+<!-- iOS Home Indicator bar -->
+<div class="fixed bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-gray-300 rounded-full z-50 pointer-events-none"></div>
+</div>
+</body></html>

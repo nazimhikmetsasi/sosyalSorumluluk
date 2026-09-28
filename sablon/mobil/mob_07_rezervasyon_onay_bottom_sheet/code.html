@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MOB-07: Rezervasyon Onay Bottom Sheet - GıdaKöprüsü</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Inter Font -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with Forms and Container Queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "inverse-on-surface": "#cffbe2",
+            "secondary-fixed": "#92f7c3",
+            "on-primary-container": "#a8e7c5",
+            "surface-container-high": "#c6f2da",
+            "tertiary-fixed-dim": "#94d4b1",
+            "outline-variant": "#bfc9c1",
+            "on-secondary": "#ffffff",
+            "on-tertiary-container": "#a7e7c4",
+            "primary-container": "#2d6a4f",
+            "on-tertiary-fixed-variant": "#0c5136",
+            "inverse-surface": "#0e3727",
+            "on-primary": "#ffffff",
+            "primary-fixed": "#b1f0ce",
+            "secondary": "#006c48",
+            "inverse-primary": "#95d4b3",
+            "surface-container-highest": "#c1ecd4",
+            "surface-container-lowest": "#ffffff",
+            "on-background": "#002114",
+            "on-error": "#ffffff",
+            "on-surface": "#002114",
+            "on-secondary-container": "#00734d",
+            "tertiary-fixed": "#b0f1cc",
+            "tertiary": "#0d5237",
+            "on-secondary-fixed-variant": "#005235",
+            "surface-container-low": "#d1fee5",
+            "primary": "#0f5238",
+            "surface-container": "#ccf8df",
+            "on-primary-fixed-variant": "#0e5138",
+            "secondary-fixed-dim": "#75daa8",
+            "surface-bright": "#e8fff0",
+            "on-surface-variant": "#404943",
+            "error-container": "#ffdad6",
+            "on-error-container": "#93000a",
+            "primary-fixed-dim": "#95d4b3",
+            "on-tertiary-fixed": "#002113",
+            "on-primary-fixed": "#002114",
+            "error": "#ba1a1a",
+            "surface-variant": "#c1ecd4",
+            "surface-dim": "#b8e4cc",
+            "on-secondary-fixed": "#002113",
+            "surface-tint": "#2c694e",
+            "outline": "#707973",
+            "tertiary-container": "#2c6a4e",
+            "on-tertiary": "#ffffff",
+            "background": "#e8fff0",
+            "secondary-container": "#92f7c3",
+            "surface": "#e8fff0"
+          },
+          borderRadius: {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          spacing: {
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "margin-mobile": "1rem",
+            "space-xl": "2.5rem",
+            "space-xs": "0.25rem",
+            "gutter": "1.5rem",
+            "space-sm": "0.5rem",
+            "gutter-mobile": "1rem",
+            "margin": "2rem"
+          },
+          fontFamily: {
+            "title-sm": ["Inter"],
+            "display-lg-mobile": ["Inter"],
+            "headline-sm": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "label-md": ["Inter"],
+            "display-lg": ["Inter"],
+            "label-sm": ["Inter"],
+            "label-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "title-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "body-lg": ["Inter"],
+            "headline-lg": ["Inter"],
+            "headline-md": ["Inter"]
+          },
+          fontSize: {
+            "title-sm": ["16px", { lineHeight: "24px", letterSpacing: "0", fontWeight: "600" }],
+            "display-lg-mobile": ["30px", { lineHeight: "38px", letterSpacing: "-0.02em", fontWeight: "700" }],
+            "headline-sm": ["20px", { lineHeight: "28px", letterSpacing: "0", fontWeight: "600" }],
+            "headline-lg-mobile": ["24px", { lineHeight: "32px", letterSpacing: "-0.01em", fontWeight: "700" }],
+            "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "600" }],
+            "display-lg": ["40px", { lineHeight: "48px", letterSpacing: "-0.02em", fontWeight: "700" }],
+            "label-sm": ["11px", { lineHeight: "14px", letterSpacing: "0.02em", fontWeight: "500" }],
+            "label-lg": ["14px", { lineHeight: "20px", letterSpacing: "0.01em", fontWeight: "600" }],
+            "body-md": ["15px", { lineHeight: "24px", letterSpacing: "0", fontWeight: "400" }],
+            "title-md": ["18px", { lineHeight: "26px", letterSpacing: "0", fontWeight: "600" }],
+            "body-sm": ["13px", { lineHeight: "20px", letterSpacing: "0", fontWeight: "400" }],
+            "body-lg": ["18px", { lineHeight: "28px", letterSpacing: "0", fontWeight: "400" }],
+            "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.015em", fontWeight: "700" }],
+            "headline-md": ["24px", { lineHeight: "32px", letterSpacing: "-0.01em", fontWeight: "700" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    /* Smooth iOS style sheet animations */
+    .sheet-transition {
+      transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.3s ease;
+    }
+    /* Hide scrollbars for clean presentation */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-on-surface antialiased min-h-screen flex items-center justify-center p-0 md:p-6 select-none font-body-md text-body-md">
+<!-- Mobile Frame (iPhone 15 Pro Form Factor: 393px x 852px) -->
+<main class="relative w-full max-w-[400px] h-[852px] bg-white overflow-hidden shadow-2xl md:rounded-[48px] border-0 md:border-[10px] md:border-slate-800 flex flex-col justify-end">
+<!-- iPhone Top Dynamic Island & Status Bar Simulation -->
+<div class="absolute top-0 left-0 right-0 z-50 flex justify-between items-center px-7 pt-3 pb-2 text-slate-800 pointer-events-none">
+<span class="text-xs font-semibold tracking-tight">19:42</span>
+<div class="w-28 h-6 bg-black rounded-full mx-auto absolute left-1/2 -translate-x-1/2 top-2.5"></div>
+<div class="flex items-center gap-1.5 text-slate-800">
+<span class="material-symbols-outlined text-[15px]" data-icon="signal_cellular_4_bar">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[15px]" data-icon="wifi">wifi</span>
+<span class="material-symbols-outlined text-[17px]" data-icon="battery_full">battery_full</span>
+</div>
+</div>
+<!-- BACKGROUND: İlan Detay Ekranı (Flu & Yarı Saydam Katman) -->
+<div class="absolute inset-0 z-0 overflow-hidden filter blur-sm scale-100 pointer-events-none opacity-90">
+<!-- Background Header Image -->
+<div class="relative h-64 w-full">
+<img class="w-full h-full object-cover" data-alt="A warm, artisanal bakery scene with freshly baked sourdough bread, rustic pastries, and golden baguettes resting on wooden shelves. Soft atmospheric daylight streams through a cafe window, evoking authentic European bakery traditions. Rich golden crust tones blend with deep emerald brand hues in a clean commercial photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjeQR7RUYykDLid3ZoyNL_8CzoKCd_qLm4dH7nuHvF4WQEM8eGz74VKGowK8DfqZPxWhz4DztW6hfm7ngYvIiH1_aUFlnG87iQEy5XZXIPIWmtQ8yvzTPeSSHp3ZBAcdRT6oznRWPG264vwjVj39xd87OIcffkPWEvIQIC0EQ09em0BJa30kbT2r8jgGjZzEmSgO0G42ey3p5cXGvqYKmmJUXdLDl-898UPRhchc-LCjQ_tj7stuyp"/>
+<div class="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-white"></div>
+<div class="absolute top-12 left-4 flex gap-2">
+<div class="w-9 h-9 rounded-full bg-white/90 backdrop-blur-md flex items-center justify-center text-primary shadow-sm">
+<span class="material-symbols-outlined text-xl" data-icon="arrow_back">arrow_back</span>
+</div>
+</div>
+</div>
+<!-- Content Behind Sheet -->
+<div class="p-5 space-y-4 bg-white">
+<div class="flex items-center gap-2">
+<span class="bg-secondary-container text-on-secondary-container px-2.5 py-0.5 rounded-full text-xs font-bold uppercase">Kurtarma İlanı</span>
+<span class="text-xs text-outline">Lezzet Fırını • Kadıköy</span>
+</div>
+<h1 class="text-xl font-bold text-primary">Günün Sürpriz Artisan Fırın Paketi</h1>
+<p class="text-xs text-on-surface-variant line-clamp-3">
+          Taze üretilmiş artisan ekşi mayalı ekmekler, kruvasanlar ve tuzlu hamur işlerinden oluşan sürpriz paket. Günlük israfı önleyerek lezzeti kurtarın.
+        </p>
+<!-- Dummy Detailed Specs -->
+<div class="grid grid-cols-2 gap-3 pt-2">
+<div class="p-3 bg-surface-container-low rounded-xl">
+<span class="text-xs text-outline block">Orijinal Değer</span>
+<span class="text-base font-bold text-on-surface line-through">₺95,00</span>
+</div>
+<div class="p-3 bg-surface-container rounded-xl">
+<span class="text-xs text-primary font-semibold block">Kurtarma Fiyatı</span>
+<span class="text-base font-bold text-primary">₺25,00</span>
+</div>
+</div>
+</div>
+</div>
+<!-- SEMI-TRANSPARENT BACKDROP OVERLAY -->
+<div class="absolute inset-0 z-10 bg-inverse-surface/40 backdrop-blur-[6px] transition-opacity"></div>
+<!-- BOTTOM SHEET CONTAINER (Active Modal View) -->
+<section aria-labelledby="modal-title" class="relative z-20 w-full bg-surface-container-lowest rounded-t-[32px] shadow-[0_-8px_30px_rgba(27,67,50,0.18)] border-t border-primary/10 max-h-[92%] flex flex-col sheet-transition">
+<!-- Top Drag Handle -->
+<div class="pt-3 pb-2 flex justify-center items-center cursor-grab active:cursor-grabbing w-full">
+<div class="w-12 h-1.5 rounded-full bg-slate-300"></div>
+</div>
+<!-- Sheet Header -->
+<header class="px-5 pt-1 pb-3 flex items-center justify-between border-b border-primary/5">
+<div>
+<h2 class="font-headline-sm text-headline-sm font-bold text-primary tracking-tight" id="modal-title">
+            Rezervasyonu Onayla
+          </h2>
+<p class="text-label-md font-label-md text-on-surface-variant">Lütfen paket ve teslimat detaylarını inceleyin</p>
+</div>
+<button aria-label="Kapat" class="w-8 h-8 rounded-full bg-surface-container-low text-primary flex items-center justify-center hover:bg-surface-container transition-colors active:scale-90" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="close">close</span>
+</button>
+</header>
+<!-- Scrollable Sheet Content -->
+<div class="px-5 py-3 overflow-y-auto no-scrollbar space-y-3.5 flex-1">
+<!-- 1. İLAN ÖZET KARTI (Bento Accent Card) -->
+<article class="p-3.5 rounded-2xl bg-surface-bright border border-secondary-fixed/40 shadow-sm flex items-center gap-3.5">
+<div class="relative w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 bg-surface-container-high border border-primary/10">
+<img class="w-full h-full object-cover" data-alt="A close-up shot of golden artisanal croissants and whole grain sourdough pastries in an eco-friendly kraft paper package. Pristine natural daylight, professional food presentation with fresh rosemary garnish, crisp bakery aesthetics in a lush organic green kitchen ambiance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRXADwnIoFty0tNUR5jm8aKmgjecOVpWEnpdzlhCBosI_lhlzvylOp4TeRpR8GLmml4QXCB19I3DvFfxp8rFQLYIbePU_9MY4Q3q-64NFi5bHg_aKMTc743CbAfn2HsidxLmdLWlVJqOLURT0XgQXM8e2JNkgqaj7FxX5Q6aJeswPFJYqhoG994oFVpF2imxXBoirHM9kidTdA_6qTNn9_RDrQp1ncFFCHifHTOVoBEM4WYzmBPUrV"/>
+<span class="absolute bottom-0 right-0 bg-primary text-white text-[9px] font-bold px-1.5 py-0.5 rounded-tl-md">
+              5 Porsiyon
+            </span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-1.5 mb-0.5">
+<span class="text-[11px] font-semibold text-secondary flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[13px]" data-icon="storefront">storefront</span>
+                Lezzet Fırını
+              </span>
+</div>
+<h3 class="font-title-sm text-title-sm text-on-surface truncate leading-tight">
+              Günün Sürpriz Artisan Fırın Paketi
+            </h3>
+<div class="flex items-center justify-between mt-1">
+<div class="flex items-center gap-1.5">
+<span class="text-headline-sm font-headline-sm text-primary font-bold">₺25,00</span>
+<span class="text-xs text-outline line-through">₺95,00</span>
+</div>
+<span class="bg-secondary-container text-on-secondary-container font-label-sm text-label-sm px-2 py-0.5 rounded-full font-bold">
+                -%74 İndirim
+              </span>
+</div>
+</div>
+</article>
+<!-- 2. TESLİMAT BİLGİLERİ BÖLÜMÜ -->
+<section class="bg-white rounded-2xl p-3.5 border border-primary/10 shadow-sm space-y-2.5">
+<h4 class="text-label-md font-label-md text-primary font-bold uppercase tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="local_shipping">local_shipping</span>
+            Teslimat Bilgileri
+          </h4>
+<div class="space-y-2 divide-y divide-primary/5 text-body-sm font-body-sm">
+<!-- İşletme -->
+<div class="flex items-start gap-2.5 pt-1">
+<span class="material-symbols-outlined text-primary text-[19px] mt-0.5" data-icon="store">store</span>
+<div class="flex-1">
+<span class="text-xs text-outline block leading-none mb-0.5">İşletme</span>
+<p class="font-semibold text-on-surface">Lezzet Fırını - Kadıköy Moda</p>
+</div>
+</div>
+<!-- Teslim Adresi -->
+<div class="flex items-start gap-2.5 pt-2">
+<span class="material-symbols-outlined text-primary text-[19px] mt-0.5" data-icon="location_on">location_on</span>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<span class="text-xs text-outline block leading-none mb-0.5">Teslim Adresi</span>
+<span class="text-[11px] font-semibold text-secondary bg-surface-container px-2 py-0.2 rounded-full">
+                    1.2 km yürüme mesafesinde
+                  </span>
+</div>
+<p class="font-medium text-on-surface leading-snug">Moda Cad. No:42/A, Kadıköy / İstanbul</p>
+</div>
+</div>
+<!-- Teslimat Zamanı -->
+<div class="flex items-start gap-2.5 pt-2">
+<span class="material-symbols-outlined text-amber-700 text-[19px] mt-0.5" data-icon="schedule">schedule</span>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<span class="text-xs text-outline block leading-none mb-0.5">Teslimat Zamanı</span>
+<span class="text-[11px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full flex items-center gap-1 animate-pulse">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
+                    Son 1 saat 24 dk
+                  </span>
+</div>
+<p class="font-bold text-on-surface">Bugün 19:00 - 21:00</p>
+</div>
+</div>
+<!-- Paket Türü -->
+<div class="flex items-start gap-2.5 pt-2">
+<span class="material-symbols-outlined text-primary text-[19px] mt-0.5" data-icon="inventory_2">inventory_2</span>
+<div class="flex-1">
+<span class="text-xs text-outline block leading-none mb-0.5">Paket Türü</span>
+<p class="font-medium text-on-surface">Sürpriz Kurtarma Paketi (Unlu Mamul)</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 3. NO-SHOW VE SORUMLULUK UYARISI KUTUSU -->
+<aside class="bg-amber-50/90 border border-amber-200/80 rounded-xl p-3 text-amber-900 text-xs flex gap-2.5 items-start leading-relaxed shadow-sm">
+<span class="material-symbols-outlined text-amber-700 text-[18px] flex-shrink-0 mt-0.5" data-icon="warning">warning</span>
+<p class="font-medium">
+<strong class="font-bold text-amber-950">Lütfen teslim alma saatine sadık kalınız.</strong> 
+            Alınmayan paketler için no-show kaydı oluşur ve başkasının gıdayı kurtarması engellenmiş olur.
+          </p>
+</aside>
+<!-- 4. ÖDEME SEÇENEĞİ KONTROLLERİ -->
+<fieldset class="space-y-2">
+<legend class="text-label-md font-label-md text-primary font-bold uppercase tracking-wider flex items-center gap-1 mb-1">
+<span class="material-symbols-outlined text-sm" data-icon="payments">payments</span>
+            Ödeme Yöntemi
+          </legend>
+<!-- Radio 1: Teslim Alırken Öde (Seçili) -->
+<label class="flex items-center justify-between p-3 rounded-xl border-2 border-primary-container bg-surface-bright cursor-pointer shadow-sm transition-all">
+<div class="flex items-center gap-3">
+<div class="w-5 h-5 rounded-full border-2 border-primary flex items-center justify-center bg-white">
+<div class="w-2.5 h-2.5 rounded-full bg-primary"></div>
+</div>
+<div>
+<span class="text-body-sm font-body-sm font-bold text-on-surface block leading-tight">
+                  Teslim Alırken Öde
+                </span>
+<span class="text-label-sm font-label-sm text-outline">İşletmede Nakit veya Kredi Kartı</span>
+</div>
+</div>
+<span class="text-title-sm font-title-sm font-bold text-primary">₺25,00</span>
+<input checked="" class="hidden" name="payment_method" type="radio" value="door"/>
+</label>
+<!-- Radio 2: Online Ödeme -->
+<label class="flex items-center justify-between p-3 rounded-xl border border-outline-variant bg-white opacity-75 hover:opacity-100 cursor-pointer transition-all">
+<div class="flex items-center gap-3">
+<div class="w-5 h-5 rounded-full border-2 border-outline-variant flex items-center justify-center bg-white">
+<div class="w-2.5 h-2.5 rounded-full bg-transparent"></div>
+</div>
+<div>
+<span class="text-body-sm font-body-sm font-semibold text-on-surface block leading-tight">
+                  Online Ödeme
+                </span>
+<span class="text-label-sm font-label-sm text-outline">Kayıtlı Kart veya Cüzdan ile</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline text-lg" data-icon="credit_card">credit_card</span>
+<input class="hidden" name="payment_method" type="radio" value="online"/>
+</label>
+</fieldset>
+</div>
+<!-- Action Footer (Pinned Bottom Area) -->
+<footer class="px-5 pt-3 pb-6 border-t border-primary/10 bg-surface-container-lowest shadow-[0_-4px_12px_rgba(0,0,0,0.03)]">
+<!-- Büyük Ana Buton -->
+<button class="w-full bg-[#2D6A4F] hover:bg-[#1B4332] active:scale-[0.98] text-white rounded-2xl py-3.5 px-4 font-bold text-base flex items-center justify-center gap-2 shadow-md transition-all duration-150 group" type="button">
+<span class="material-symbols-outlined text-xl transition-transform group-hover:rotate-12" data-icon="qr_code_2">qr_code_2</span>
+<span>Rezervasyonu Onayla &amp; QR Kod Al</span>
+</button>
+<!-- İptal Linki / Butonu -->
+<button class="w-full text-slate-500 hover:text-slate-800 text-body-sm font-body-sm font-medium text-center mt-2.5 py-1 transition-colors" type="button">
+          Vazgeç ve Kapat
+        </button>
+</footer>
+<!-- iOS Home Indicator -->
+<div class="w-36 h-1 bg-slate-300 rounded-full mx-auto mb-1.5"></div>
+</section>
+</main>
+<!-- Interactive Demo Script -->
+<script>
+    // Radio toggle interaction micro-effect
+    document.querySelectorAll('input[name="payment_method"]').forEach((input) => {
+      input.addEventListener('change', (e) => {
+        const labels = document.querySelectorAll('fieldset label');
+        labels.forEach(lbl => {
+          lbl.classList.remove('border-2', 'border-primary-container', 'bg-surface-bright');
+          lbl.classList.add('border', 'border-outline-variant', 'bg-white', 'opacity-75');
+          const dot = lbl.querySelector('.w-2\\.5');
+          if (dot) dot.classList.replace('bg-primary', 'bg-transparent');
+        });
+
+        const activeLabel = e.target.closest('label');
+        activeLabel.classList.remove('border-outline-variant', 'bg-white', 'opacity-75');
+        activeLabel.classList.add('border-2', 'border-primary-container', 'bg-surface-bright');
+        const activeDot = activeLabel.querySelector('.w-2\\.5');
+        if (activeDot) activeDot.classList.replace('bg-transparent', 'bg-primary');
+      });
+    });
+  </script>
+</body></html>

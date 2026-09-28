@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html lang="tr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Profil - GıdaKöprüsü</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "inverse-on-surface": "#cffbe2",
+            "secondary-fixed": "#92f7c3",
+            "on-primary-container": "#a8e7c5",
+            "surface-container-high": "#c6f2da",
+            "tertiary-fixed-dim": "#94d4b1",
+            "outline-variant": "#bfc9c1",
+            "on-secondary": "#ffffff",
+            "on-tertiary-container": "#a7e7c4",
+            "primary-container": "#2d6a4f",
+            "on-tertiary-fixed-variant": "#0c5136",
+            "inverse-surface": "#0e3727",
+            "on-primary": "#ffffff",
+            "primary-fixed": "#b1f0ce",
+            "secondary": "#006c48",
+            "inverse-primary": "#95d4b3",
+            "surface-container-highest": "#c1ecd4",
+            "surface-container-lowest": "#ffffff",
+            "on-background": "#002114",
+            "on-error": "#ffffff",
+            "on-surface": "#002114",
+            "on-secondary-container": "#00734d",
+            "tertiary-fixed": "#b0f1cc",
+            "tertiary": "#0d5237",
+            "on-secondary-fixed-variant": "#005235",
+            "surface-container-low": "#d1fee5",
+            "primary": "#0f5238",
+            "surface-container": "#ccf8df",
+            "on-primary-fixed-variant": "#0e5138",
+            "secondary-fixed-dim": "#75daa8",
+            "surface-bright": "#e8fff0",
+            "on-surface-variant": "#404943",
+            "error-container": "#ffdad6",
+            "on-error-container": "#93000a",
+            "primary-fixed-dim": "#95d4b3",
+            "on-tertiary-fixed": "#002113",
+            "on-primary-fixed": "#002114",
+            "error": "#ba1a1a",
+            "surface-variant": "#c1ecd4",
+            "surface-dim": "#b8e4cc",
+            "on-secondary-fixed": "#002113",
+            "surface-tint": "#2c694e",
+            "outline": "#707973",
+            "tertiary-container": "#2c6a4e",
+            "on-tertiary": "#ffffff",
+            "background": "#e8fff0",
+            "secondary-container": "#92f7c3",
+            "surface": "#e8fff0"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-md": "1rem",
+            "space-lg": "1.5rem",
+            "margin-mobile": "1rem",
+            "space-xl": "2.5rem",
+            "space-xs": "0.25rem",
+            "gutter": "1.5rem",
+            "space-sm": "0.5rem",
+            "gutter-mobile": "1rem",
+            "margin": "2rem"
+          },
+          "fontFamily": {
+            "title-sm": ["Inter"],
+            "display-lg-mobile": ["Inter"],
+            "headline-sm": ["Inter"],
+            "headline-lg-mobile": ["Inter"],
+            "label-md": ["Inter"],
+            "display-lg": ["Inter"],
+            "label-sm": ["Inter"],
+            "label-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "title-md": ["Inter"],
+            "body-sm": ["Inter"],
+            "body-lg": ["Inter"],
+            "headline-lg": ["Inter"],
+            "headline-md": ["Inter"]
+          },
+          "fontSize": {
+            "title-sm": ["16px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "600" }],
+            "display-lg-mobile": ["30px", { "lineHeight": "38px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "letterSpacing": "0", "fontWeight": "600" }],
+            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "display-lg": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "500" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "body-md": ["15px", { "lineHeight": "24px", "letterSpacing": "0", "fontWeight": "400" }],
+            "title-md": ["18px", { "lineHeight": "26px", "letterSpacing": "0", "fontWeight": "600" }],
+            "body-sm": ["13px", { "lineHeight": "20px", "letterSpacing": "0", "fontWeight": "400" }],
+            "body-lg": ["18px", { "lineHeight": "28px", "letterSpacing": "0", "fontWeight": "400" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.015em", "fontWeight": "700" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    /* Hide scrollbars for slick mobile touch */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex justify-center selection:bg-secondary-container selection:text-primary">
+<!-- Mobile Canvas Frame (iPhone Form Factor Constraint) -->
+<main class="w-full max-w-[430px] min-h-screen bg-background relative flex flex-col pb-28 shadow-2xl">
+<!-- iOS Native Status Bar (09:41) -->
+<header class="w-full pt-3 px-6 flex justify-between items-center text-primary z-30 select-none bg-surface-bright">
+<span class="text-sm font-semibold tracking-tight">09:41</span>
+<!-- Dynamic Island simulated gap or speaker zone -->
+<div class="w-24 h-4 bg-inverse-surface/10 rounded-full mx-auto hidden sm:block"></div>
+<div class="flex items-center gap-1.5 text-primary">
+<span class="material-symbols-outlined text-[17px]">signal_cellular_4_bar</span>
+<span class="material-symbols-outlined text-[17px]">wifi</span>
+<span class="material-symbols-outlined text-[20px]">battery_full</span>
+</div>
+</header>
+<!-- Top Profile Header & Identity Card -->
+<section class="bg-gradient-to-b from-[#e8fff0] to-white rounded-b-3xl pt-2 pb-6 px-4 border-b border-gray-100 shadow-sm relative">
+<!-- Mini Top bar actions inside profile -->
+<div class="w-full flex justify-between items-center px-1 mb-2">
+<div class="flex items-center gap-1.5 text-primary">
+<span class="material-symbols-outlined text-primary text-xl">eco</span>
+<span class="text-xs font-bold tracking-tight text-primary uppercase">GıdaKöprüsü</span>
+</div>
+<button aria-label="Ayarlar" class="w-9 h-9 rounded-full bg-white/80 backdrop-blur-sm border border-primary/10 flex items-center justify-center text-primary shadow-xs hover:bg-white active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+</button>
+</div>
+<!-- Avatar with Edit Badge -->
+<div class="relative w-24 h-24 mx-auto mt-1">
+<img class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-md" data-alt="A luminous, warmly lit portrait of Ayşe Yılmaz, a cheerful 30-year-old Turkish female food-sustainability coordinator with tied dark brown hair, wearing a clean sage-green linen shirt in an organic sunny community kitchen studio. The background exhibits clean white tiles and lush potted herbs, embodying freshness, high aesthetic quality, soft cinematic natural lighting, and an eco-friendly modern mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBuqeaOh6D5inDOGhMCi3jypMqqwKpAocLO42XhA51fKfpCp0_oEcyfmERF5ZjrRQ7nrWRukJiZO3-7x5-dbjTQIL1xCr5ieFmpSxGsqqnhvpdMyNyjEr8do4O1fwXpwTLHFzVVHYsfX3R48xWeOuIjOwgBFQRIPaZRjlY3cdvPj73ZZweiTdLzuFwN8lvbCHUwhwNp9Im75NjQhfiXFNRNnwOTKolnnKXBQNV4hlj8Nui7o1YH7P0n"/>
+<!-- Edit Profile Image Icon Button -->
+<button aria-label="Profil fotoğrafını güncelle" class="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-primary text-white border-2 border-white shadow-md flex items-center justify-center hover:bg-primary-container active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[16px]">photo_camera</span>
+</button>
+</div>
+<!-- User Identification -->
+<h1 class="text-xl font-bold text-[#1B4332] text-center mt-3 tracking-tight">Ayşe Yılmaz</h1>
+<p class="text-xs text-gray-500 text-center mt-0.5 font-medium">ayse.yilmaz@restoranagi.org • Kadıköy, İstanbul</p>
+<!-- Badge Pill -->
+<div class="flex justify-center mt-2">
+<span class="inline-flex items-center gap-1.5 bg-emerald-100 text-emerald-800 text-xs font-semibold px-3 py-1 rounded-full shadow-xs">
+<span>🌱</span>
+<span>Bilinçli Kurtarıcı (Seviye 4)</span>
+</span>
+</div>
+<!-- Mini Impact Summary Card -->
+<div class="bg-white rounded-2xl shadow-sm p-3 mt-4 flex justify-around items-center border border-gray-100 divide-x divide-gray-100">
+<!-- Stat 1 -->
+<div class="flex-1 flex flex-col items-center text-center px-1">
+<div class="flex items-center gap-1">
+<span class="text-sm">🌿</span>
+<span class="font-bold text-sm text-[#1B4332]">12.5 kg</span>
+</div>
+<span class="text-[11px] text-gray-500 font-medium mt-0.5">Kurtarıldı</span>
+</div>
+<!-- Stat 2 -->
+<div class="flex-1 flex flex-col items-center text-center px-1">
+<div class="flex items-center gap-1">
+<span class="text-sm">🌍</span>
+<span class="font-bold text-sm text-[#1B4332]">31.2 kg</span>
+</div>
+<span class="text-[11px] text-gray-500 font-medium mt-0.5">CO₂ Tasarrufu</span>
+</div>
+<!-- Stat 3 -->
+<div class="flex-1 flex flex-col items-center text-center px-1">
+<div class="flex items-center gap-1">
+<span class="text-sm">🏆</span>
+<span class="font-bold text-sm text-[#1B4332]">3 Rozet</span>
+</div>
+<span class="text-[11px] text-gray-500 font-medium mt-0.5">Kazanıldı</span>
+</div>
+</div>
+</section>
+<!-- Settings Groups (iOS / Native Settings Style) -->
+<div class="px-4 mt-4 space-y-4">
+<!-- Group 1: Hesabım & Etki -->
+<div>
+<h2 class="text-xs font-bold uppercase tracking-wider text-[#1B4332]/70 px-3 mb-1.5">Hesabım &amp; Etki</h2>
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 divide-y divide-gray-100 overflow-hidden">
+<!-- Item: Kişisel Bilgilerim -->
+<a class="w-full flex items-center justify-between p-3.5 hover:bg-surface-container-low/30 active:bg-surface-container-low/60 transition-colors" href="#personal-info">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]">person</span>
+</div>
+<span class="text-sm font-medium text-[#1B4332]">Kişisel Bilgilerim</span>
+</div>
+<span class="material-symbols-outlined text-gray-400 text-[20px]">chevron_right</span>
+</a>
+<!-- Item: Rozetlerim & Liderlik Tablosu -->
+<a class="w-full flex items-center justify-between p-3.5 hover:bg-surface-container-low/30 active:bg-surface-container-low/60 transition-colors" href="#badges">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600">
+<span class="material-symbols-outlined text-[20px]">military_tech</span>
+</div>
+<span class="text-sm font-medium text-[#1B4332]">Rozetlerim &amp; Liderlik Tablosu</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">3/8 Rozet</span>
+<span class="material-symbols-outlined text-gray-400 text-[20px]">chevron_right</span>
+</div>
+</a>
+<!-- Item: Gıda Kurtarma İstatistiklerim -->
+<a class="w-full flex items-center justify-between p-3.5 hover:bg-surface-container-low/30 active:bg-surface-container-low/60 transition-colors" href="#stats">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-700">
+<span class="material-symbols-outlined text-[20px]">bar_chart</span>
+</div>
+<span class="text-sm font-medium text-[#1B4332]">Gıda Kurtarma İstatistiklerim</span>
+</div>
+<span class="material-symbols-outlined text-gray-400 text-[20px]">chevron_right</span>
+</a>
+<!-- Item: Kayıtlı Konumlarım -->
+<a class="w-full flex items-center justify-between p-3.5 hover:bg-surface-container-low/30 active:bg-surface-container-low/60 transition-colors" href="#locations">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-xl bg-teal-500/10 flex items-center justify-center text-teal-700">
+<span class="material-symbols-outlined text-[20px]">location_on</span>
+</div>
+<span class="text-sm font-medium text-[#1B4332]">Kayıtlı Konumlarım</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="text-xs text-gray-500">Kadıköy</span>
+<span class="material-symbols-outlined text-gray-400 text-[20px]">chevron_right</span>
+</div>
+</a>
+</div>
+</div>
+<!-- Group 2: Uygulama Tercihleri -->
+<div>
+<h2 class="text-xs font-bold uppercase tracking-wider text-[#1B4332]/70 px-3 mb-1.5">Uygulama Tercihleri</h2>
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 divide-y divide-gray-100 overflow-hidden">
+<!-- Item: Bildirim Tercihleri -->
+<a class="w-full flex items-center justify-between p-3.5 hover:bg-surface-container-low/30 active:bg-surface-container-low/60 transition-colors" href="#notifications">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-600">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</div>
+<span class="text-sm font-medium text-[#1B4332]">Bildirim Tercihleri</span>
+</div>
+<span class="material-symbols-outlined text-gray-400 text-[20px]">chevron_right</span>
+</a>
+<!-- Item: Karanlık Mod (iOS Switch) -->
+<div class="w-full flex items-center justify-between p-3.5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600">
+<span class="material-symbols-outlined text-[20px]">dark_mode</span>
+</div>
+<span class="text-sm font-medium text-[#1B4332]">Karanlık Mod</span>
+</div>
+<!-- Interactive Switch Toggle -->
+<label class="relative inline-flex items-center cursor-pointer select-none">
+<input class="sr-only peer" id="dark-mode-toggle" type="checkbox"/>
+<div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2D6A4F]"></div>
+</label>
+</div>
+<!-- Item: Dil / Language -->
+<a class="w-full flex items-center justify-between p-3.5 hover:bg-surface-container-low/30 active:bg-surface-container-low/60 transition-colors" href="#language">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-700">
+<span class="material-symbols-outlined text-[20px]">language</span>
+</div>
+<span class="text-sm font-medium text-[#1B4332]">Dil / Language</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="text-xs text-gray-500">Türkçe (TR)</span>
+<span class="material-symbols-outlined text-gray-400 text-[20px]">chevron_right</span>
+</div>
+</a>
+</div>
+</div>
+<!-- Group 3: Destek & Kurumsal -->
+<div>
+<h2 class="text-xs font-bold uppercase tracking-wider text-[#1B4332]/70 px-3 mb-1.5">Destek &amp; Kurumsal</h2>
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 divide-y divide-gray-100 overflow-hidden">
+<!-- Item: Yardım Merkezi & SSS -->
+<a class="w-full flex items-center justify-between p-3.5 hover:bg-surface-container-low/30 active:bg-surface-container-low/60 transition-colors" href="#help">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-xl bg-emerald-700/10 flex items-center justify-center text-[#2D6A4F]">
+<span class="material-symbols-outlined text-[20px]">help</span>
+</div>
+<span class="text-sm font-medium text-[#1B4332]">Yardım Merkezi &amp; SSS</span>
+</div>
+<span class="material-symbols-outlined text-gray-400 text-[20px]">chevron_right</span>
+</a>
+<!-- Item: Kullanım Koşulları & Gizlilik -->
+<a class="w-full flex items-center justify-between p-3.5 hover:bg-surface-container-low/30 active:bg-surface-container-low/60 transition-colors" href="#privacy">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-xl bg-slate-500/10 flex items-center justify-center text-slate-600">
+<span class="material-symbols-outlined text-[20px]">description</span>
+</div>
+<span class="text-sm font-medium text-[#1B4332]">Kullanım Koşulları &amp; Gizlilik</span>
+</div>
+<span class="material-symbols-outlined text-gray-400 text-[20px]">chevron_right</span>
+</a>
+<!-- Item: GıdaKöprüsü'nü Değerlendir -->
+<a class="w-full flex items-center justify-between p-3.5 hover:bg-surface-container-low/30 active:bg-surface-container-low/60 transition-colors" href="#rate">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-xl bg-yellow-500/10 flex items-center justify-center text-amber-500">
+<span class="material-symbols-outlined text-[20px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<span class="text-sm font-medium text-[#1B4332]">GıdaKöprüsü'nü Değerlendir</span>
+</div>
+<span class="material-symbols-outlined text-gray-400 text-[20px]">chevron_right</span>
+</a>
+</div>
+</div>
+<!-- Sign Out Action & Version Note -->
+<div class="pt-2 flex flex-col items-center">
+<button class="w-full py-3.5 px-4 bg-white rounded-2xl border border-red-100 shadow-sm text-red-500 hover:text-red-700 hover:bg-red-50/50 active:scale-98 transition-all flex items-center justify-center gap-2 font-semibold text-sm">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+<span>Çıkış Yap</span>
+</button>
+<p class="text-xs text-gray-400 text-center mt-3 mb-2 font-medium">
+          GıdaKöprüsü v1.2.0 • Sıfır Atık Hareketi
+        </p>
+</div>
+</div>
+<!-- Bottom Navigation Bar (Docked Mobile Shell) -->
+<!-- Mapped directly from JSON: 5 destinations [Keşfet, Ara, Rezervasyonlar, Bildirimler, Profil] with Tab 5 'Profil' Active -->
+<nav aria-label="Ana Gezinme" class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-space-xs py-space-xs pb-safe bg-surface-container-lowest shadow-md md:hidden max-w-[430px] mx-auto right-0">
+<!-- Tab 1: Keşfet (Inactive) -->
+<button aria-label="Keşfet" class="flex flex-col items-center justify-center text-on-surface-variant px-space-sm py-space-xs font-medium hover:bg-surface-container-low transition-colors duration-150 active:scale-90">
+<span class="material-symbols-outlined text-[22px]">explore</span>
+<span class="text-label-sm font-label-sm mt-0.5">Keşfet</span>
+</button>
+<!-- Tab 2: Ara (Inactive) -->
+<button aria-label="Ara" class="flex flex-col items-center justify-center text-on-surface-variant px-space-sm py-space-xs font-medium hover:bg-surface-container-low transition-colors duration-150 active:scale-90">
+<span class="material-symbols-outlined text-[22px]">search</span>
+<span class="text-label-sm font-label-sm mt-0.5">Ara</span>
+</button>
+<!-- Tab 3: Rezervasyonlar (Inactive) -->
+<button aria-label="Rezervasyonlar" class="flex flex-col items-center justify-center text-on-surface-variant px-space-sm py-space-xs font-medium hover:bg-surface-container-low transition-colors duration-150 active:scale-90">
+<span class="material-symbols-outlined text-[22px]">receipt_long</span>
+<span class="text-label-sm font-label-sm mt-0.5">Rezervasyonlar</span>
+</button>
+<!-- Tab 4: Bildirimler (Inactive) -->
+<button aria-label="Bildirimler" class="flex flex-col items-center justify-center text-on-surface-variant px-space-sm py-space-xs font-medium hover:bg-surface-container-low transition-colors duration-150 active:scale-90 relative">
+<span class="material-symbols-outlined text-[22px]">notifications</span>
+<span class="text-label-sm font-label-sm mt-0.5">Bildirimler</span>
+<!-- Optional notification dot -->
+<span class="absolute top-1 right-3 w-2 h-2 rounded-full bg-error ring-2 ring-white"></span>
+</button>
+<!-- Tab 5: Profil (ACTIVE: Match strict JSON mapping & styles) -->
+<button aria-current="page" aria-label="Profil" class="flex flex-col items-center justify-center text-primary bg-secondary-container/40 rounded-xl px-space-sm py-space-xs font-semibold hover:bg-surface-container-low transition-colors duration-150 active:scale-90">
+<span class="material-symbols-outlined text-[22px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="text-label-sm font-label-sm mt-0.5">Profil</span>
+</button>
+</nav>
+</main>
+<!-- Interactive micro-feedback script -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggle = document.getElementById('dark-mode-toggle');
+      if (toggle) {
+        toggle.addEventListener('change', (e) => {
+          // Micro-interaction notification feedback
+          const isDark = e.target.checked;
+          if (isDark) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        });
+      }
+    });
+  </script>
+</body></html>
