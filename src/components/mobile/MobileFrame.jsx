@@ -25,7 +25,6 @@ export const MobileFrame = ({ children }) => {
     currentRole,
     currentUser,
     notifications,
-    reservations,
     setViewMode
   } = useApp();
 

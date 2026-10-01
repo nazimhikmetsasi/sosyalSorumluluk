@@ -191,6 +191,19 @@ export const AppProvider = ({ children }) => {
     };
   }, []);
 
+  // One-off adoption of the seeded demo reservations, which predate per-user ownership.
+  // Local storage is per browser, so these are this person's demo rows; stamping them
+  // keeps the demo populated without the read path having to treat ownerless records as
+  // everyone's. Drops out entirely once reservations live in the database.
+  useEffect(() => {
+    if (!account) return;
+    setReservations(prev =>
+      prev.some(r => !r.userId)
+        ? prev.map(r => (r.userId ? r : { ...r, userId: account.id }))
+        : prev
+    );
+  }, [account]);
+
   // Sync state changes to localStorage
   useEffect(() => saveStorage('USER', storedProfile), [storedProfile]);
   useEffect(() => saveStorage('VIEW_MODE', viewMode), [viewMode]);
@@ -229,6 +242,10 @@ export const AppProvider = ({ children }) => {
   const myOrganisationId = account?.organisationId || null;
   const myListings = myOrganisationId ? listingsWithDistance.filter(l => l.businessId === myOrganisationId) : [];
   const myReservations = myOrganisationId ? reservations.filter(r => r.businessId === myOrganisationId) : [];
+
+  // The buyer's own orders. Seeded rows carry no userId, so they stay invisible rather
+  // than being shown to whoever signs in first; the migration below adopts them once.
+  const myPurchases = account ? reservations.filter(r => r.userId === account.id) : [];
 
   // Translation Helper
   const t = (key) => {
@@ -330,6 +347,7 @@ export const AppProvider = ({ children }) => {
     while (openCodes.has(newCode)) newCode = `GK-${randomDigits(6)}`;
     const newRes = {
       id: `res_${Date.now().toString().slice(-4)}`,
+      userId: account?.id || null,
       listingId: listing.id,
       listingTitle: listing.title,
       businessId: listing.businessId,
@@ -400,8 +418,13 @@ export const AppProvider = ({ children }) => {
 
   // Cancel a reservation
   const cancelReservation = (resId) => {
-    const target = reservations.find(r => r.id === resId);
-    if (!target) return;
+    // Scoped to the caller's own orders, so an id guessed from another account's
+    // reservation cannot be cancelled from here.
+    const target = myPurchases.find(r => r.id === resId);
+    if (!target) {
+      showToast('Bu rezervasyon üzerinde yetkiniz yok.', 'error');
+      return;
+    }
 
     setReservations(prev => prev.map(r => r.id === resId ? { ...r, status: 'cancelled' } : r));
     
@@ -619,6 +642,7 @@ export const AppProvider = ({ children }) => {
         requestLocation,
         myListings,
         myReservations,
+        myPurchases,
         myOrganisationId,
         setListings,
         updateListingPortions,

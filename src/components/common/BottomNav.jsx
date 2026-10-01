@@ -18,9 +18,9 @@ import {
 } from 'lucide-react';
 
 export const BottomNav = () => {
-  const { currentRole, activeTab, setActiveTab, reservations } = useApp();
+  const { currentRole, activeTab, setActiveTab, myPurchases } = useApp();
 
-  const activeResCount = reservations.filter(r => r.status === 'confirmed').length;
+  const activeResCount = myPurchases.filter(r => r.status === 'confirmed').length;
 
   const getMobileTabs = () => {
     if (currentRole === 'business') {
