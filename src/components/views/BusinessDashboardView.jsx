@@ -31,7 +31,6 @@ export const BusinessDashboardView = () => {
   const [activeTabSub, setActiveTabSub] = useState('listings'); // 'listings' | 'orders'
 
   const pendingOrders = myReservations.filter(r => r.status === 'confirmed');
-  const completedOrders = myReservations.filter(r => r.status === 'completed');
 
   const handleCodeSubmit = (e) => {
     e.preventDefault();

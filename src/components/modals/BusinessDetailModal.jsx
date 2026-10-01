@@ -2,20 +2,13 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import {
   X,
-  MapPin,
-  Phone,
-  Clock,
   ShieldCheck,
   Star,
-  Leaf,
-  ShoppingBag,
-  Award,
-  ChevronRight,
-  Share2
+  ShoppingBag
 } from 'lucide-react';
 
 export const BusinessDetailModal = () => {
-  const { businesses, listings, setSelectedListing, showToast } = useApp();
+  const { businesses, listings, setSelectedListing } = useApp();
   const [activeBizModal, setActiveBizModal] = useState(null);
 
   // We can expose an opener via window event or context if needed, or check selected business

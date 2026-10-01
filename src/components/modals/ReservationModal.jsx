@@ -5,7 +5,6 @@ import {
   X,
   MapPin,
   Clock,
-  Phone,
   CheckCircle2,
   Share2,
   Navigation,

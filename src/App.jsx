@@ -15,18 +15,36 @@ import { BusinessDetailModal } from './components/modals/BusinessDetailModal';
 // Views
 import { AuthView } from './components/views/AuthView';
 import { ExploreView } from './components/views/ExploreView';
-import { MapView } from './components/views/MapView';
+// Leaflet and react-leaflet are the heaviest dependency in the app and only the map tab
+// needs them, so they load on first visit instead of on every page load.
+const BusinessDashboardView = React.lazy(() =>
+  import('./components/views/BusinessDashboardView').then(m => ({ default: m.BusinessDashboardView }))
+);
+const BusinessOrdersView = React.lazy(() =>
+  import('./components/views/BusinessOrdersView').then(m => ({ default: m.BusinessOrdersView }))
+);
+const BusinessStatsView = React.lazy(() =>
+  import('./components/views/BusinessStatsView').then(m => ({ default: m.BusinessStatsView }))
+);
+const NewListingView = React.lazy(() =>
+  import('./components/views/NewListingView').then(m => ({ default: m.NewListingView }))
+);
+const NgoDashboardView = React.lazy(() =>
+  import('./components/views/NgoDashboardView').then(m => ({ default: m.NgoDashboardView }))
+);
+const AdminDashboardView = React.lazy(() =>
+  import('./components/views/AdminDashboardView').then(m => ({ default: m.AdminDashboardView }))
+);
+const AdminReportsView = React.lazy(() =>
+  import('./components/views/AdminReportsView').then(m => ({ default: m.AdminReportsView }))
+);
+const MapView = React.lazy(() =>
+  import('./components/views/MapView').then(m => ({ default: m.MapView }))
+);
 import { ReservationsView } from './components/views/ReservationsView';
 import { ProfileBadgesView } from './components/views/ProfileBadgesView';
 import { LeaderboardView } from './components/views/LeaderboardView';
 import { NotificationsView } from './components/views/NotificationsView';
-import { BusinessDashboardView } from './components/views/BusinessDashboardView';
-import { BusinessOrdersView } from './components/views/BusinessOrdersView';
-import { BusinessStatsView } from './components/views/BusinessStatsView';
-import { NewListingView } from './components/views/NewListingView';
-import { NgoDashboardView } from './components/views/NgoDashboardView';
-import { AdminDashboardView } from './components/views/AdminDashboardView';
-import { AdminReportsView } from './components/views/AdminReportsView';
 
 // Security & RBAC Guard
 import { isAuthorized } from './utils/security';
@@ -65,7 +83,20 @@ export const App = () => {
   }
 
   // Active View Router with RBAC Security Guard
-  const renderActiveView = () => {
+  // Only the map is lazy, so one boundary around the router covers it.
+  const renderActiveView = () => (
+    <React.Suspense
+      fallback={
+        <div className="min-h-[50vh] flex items-center justify-center">
+          <div className="w-8 h-8 rounded-full border-4 border-[#A8E7C5] border-t-[#0F5238] animate-spin" />
+        </div>
+      }
+    >
+      {renderRoutedView()}
+    </React.Suspense>
+  );
+
+  const renderRoutedView = () => {
     // 🛡️ Security Check: Ensure user role is permitted to view requested tab
     if (!isAuthorized(currentRole, activeTab)) {
       return <UnauthorizedView />;

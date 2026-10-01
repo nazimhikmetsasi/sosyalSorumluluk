@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import {
   Download,
-  Calendar,
   ChevronLeft,
   FileSpreadsheet
 } from 'lucide-react';
@@ -33,7 +32,7 @@ export const AdminReportsView = () => {
       link.click();
       document.body.removeChild(link);
       showToast(`"${rep.title}" CSV dosyası indirildi! 📊`);
-    } catch (e) {
+    } catch {
       showToast(`Dışa aktarıldı: ${rep.title}`, 'info');
     }
   };

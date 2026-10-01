@@ -1,31 +1,18 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { BottomNav } from '../common/BottomNav';
 import {
   Wifi,
   Battery,
   Signal,
-  ChevronLeft,
-  Search,
-  Bell,
-  SlidersHorizontal,
-  MapPin,
-  Clock,
-  Sparkles,
-  ShoppingBag,
-  User,
-  Heart,
-  QrCode
+  Bell
 } from 'lucide-react';
 
 export const MobileFrame = ({ children }) => {
   const {
     activeTab,
     setActiveTab,
-    currentRole,
     currentUser,
     notifications,
-    reservations,
     setViewMode
   } = useApp();
 

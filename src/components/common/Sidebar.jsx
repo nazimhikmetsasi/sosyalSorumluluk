@@ -22,11 +22,11 @@ import {
 } from 'lucide-react';
 
 export const Sidebar = () => {
-  const { currentRole, activeTab, setActiveTab, reservations, notifications, businesses } = useApp();
+  const { currentRole, activeTab, setActiveTab, myPurchases, notifications, businesses } = useApp();
 
   const pendingOrgCount = businesses.filter(b => b.status === 'pending').length;
   const unreadCount = notifications.filter(n => !n.read).length;
-  const activeResCount = reservations.filter(r => r.status === 'confirmed').length;
+  const activeResCount = myPurchases.filter(r => r.status === 'confirmed').length;
 
   const getMenuItems = () => {
     switch (currentRole) {

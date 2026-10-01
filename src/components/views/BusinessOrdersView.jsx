@@ -4,20 +4,16 @@ import { ScannerModal } from '../modals/ScannerModal';
 import {
   QrCode,
   CheckCircle2,
-  Clock,
   Search,
   Check,
-  Smartphone,
-  ShieldCheck,
-  AlertCircle
+  Smartphone
 } from 'lucide-react';
 
 export const BusinessOrdersView = () => {
   const {
     myReservations,
     completeDelivery,
-    currentUser,
-  } = useApp();
+    } = useApp();
 
   const [inputCode, setInputCode] = useState('');
   const [isScannerOpen, setIsScannerOpen] = useState(false);

@@ -3,16 +3,12 @@ import { useApp } from '../../context/AppContext';
 import {
   QrCode,
   Clock,
-  Star,
-  ChevronRight,
-  ShoppingBag,
-  XCircle,
-  AlertCircle
+  Star
 } from 'lucide-react';
 
 export const ReservationsView = () => {
   const {
-    reservations,
+    myPurchases,
     setSelectedReservation,
     cancelReservation,
     setActiveTab,
@@ -23,10 +19,10 @@ export const ReservationsView = () => {
   const [activeTabFilter, setActiveTabFilter] = useState('active'); // 'active' | 'completed'
   const [cancellingId, setCancellingId] = useState(null);
 
-  const activeReservations = reservations.filter(
+  const activeReservations = myPurchases.filter(
     (r) => r.status === 'confirmed'
   );
-  const pastReservations = reservations.filter(
+  const pastReservations = myPurchases.filter(
     (r) => r.status === 'completed' || r.status === 'cancelled'
   );
 

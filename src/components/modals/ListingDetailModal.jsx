@@ -11,9 +11,7 @@ import {
   Plus,
   Share2,
   Heart,
-  ChevronRight,
-  ShoppingBag,
-  Sparkles
+  ShoppingBag
 } from 'lucide-react';
 
 export const ListingDetailModal = () => {

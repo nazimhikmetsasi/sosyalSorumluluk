@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { X, SlidersHorizontal, Check, ArrowDownUp, ShieldCheck, Sparkles } from 'lucide-react';
+import { X, SlidersHorizontal, Check } from 'lucide-react';
 
 export const FilterModal = () => {
   const {

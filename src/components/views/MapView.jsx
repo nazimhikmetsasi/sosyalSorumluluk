@@ -2,15 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet';
 import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import {
   MapPin,
-  Navigation,
   Clock,
   ShoppingBag,
   SlidersHorizontal,
   X,
-  Footprints,
-  Sparkles
+  Footprints
 } from 'lucide-react';
 
 // Custom Map center changer on pin selection
@@ -32,7 +31,6 @@ export const MapView = () => {
     setSelectedListing,
     maxDistance,
     setMaxDistance,
-    t,
     userPosition: realPosition,
     geoStatus,
     requestLocation,

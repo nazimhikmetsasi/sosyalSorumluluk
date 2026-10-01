@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { X, Award, Download, Share2, Sparkles, Leaf, CheckCircle2, Smartphone, FileCheck2 } from 'lucide-react';
+import { X, Download, Share2, CheckCircle2, Smartphone, FileCheck2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export const ImpactCertificateModal = ({ isOpen, onClose }) => {

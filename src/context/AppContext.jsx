@@ -1,12 +1,9 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import confetti from 'canvas-confetti';
 import { playSoundEffect } from '../utils/audioEffects';
 import { translations } from '../i18n/translations';
 import {
   INITIAL_USER,
-  MOCK_BUSINESSES,
-  MOCK_LISTINGS,
-  MOCK_RESERVATIONS,
   MOCK_BADGES,
   MOCK_NOTIFICATIONS,
   MOCK_LEADERBOARD,
@@ -14,6 +11,17 @@ import {
 } from '../data/mockData';
 import { sanitizeText, sanitizeNumber, getHomeTab, randomDigits, ownsRecord, distanceKm, reanchor } from '../utils/security';
 import { supabase, loadVerifiedAccount, signOut, saveProfile, uploadAvatar } from '../lib/supabase';
+import {
+  fetchAll,
+  insertListing,
+  updateListingPortionCount,
+  archiveListing,
+  insertReservation,
+  setReservationStatus,
+  setOrganisationStatus,
+  setOrganisationTrustScore,
+  grantOrganisationAccess,
+} from '../lib/data';
 
 const AppContext = createContext();
 
@@ -21,11 +29,22 @@ const AppContext = createContext();
 // which is what lets the whole set be moved to wherever the user actually is.
 const SEED_ANCHOR = { lat: 40.9835, lng: 29.0275 }; // Moda, Kadıköy
 
+// Data moved to the database and the session to Supabase. Anyone who used the app before
+// that still has the old copies sitting in their browser; nothing reads them now, so drop
+// them rather than leaving a stale shadow of someone's data and session on the device.
+['LISTINGS', 'BUSINESSES', 'RESERVATIONS', 'SESSION'].forEach(key => {
+  try {
+    localStorage.removeItem(`GK_${key}`);
+  } catch {
+    // A browser with storage disabled has nothing to clean up.
+  }
+});
+
 const loadStorage = (key, fallback) => {
   try {
     const saved = localStorage.getItem(`GK_${key}`);
     return saved ? JSON.parse(saved) : fallback;
-  } catch (e) {
+  } catch {
     return fallback;
   }
 };
@@ -33,8 +52,8 @@ const loadStorage = (key, fallback) => {
 const saveStorage = (key, data) => {
   try {
     localStorage.setItem(`GK_${key}`, JSON.stringify(data));
-  } catch (e) {
-    console.warn('Storage save failed', e);
+  } catch {
+    console.warn('Storage save failed');
   }
 };
 
@@ -51,6 +70,18 @@ const clearAppStorage = () => {
 };
 
 export const AppProvider = ({ children }) => {
+  // Declared first: geolocation, data loading and several actions below report through
+  // it, and a later definition would be read before initialisation.
+  const [toasts, setToasts] = useState([]);
+
+  const showToast = (message, type = 'success') => {
+    const id = Date.now();
+    setToasts(prev => [...prev, { id, message, type }]);
+    setTimeout(() => {
+      setToasts(prev => prev.filter(t => t.id !== id));
+    }, 4000);
+  };
+
   // Identity comes from a server-verified Supabase session, never from browser storage.
   // The demo profile below only supplies presentational extras (avatar, points); role and
   // organisation always come from `account`, which the auth server signed.
@@ -132,13 +163,16 @@ export const AppProvider = ({ children }) => {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   // Data states with persistence
-  const [rawListings, setListings] = useState(() => loadStorage('LISTINGS', MOCK_LISTINGS));
-  const [businesses, setBusinesses] = useState(() => loadStorage('BUSINESSES', MOCK_BUSINESSES));
-  const [reservations, setReservations] = useState(() => loadStorage('RESERVATIONS', MOCK_RESERVATIONS));
+  // Server-owned from here on. Row level security decides what each query returns, so
+  // these arrays hold exactly what this session is allowed to see.
+  const [rawListings, setListings] = useState([]);
+  const [businesses, setBusinesses] = useState([]);
+  const [reservations, setReservations] = useState([]);
+  const [dataLoading, setDataLoading] = useState(true);
   const [badges, setBadges] = useState(() => loadStorage('BADGES', MOCK_BADGES));
   const [notifications, setNotifications] = useState(() => loadStorage('NOTIFICATIONS', MOCK_NOTIFICATIONS));
-  const [leaderboard, setLeaderboard] = useState(MOCK_LEADERBOARD);
-  const [stats, setStats] = useState(PLATFORM_STATS);
+  const [leaderboard] = useState(MOCK_LEADERBOARD);
+  const [stats] = useState(PLATFORM_STATS);
 
   // Favorites state
   const [favorites, setFavorites] = useState(() => loadStorage('FAVORITES', ['lst_01', 'lst_03']));
@@ -177,9 +211,31 @@ export const AppProvider = ({ children }) => {
     const sync = async () => {
       const verified = await loadVerifiedAccount();
       if (cancelled) return;
+
       setAccount(verified);
       setActiveTab(getHomeTab(verified?.role));
       setAuthLoading(false);
+
+      // Signing out must drop the cached rows, or the next account would briefly see the
+      // previous one's data before its own fetch lands.
+      if (!verified) {
+        setListings([]);
+        setBusinesses([]);
+        setReservations([]);
+        setDataLoading(false);
+      }
+
+      // One-off adoption of the seeded demo reservations, which predate per-user
+      // ownership. Local storage is per browser, so these are this person's demo rows;
+      // stamping them keeps the demo populated without the read path having to treat
+      // ownerless records as everyone's. Drops out once reservations live in the database.
+      if (verified) {
+        setReservations(prev =>
+          prev.some(r => !r.userId)
+            ? prev.map(r => (r.userId ? r : { ...r, userId: verified.id }))
+            : prev
+        );
+      }
     };
 
     sync();
@@ -191,13 +247,48 @@ export const AppProvider = ({ children }) => {
     };
   }, []);
 
+  // Pull everything this account may see. Called on sign-in and after any mutation, so
+  // the UI always reflects what the database actually accepted rather than an optimistic
+  // guess that a policy may have rejected.
+  const applyData = useCallback((payload) => {
+    if (payload.error) {
+      console.error('Veri yüklenemedi', payload.error);
+      showToast('Veriler yüklenemedi. Bağlantınızı kontrol edin.', 'error');
+    }
+    setBusinesses(payload.organisations);
+    setListings(payload.listings);
+    setReservations(payload.reservations);
+    setDataLoading(false);
+  }, []);
+
+  // Re-read after a mutation so the UI shows what the database actually accepted rather
+  // than an optimistic guess a policy may have rejected.
+  const refreshData = useCallback(async () => {
+    if (!supabase || !account) return;
+    applyData(await fetchAll());
+  }, [account, applyData]);
+
+  // The cancellation flag drops a response that lands after the account changed, which
+  // would otherwise flash the previous account's rows on screen.
+  useEffect(() => {
+    if (!supabase || !account) return undefined;
+
+    let cancelled = false;
+    (async () => {
+      const payload = await fetchAll();
+      if (cancelled) return;
+      applyData(payload);
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [account, applyData]);
+
   // Sync state changes to localStorage
   useEffect(() => saveStorage('USER', storedProfile), [storedProfile]);
   useEffect(() => saveStorage('VIEW_MODE', viewMode), [viewMode]);
   useEffect(() => saveStorage('LANG', language), [language]);
-  useEffect(() => saveStorage('LISTINGS', rawListings), [rawListings]);
-  useEffect(() => saveStorage('BUSINESSES', businesses), [businesses]);
-  useEffect(() => saveStorage('RESERVATIONS', reservations), [reservations]);
   useEffect(() => saveStorage('BADGES', badges), [badges]);
   useEffect(() => saveStorage('NOTIFICATIONS', notifications), [notifications]);
   useEffect(() => saveStorage('FAVORITES', favorites), [favorites]);
@@ -230,6 +321,10 @@ export const AppProvider = ({ children }) => {
   const myListings = myOrganisationId ? listingsWithDistance.filter(l => l.businessId === myOrganisationId) : [];
   const myReservations = myOrganisationId ? reservations.filter(r => r.businessId === myOrganisationId) : [];
 
+  // The buyer's own orders. Seeded rows carry no userId, so they stay invisible rather
+  // than being shown to whoever signs in first; the migration below adopts them once.
+  const myPurchases = account ? reservations.filter(r => r.userId === account.id) : [];
+
   // Translation Helper
   const t = (key) => {
     return translations[language]?.[key] || translations['tr']?.[key] || key;
@@ -248,17 +343,6 @@ export const AppProvider = ({ children }) => {
     setLanguage(nextLang);
     playSoundEffect('pop');
     showToast(nextLang === 'tr' ? 'Türkçe seçildi 🇹🇷' : 'English selected 🇬🇧', 'info');
-  };
-
-  // Toast system
-  const [toasts, setToasts] = useState([]);
-
-  const showToast = (message, type = 'success') => {
-    const id = Date.now();
-    setToasts(prev => [...prev, { id, message, type }]);
-    setTimeout(() => {
-      setToasts(prev => prev.filter(t => t.id !== id));
-    }, 4000);
   };
 
   // Toggle favorite
@@ -314,52 +398,47 @@ export const AppProvider = ({ children }) => {
   };
 
   // Make a reservation action
-  const makeReservation = (listing, portionCount = 1) => {
+  const makeReservation = async (listing, portionCount = 1) => {
+    if (!account) {
+      showToast('Rezervasyon için giriş yapmalısınız.', 'error');
+      return false;
+    }
     if (listing.portionsAvailable < portionCount) {
       playSoundEffect('error');
       showToast('Yeterli porsiyon kalmadı!', 'error');
       return false;
     }
 
-    // Six digits collide often enough to matter across a busy day, and a duplicate
-    // inside one business would let the wrong order be handed over.
+    // A unique index on (organisation_id, pickup_code) is the real guarantee; this just
+    // avoids the obvious collision before the round trip.
     const openCodes = new Set(
       reservations.filter(r => r.businessId === listing.businessId).map(r => r.pickupCode)
     );
     let newCode = `GK-${randomDigits(6)}`;
     while (openCodes.has(newCode)) newCode = `GK-${randomDigits(6)}`;
-    const newRes = {
-      id: `res_${Date.now().toString().slice(-4)}`,
+
+    const { data: newRes, error } = await insertReservation({
       listingId: listing.id,
-      listingTitle: listing.title,
       businessId: listing.businessId,
-      businessName: listing.businessName,
-      businessAddress: 'Moda Cad. No:44, Caferağa, Kadıköy / İstanbul',
-      businessPhone: '+90 216 333 1122',
+      listingTitle: listing.title,
       image: listing.image,
-      portionCount: portionCount,
-      paidAmount: listing.priceDiscounted * portionCount,
-      status: 'confirmed',
+      portionCount,
       pickupStartTime: listing.pickupStartTime,
       pickupEndTime: listing.pickupEndTime,
-      pickupDate: 'Bugün',
       pickupCode: newCode,
       qrToken: `GK_AUTH_${randomDigits(16)}`,
-      createdAt: 'Az önce',
-    };
+    });
 
-    // Update listings available count
-    setListings(prev => prev.map(item => {
-      if (item.id === listing.id) {
-        return {
-          ...item,
-          portionsAvailable: Math.max(0, item.portionsAvailable - portionCount)
-        };
-      }
-      return item;
-    }));
+    if (error) {
+      console.error('Rezervasyon oluşturulamadı', error);
+      playSoundEffect('error');
+      showToast(`Rezervasyon oluşturulamadı: ${error.message || 'bilinmeyen hata'}`, 'error');
+      return false;
+    }
 
-    setReservations(prev => [newRes, ...prev]);
+    // Stock is adjusted by a database trigger, atomically with the insert, so there is
+    // nothing to update from here.
+    await refreshData();
 
     // Update User saved metrics
     const savedFood = portionCount * (listing.weightKg / (listing.portionsTotal || 1));
@@ -398,20 +477,24 @@ export const AppProvider = ({ children }) => {
     return newRes;
   };
 
-  // Cancel a reservation
-  const cancelReservation = (resId) => {
-    const target = reservations.find(r => r.id === resId);
-    if (!target) return;
+  // Cancel a reservation. The database trigger enforces that only the buyer may cancel;
+  // this check keeps the UI honest and gives a readable message.
+  const cancelReservation = async (resId) => {
+    const target = myPurchases.find(r => r.id === resId);
+    if (!target) {
+      showToast('Bu rezervasyon üzerinde yetkiniz yok.', 'error');
+      return;
+    }
 
-    setReservations(prev => prev.map(r => r.id === resId ? { ...r, status: 'cancelled' } : r));
-    
-    // Restore portion
-    setListings(prev => prev.map(l => {
-      if (l.id === target.listingId) {
-        return { ...l, portionsAvailable: l.portionsAvailable + target.portionCount };
-      }
-      return l;
-    }));
+    const { error } = await setReservationStatus(resId, 'cancelled');
+    if (error) {
+      console.error('İptal edilemedi', error);
+      showToast(`İptal edilemedi: ${error.message || 'bilinmeyen hata'}`, 'error');
+      return;
+    }
+
+    // The cancel trigger returns the portions to the listing.
+    await refreshData();
 
     playSoundEffect('pop');
     showToast('Rezervasyon iptal edildi ve paket iade edildi.', 'info');
@@ -422,84 +505,97 @@ export const AppProvider = ({ children }) => {
     ownsRecord(currentRole, myOrganisationId, rawListings.find(l => l.id === listingId));
 
   // Business: Quick portion increment/decrement
-  const updateListingPortions = (listingId, delta) => {
-    if (!ownsListing(listingId)) {
+  const updateListingPortions = async (listingId, delta) => {
+    const listing = rawListings.find(l => l.id === listingId);
+    if (!ownsListing(listingId) || !listing) {
       showToast('Bu ilan üzerinde yetkiniz yok.', 'error');
       return;
     }
-    setListings(prev => prev.map(item => {
-      if (item.id === listingId) {
-        const nextCount = Math.max(0, item.portionsAvailable + delta);
-        return { ...item, portionsAvailable: nextCount };
-      }
-      return item;
-    }));
+
+    const { error } = await updateListingPortionCount(
+      listingId,
+      Math.max(0, listing.portionsAvailable + delta)
+    );
+    if (error) {
+      console.error('Stok güncellenemedi', error);
+      showToast(`Stok güncellenemedi: ${error.message || 'bilinmeyen hata'}`, 'error');
+      return;
+    }
+
+    await refreshData();
     playSoundEffect('pop');
     showToast('Stok porsiyon adedi güncellendi.', 'success');
   };
 
   // Business: Remove listing
-  const deleteListing = (listingId) => {
+  // Archived rather than deleted: completed reservations still reference the listing.
+  const deleteListing = async (listingId) => {
     if (!ownsListing(listingId)) {
       showToast('Bu ilan üzerinde yetkiniz yok.', 'error');
       return;
     }
-    setListings(prev => prev.filter(item => item.id !== listingId));
+
+    const { error } = await archiveListing(listingId);
+    if (error) {
+      console.error('İlan kaldırılamadı', error);
+      showToast(`İlan kaldırılamadı: ${error.message || 'bilinmeyen hata'}`, 'error');
+      return;
+    }
+
+    await refreshData();
     playSoundEffect('pop');
     showToast('İlan başarıyla kaldırıldı.', 'info');
   };
 
   // Business: Add new Listing (with security sanitization)
-  const addNewListing = (listingData) => {
+  const addNewListing = async (listingData) => {
     if (currentRole !== 'business' || !myOrganisationId) {
       showToast('İlan yayınlamak için onaylı bir işletme hesabı gerekiyor.', 'error');
       return;
     }
 
-    const cleanTitle = sanitizeText(listingData.title || '', 100);
-    const cleanDesc = sanitizeText(listingData.description || '', 500);
-    const cleanCategory = sanitizeText(listingData.category || 'Unlu Mamüller', 50);
     const priceOrig = sanitizeNumber(listingData.priceOriginal, 0, 50000, 0);
     const priceDisc = sanitizeNumber(listingData.priceDiscounted, 0, priceOrig || 50000, 0);
     const portions = Math.max(1, Math.floor(sanitizeNumber(listingData.portions, 1, 1000, 1)));
     const weight = sanitizeNumber(listingData.weightKg, 0.1, 500, 1.5);
 
-    const newListing = {
-      id: `lst_${Date.now().toString().slice(-4)}`,
-      businessId: myOrganisationId,
-      businessName: currentUser.name,
-      businessAvatar: currentUser.avatar,
-      title: cleanTitle || 'Günün Kurtarma Paketi',
-      description: cleanDesc,
-      category: cleanCategory,
+    // Listings are placed at the publishing organisation's own coordinates.
+    const organisation = businesses.find(b => b.id === myOrganisationId);
+
+    const { error } = await insertListing(myOrganisationId, {
+      title: sanitizeText(listingData.title || '', 100) || 'Günün Kurtarma Paketi',
+      description: sanitizeText(listingData.description || '', 500),
+      category: sanitizeText(listingData.category || 'Unlu Mamüller', 50),
       type: listingData.type || 'discounted',
       priceOriginal: priceOrig,
       priceDiscounted: priceDisc,
-      discountPercentage: priceOrig ? Math.round((1 - (priceDisc / priceOrig)) * 100) : 100,
-      portionsTotal: portions,
-      portionsAvailable: portions,
+      portions,
       pickupStartTime: sanitizeText(listingData.pickupStartTime || '19:00', 10),
       pickupEndTime: sanitizeText(listingData.pickupEndTime || '21:00', 10),
-      pickupDate: 'Bugün',
       image: listingData.image || 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&auto=format&fit=crop&q=80',
-      allergens: Array.isArray(listingData.allergens) ? listingData.allergens.map(a => sanitizeText(a, 30)) : ['Gluten'],
-      lat: 40.9842,
-      lng: 29.0265,
-      distanceKm: 0.4,
+      allergens: Array.isArray(listingData.allergens)
+        ? listingData.allergens.map(a => sanitizeText(a, 30))
+        : ['Gluten'],
+      lat: organisation?.lat ?? null,
+      lng: organisation?.lng ?? null,
       weightKg: weight,
       co2ReductionKg: +(weight * 2.5).toFixed(1),
-      status: 'active',
-      createdAt: 'Az önce',
-    };
+    });
 
-    setListings(prev => [newListing, ...prev]);
+    if (error) {
+      console.error('İlan yayınlanamadı', error);
+      showToast(`İlan yayınlanamadı: ${error.message || 'bilinmeyen hata'}`, 'error');
+      return;
+    }
+
+    await refreshData();
     playSoundEffect('success');
     showToast('Yeni ilan başarıyla yayınlandı!', 'success');
     setActiveTab('business_dash');
   };
 
   // Business: Complete delivery by code or QR
-  const completeDelivery = (pickupCode) => {
+  const completeDelivery = async (pickupCode) => {
     if (!pickupCode || typeof pickupCode !== 'string') {
       showToast('Lütfen geçerli bir kod girin.', 'error');
       return false;
@@ -521,7 +617,17 @@ export const AppProvider = ({ children }) => {
       return false;
     }
 
-    setReservations(prev => prev.map(r => r.id === target.id ? { ...r, status: 'completed' } : r));
+    // The database trigger is the real gate: only the owning organisation may move an
+    // order to completed, so a forged request fails here even if the UI was bypassed.
+    const { error } = await setReservationStatus(target.id, 'completed');
+    if (error) {
+      console.error('Teslimat onaylanamadı', error);
+      playSoundEffect('error');
+      showToast(`Teslimat onaylanamadı: ${error.message || 'bilinmeyen hata'}`, 'error');
+      return false;
+    }
+
+    await refreshData();
     playSoundEffect('beep');
     setTimeout(() => playSoundEffect('success'), 150);
 
@@ -538,30 +644,65 @@ export const AppProvider = ({ children }) => {
   };
 
   // Admin: Toggle business status
-  const updateBusinessStatus = (id, newStatus) => {
+  const updateBusinessStatus = async (id, newStatus) => {
     if (currentRole !== 'admin') {
       showToast('Bu işlem için yönetici yetkisi gerekiyor.', 'error');
       return;
     }
-    setBusinesses(prev => prev.map(b => b.id === id ? { ...b, status: newStatus } : b));
+    const { error } = await setOrganisationStatus(id, newStatus);
+    if (error) {
+      console.error('Durum güncellenemedi', error);
+      showToast(`Durum güncellenemedi: ${error.message || 'bilinmeyen hata'}`, 'error');
+      return;
+    }
+
+    await refreshData();
     showToast(`İşletme durumu güncellendi: ${newStatus.toUpperCase()}`);
   };
 
   // Admin: Update business trust score
-  const updateBusinessTrustScore = (id, delta) => {
+  const updateBusinessTrustScore = async (id, delta) => {
     if (currentRole !== 'admin') {
       showToast('Bu işlem için yönetici yetkisi gerekiyor.', 'error');
       return;
     }
-    setBusinesses(prev => prev.map(b => {
-      if (b.id === id) {
-        const nextScore = Math.min(100, Math.max(50, b.trustScore + delta));
-        return { ...b, trustScore: nextScore };
-      }
-      return b;
-    }));
+    const organisation = businesses.find(b => b.id === id);
+    if (!organisation) return;
+
+    const { error } = await setOrganisationTrustScore(
+      id,
+      Math.min(100, Math.max(50, organisation.trustScore + delta))
+    );
+    if (error) {
+      console.error('Skor güncellenemedi', error);
+      showToast(`Skor güncellenemedi: ${error.message || 'bilinmeyen hata'}`, 'error');
+      return;
+    }
+
+    await refreshData();
     playSoundEffect('pop');
     showToast('İşletme güven skoru güncellendi.', 'info');
+  };
+
+  // Binds a signed-up user to an organisation. The role itself lives in app_metadata,
+  // which no client key can write, so this goes through a definer function that re-checks
+  // the caller's own admin claim before touching anything.
+  const grantAccess = async (email, organisationId, role) => {
+    if (currentRole !== 'admin') {
+      showToast('Bu işlem için yönetici yetkisi gerekiyor.', 'error');
+      return false;
+    }
+
+    const { error } = await grantOrganisationAccess(email.trim().toLowerCase(), organisationId, role);
+    if (error) {
+      console.error('Yetki verilemedi', error);
+      showToast(`Yetki verilemedi: ${error.message || 'bilinmeyen hata'}`, 'error');
+      return false;
+    }
+
+    playSoundEffect('success');
+    showToast(`${email} hesabı yetkilendirildi. Kullanıcı yeniden giriş yapmalı.`);
+    return true;
   };
 
   // Reset all mock data to defaults
@@ -570,16 +711,15 @@ export const AppProvider = ({ children }) => {
       showToast('Bu işlem için yönetici yetkisi gerekiyor.', 'error');
       return;
     }
+    // Listings, organisations and reservations live in the database now and are governed
+    // by row level security, so this only clears what is still kept on this device.
     clearAppStorage();
-    setListings(MOCK_LISTINGS);
-    setBusinesses(MOCK_BUSINESSES);
-    setReservations(MOCK_RESERVATIONS);
     setBadges(MOCK_BADGES);
     setNotifications(MOCK_NOTIFICATIONS);
-    setFavorites(['lst_01', 'lst_03']);
+    setFavorites([]);
     setCurrentUser(INITIAL_USER);
     logout();
-    showToast('Tüm veriler başarıyla sıfırlandı! 🔄', 'info');
+    showToast('Bu cihazdaki yerel tercihler sıfırlandı 🔄', 'info');
   };
 
   return (
@@ -619,8 +759,8 @@ export const AppProvider = ({ children }) => {
         requestLocation,
         myListings,
         myReservations,
+        myPurchases,
         myOrganisationId,
-        setListings,
         updateListingPortions,
         deleteListing,
         businesses,
@@ -631,6 +771,8 @@ export const AppProvider = ({ children }) => {
         setNotifications,
         leaderboard,
         stats,
+        dataLoading,
+        refreshData,
         favorites,
         toggleFavorite,
         searchQuery,
@@ -653,6 +795,7 @@ export const AppProvider = ({ children }) => {
         completeDelivery,
         updateBusinessStatus,
         updateBusinessTrustScore,
+        grantAccess,
         resetDemoData,
       }}
     >
