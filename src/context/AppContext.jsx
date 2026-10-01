@@ -25,7 +25,7 @@ const loadStorage = (key, fallback) => {
   try {
     const saved = localStorage.getItem(`GK_${key}`);
     return saved ? JSON.parse(saved) : fallback;
-  } catch (e) {
+  } catch {
     return fallback;
   }
 };
@@ -33,8 +33,8 @@ const loadStorage = (key, fallback) => {
 const saveStorage = (key, data) => {
   try {
     localStorage.setItem(`GK_${key}`, JSON.stringify(data));
-  } catch (e) {
-    console.warn('Storage save failed', e);
+  } catch {
+    console.warn('Storage save failed');
   }
 };
 
@@ -137,8 +137,8 @@ export const AppProvider = ({ children }) => {
   const [reservations, setReservations] = useState(() => loadStorage('RESERVATIONS', MOCK_RESERVATIONS));
   const [badges, setBadges] = useState(() => loadStorage('BADGES', MOCK_BADGES));
   const [notifications, setNotifications] = useState(() => loadStorage('NOTIFICATIONS', MOCK_NOTIFICATIONS));
-  const [leaderboard, setLeaderboard] = useState(MOCK_LEADERBOARD);
-  const [stats, setStats] = useState(PLATFORM_STATS);
+  const [leaderboard] = useState(MOCK_LEADERBOARD);
+  const [stats] = useState(PLATFORM_STATS);
 
   // Favorites state
   const [favorites, setFavorites] = useState(() => loadStorage('FAVORITES', ['lst_01', 'lst_03']));
@@ -177,9 +177,22 @@ export const AppProvider = ({ children }) => {
     const sync = async () => {
       const verified = await loadVerifiedAccount();
       if (cancelled) return;
+
       setAccount(verified);
       setActiveTab(getHomeTab(verified?.role));
       setAuthLoading(false);
+
+      // One-off adoption of the seeded demo reservations, which predate per-user
+      // ownership. Local storage is per browser, so these are this person's demo rows;
+      // stamping them keeps the demo populated without the read path having to treat
+      // ownerless records as everyone's. Drops out once reservations live in the database.
+      if (verified) {
+        setReservations(prev =>
+          prev.some(r => !r.userId)
+            ? prev.map(r => (r.userId ? r : { ...r, userId: verified.id }))
+            : prev
+        );
+      }
     };
 
     sync();
@@ -190,19 +203,6 @@ export const AppProvider = ({ children }) => {
       data.subscription.unsubscribe();
     };
   }, []);
-
-  // One-off adoption of the seeded demo reservations, which predate per-user ownership.
-  // Local storage is per browser, so these are this person's demo rows; stamping them
-  // keeps the demo populated without the read path having to treat ownerless records as
-  // everyone's. Drops out entirely once reservations live in the database.
-  useEffect(() => {
-    if (!account) return;
-    setReservations(prev =>
-      prev.some(r => !r.userId)
-        ? prev.map(r => (r.userId ? r : { ...r, userId: account.id }))
-        : prev
-    );
-  }, [account]);
 
   // Sync state changes to localStorage
   useEffect(() => saveStorage('USER', storedProfile), [storedProfile]);

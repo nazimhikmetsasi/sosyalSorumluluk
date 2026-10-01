@@ -7,7 +7,6 @@ import {
   Smartphone,
   Monitor,
   Leaf,
-  ChevronDown,
   User,
   LogOut,
   Globe,
@@ -32,7 +31,6 @@ export const Header = () => {
     showToast
   } = useApp();
 
-  const [isRoleMenuOpen, setIsRoleMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState(null);
 

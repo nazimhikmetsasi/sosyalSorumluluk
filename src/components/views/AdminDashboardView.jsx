@@ -3,11 +3,6 @@ import { useApp } from '../../context/AppContext';
 import {
   Building2,
   FileText,
-  ShieldCheck,
-  Plus,
-  Minus,
-  CheckCircle2,
-  AlertTriangle,
   RotateCcw
 } from 'lucide-react';
 

@@ -1,20 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useApp } from '../../context/AppContext';
 import {
   TrendingUp,
-  Leaf,
-  DollarSign,
   PackageCheck,
   Calendar,
-  Download,
-  Award,
-  Sparkles,
-  ArrowUpRight
+  Download
 } from 'lucide-react';
 
 export const BusinessStatsView = () => {
-  const { currentUser, showToast } = useApp();
-  const [timeRange, setTimeRange] = useState('Bu Ay (Eylül 2026)');
+  const { showToast } = useApp();
 
   const monthlyBreakdown = [
     { month: 'Haziran', savedKg: 120, revenue: 2800, co2: 300 },

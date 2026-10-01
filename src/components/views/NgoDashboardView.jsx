@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import {
-  Truck,
   MapPin,
   CheckCircle2,
   Clock,
   ArrowRight,
   ShieldCheck,
-  Users,
-  Navigation
+  Users
 } from 'lucide-react';
 
 export const NgoDashboardView = () => {

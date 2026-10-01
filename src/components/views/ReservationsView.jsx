@@ -3,11 +3,7 @@ import { useApp } from '../../context/AppContext';
 import {
   QrCode,
   Clock,
-  Star,
-  ChevronRight,
-  ShoppingBag,
-  XCircle,
-  AlertCircle
+  Star
 } from 'lucide-react';
 
 export const ReservationsView = () => {

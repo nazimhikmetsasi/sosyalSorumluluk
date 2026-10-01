@@ -1,22 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { X, QrCode, Camera, CheckCircle2, AlertTriangle, Sparkles, RefreshCw } from 'lucide-react';
+import { X, QrCode, Camera, Sparkles } from 'lucide-react';
 
 export const ScannerModal = ({ isOpen, onClose }) => {
   const { completeDelivery, myReservations } = useApp();
   const [manualCode, setManualCode] = useState('');
-  const [isScanning, setIsScanning] = useState(true);
 
   if (!isOpen) return null;
 
   const pendingList = myReservations.filter(r => r.status === 'confirmed');
 
   const handleSimulateScan = (code) => {
-    setIsScanning(false);
     completeDelivery(code);
     setTimeout(() => {
       onClose();
-      setIsScanning(true);
     }, 1200);
   };
 
