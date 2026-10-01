@@ -153,12 +153,14 @@ export const insertReservation = async (reservation) => {
   const { data, error } = await supabase
     .from('reservations')
     .insert({
+      // organisation_id, paid_amount, listing_title and image are overwritten by the
+      // stock trigger from the listing itself, so the client cannot pick its own price
+      // or file the order against another business.
       listing_id: reservation.listingId,
       organisation_id: reservation.businessId,
       listing_title: reservation.listingTitle,
       image: reservation.image,
       portion_count: reservation.portionCount,
-      paid_amount: reservation.paidAmount,
       pickup_start_time: reservation.pickupStartTime,
       pickup_end_time: reservation.pickupEndTime,
       pickup_code: reservation.pickupCode,

@@ -422,7 +422,6 @@ export const AppProvider = ({ children }) => {
       listingTitle: listing.title,
       image: listing.image,
       portionCount,
-      paidAmount: listing.priceDiscounted * portionCount,
       pickupStartTime: listing.pickupStartTime,
       pickupEndTime: listing.pickupEndTime,
       pickupCode: newCode,
@@ -436,10 +435,8 @@ export const AppProvider = ({ children }) => {
       return false;
     }
 
-    await updateListingPortionCount(
-      listing.id,
-      Math.max(0, listing.portionsAvailable - portionCount)
-    );
+    // Stock is adjusted by a database trigger, atomically with the insert, so there is
+    // nothing to update from here.
     await refreshData();
 
     // Update User saved metrics
@@ -495,10 +492,7 @@ export const AppProvider = ({ children }) => {
       return;
     }
 
-    const listing = rawListings.find(l => l.id === target.listingId);
-    if (listing) {
-      await updateListingPortionCount(listing.id, listing.portionsAvailable + target.portionCount);
-    }
+    // The cancel trigger returns the portions to the listing.
     await refreshData();
 
     playSoundEffect('pop');
