@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { GrantAccessModal } from '../modals/GrantAccessModal';
 import {
   Building2,
   FileText,
@@ -17,6 +18,7 @@ export const AdminDashboardView = () => {
   } = useApp();
 
   const [filterStatus, setFilterStatus] = useState('all');
+  const [grantTarget, setGrantTarget] = useState(null);
 
   const filteredBusinesses = businesses.filter(
     b => filterStatus === 'all' || b.status === filterStatus
@@ -121,6 +123,13 @@ export const AdminDashboardView = () => {
                 </div>
 
                 <div className="flex items-center gap-1 flex-shrink-0">
+                  <button
+                    onClick={() => setGrantTarget(b)}
+                    title="Bir kullanıcıyı bu kuruma yetkilendir"
+                    className="px-2 py-1 bg-white border border-gray-200 text-gray-700 rounded-lg text-[9px] font-bold hover:border-[#52B788] hover:text-[#0F5238]"
+                  >
+                    Yetkilendir
+                  </button>
                   {b.status !== 'active' ? (
                     <button
                       onClick={() => updateBusinessStatus(b.id, 'active')}
@@ -168,11 +177,18 @@ export const AdminDashboardView = () => {
         </div>
       </div>
 
+      {grantTarget && (
+        <GrantAccessModal organisation={grantTarget} onClose={() => setGrantTarget(null)} />
+      )}
+
       {/* Demo Reset Bar */}
       <div className="bg-white p-3 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between">
         <div>
-          <h4 className="text-[10px] font-bold text-gray-700">Demo Verilerini Sıfırla</h4>
-          <p className="text-[9px] text-gray-400">Tüm mock verileri varsayılana döndürür</p>
+          <h4 className="text-[10px] font-bold text-gray-700">Yerel Tercihleri Sıfırla</h4>
+          <p className="text-[9px] text-gray-400">
+            Bu cihazdaki tercihleri temizler ve çıkış yapar. İlan, kurum ve rezervasyon
+            verileri sunucuda tutulur, etkilenmez.
+          </p>
         </div>
         <button
           onClick={resetDemoData}

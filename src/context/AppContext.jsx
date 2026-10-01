@@ -20,6 +20,7 @@ import {
   setReservationStatus,
   setOrganisationStatus,
   setOrganisationTrustScore,
+  grantOrganisationAccess,
 } from '../lib/data';
 
 const AppContext = createContext();
@@ -683,6 +684,27 @@ export const AppProvider = ({ children }) => {
     showToast('İşletme güven skoru güncellendi.', 'info');
   };
 
+  // Binds a signed-up user to an organisation. The role itself lives in app_metadata,
+  // which no client key can write, so this goes through a definer function that re-checks
+  // the caller's own admin claim before touching anything.
+  const grantAccess = async (email, organisationId, role) => {
+    if (currentRole !== 'admin') {
+      showToast('Bu işlem için yönetici yetkisi gerekiyor.', 'error');
+      return false;
+    }
+
+    const { error } = await grantOrganisationAccess(email.trim().toLowerCase(), organisationId, role);
+    if (error) {
+      console.error('Yetki verilemedi', error);
+      showToast(`Yetki verilemedi: ${error.message || 'bilinmeyen hata'}`, 'error');
+      return false;
+    }
+
+    playSoundEffect('success');
+    showToast(`${email} hesabı yetkilendirildi. Kullanıcı yeniden giriş yapmalı.`);
+    return true;
+  };
+
   // Reset all mock data to defaults
   const resetDemoData = () => {
     if (currentRole !== 'admin') {
@@ -773,6 +795,7 @@ export const AppProvider = ({ children }) => {
         completeDelivery,
         updateBusinessStatus,
         updateBusinessTrustScore,
+        grantAccess,
         resetDemoData,
       }}
     >
