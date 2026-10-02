@@ -2,13 +2,9 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import confetti from 'canvas-confetti';
 import { playSoundEffect } from '../utils/audioEffects';
 import { translations } from '../i18n/translations';
-import {
-  INITIAL_USER,
-  MOCK_BADGES,
-  MOCK_NOTIFICATIONS,
-  MOCK_LEADERBOARD,
-  PLATFORM_STATS
-} from '../data/mockData';
+import { INITIAL_USER } from '../data/mockData';
+import { computeImpact, computeBadges } from '../utils/impact';
+import { buildNotifications } from '../utils/notifications';
 import { sanitizeText, sanitizeNumber, getHomeTab, randomDigits, ownsRecord, distanceKm, reanchor } from '../utils/security';
 import { supabase, loadVerifiedAccount, signOut, saveProfile, uploadAvatar } from '../lib/supabase';
 import {
@@ -94,21 +90,6 @@ export const AppProvider = ({ children }) => {
   const currentRole = account?.role || 'buyer';
   const isAuthenticated = Boolean(account);
 
-  const currentUser = account
-    ? {
-        ...storedProfile,
-        id: account.id,
-        email: account.email,
-        name: account.displayName || storedProfile.name,
-        avatar: account.avatarUrl || storedProfile.avatar,
-        city: account.city || storedProfile.city,
-        district: account.district || storedProfile.district,
-        phone: account.phone || storedProfile.phone,
-        bio: account.bio || '',
-        role: account.role,
-        organisationId: account.organisationId,
-      }
-    : storedProfile;
 
   const setCurrentUser = setStoredProfile;
 
@@ -169,10 +150,19 @@ export const AppProvider = ({ children }) => {
   const [businesses, setBusinesses] = useState([]);
   const [reservations, setReservations] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
-  const [badges, setBadges] = useState(() => loadStorage('BADGES', MOCK_BADGES));
-  const [notifications, setNotifications] = useState(() => loadStorage('NOTIFICATIONS', MOCK_NOTIFICATIONS));
-  const [leaderboard] = useState(MOCK_LEADERBOARD);
-  const [stats] = useState(PLATFORM_STATS);
+  const [readNotificationIds, setReadNotificationIds] = useState(() => loadStorage('NOTIFICATIONS_READ', []));
+  const [leaderboard, setLeaderboard] = useState([]);
+  // Starts empty rather than at invented figures: a placeholder like "18.920 users" would
+  // be on screen as fact until the real numbers land.
+  const [stats, setStats] = useState({
+    totalFoodSavedKg: 0,
+    totalCo2SavedKg: 0,
+    totalPortions: 0,
+    activeBusinesses: 0,
+    activeNgos: 0,
+    totalUsers: 0,
+    todayActiveListings: 0,
+  });
 
   // Favorites state
   const [favorites, setFavorites] = useState(() => loadStorage('FAVORITES', ['lst_01', 'lst_03']));
@@ -258,6 +248,8 @@ export const AppProvider = ({ children }) => {
     setBusinesses(payload.organisations);
     setListings(payload.listings);
     setReservations(payload.reservations);
+    setLeaderboard(payload.leaderboard);
+    if (payload.stats) setStats(payload.stats);
     setDataLoading(false);
   }, []);
 
@@ -289,8 +281,7 @@ export const AppProvider = ({ children }) => {
   useEffect(() => saveStorage('USER', storedProfile), [storedProfile]);
   useEffect(() => saveStorage('VIEW_MODE', viewMode), [viewMode]);
   useEffect(() => saveStorage('LANG', language), [language]);
-  useEffect(() => saveStorage('BADGES', badges), [badges]);
-  useEffect(() => saveStorage('NOTIFICATIONS', notifications), [notifications]);
+  useEffect(() => saveStorage('NOTIFICATIONS_READ', readNotificationIds), [readNotificationIds]);
   useEffect(() => saveStorage('FAVORITES', favorites), [favorites]);
 
   // The seed data is laid out around Moda. Once the browser gives us a fix, the whole
@@ -324,6 +315,37 @@ export const AppProvider = ({ children }) => {
   // The buyer's own orders. Seeded rows carry no userId, so they stay invisible rather
   // than being shown to whoever signs in first; the migration below adopts them once.
   const myPurchases = account ? reservations.filter(r => r.userId === account.id) : [];
+
+  // Impact and badges are derived from real completed pickups, not stored on the profile.
+  // Defined here rather than with the other identity fields because they need the
+  // reservations, which load after the account does.
+  const impact = computeImpact(myPurchases);
+  const badges = computeBadges(impact, myPurchases);
+
+  const notifications = buildNotifications(myPurchases, readNotificationIds);
+
+  const markNotificationRead = (id) =>
+    setReadNotificationIds(prev => (prev.includes(id) ? prev : [...prev, id]));
+
+  const markAllNotificationsRead = () =>
+    setReadNotificationIds(notifications.map(n => n.id));
+
+  const currentUser = account
+    ? {
+        ...storedProfile,
+        ...impact,
+        id: account.id,
+        email: account.email,
+        name: account.displayName || storedProfile.name,
+        avatar: account.avatarUrl || storedProfile.avatar,
+        city: account.city || storedProfile.city,
+        district: account.district || storedProfile.district,
+        phone: account.phone || storedProfile.phone,
+        bio: account.bio || '',
+        role: account.role,
+        organisationId: account.organisationId,
+      }
+    : storedProfile;
 
   // Translation Helper
   const t = (key) => {
@@ -460,17 +482,6 @@ export const AppProvider = ({ children }) => {
       origin: { y: 0.6 },
       colors: ['#2D6A4F', '#52B788', '#95D5B2', '#FFD700']
     });
-
-    // Add notification
-    const newNotif = {
-      id: `notif_${Date.now()}`,
-      title: 'Rezervasyon Onaylandı!',
-      message: `${listing.title} için teslimat kodun: ${newCode}`,
-      time: 'Az önce',
-      read: false,
-      type: 'order',
-    };
-    setNotifications(prev => [newNotif, ...prev]);
 
     showToast(`Rezervasyon başarıyla oluşturuldu! Teslimat Kodunuz: ${newCode}`);
     setSelectedReservation(newRes);
@@ -714,8 +725,7 @@ export const AppProvider = ({ children }) => {
     // Listings, organisations and reservations live in the database now and are governed
     // by row level security, so this only clears what is still kept on this device.
     clearAppStorage();
-    setBadges(MOCK_BADGES);
-    setNotifications(MOCK_NOTIFICATIONS);
+    setReadNotificationIds([]);
     setFavorites([]);
     setCurrentUser(INITIAL_USER);
     logout();
@@ -766,9 +776,9 @@ export const AppProvider = ({ children }) => {
         businesses,
         reservations,
         badges,
-        setBadges,
         notifications,
-        setNotifications,
+        markNotificationRead,
+        markAllNotificationsRead,
         leaderboard,
         stats,
         dataLoading,

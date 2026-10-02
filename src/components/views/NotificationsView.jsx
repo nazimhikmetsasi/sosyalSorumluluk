@@ -1,36 +1,13 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { Bell, CheckCheck, CheckCircle2, Tag, Award, ArrowRight, Sparkles, Trash2 } from 'lucide-react';
+import { Bell, CheckCheck, CheckCircle2, Tag, Award, ArrowRight, Check } from 'lucide-react';
 
 export const NotificationsView = () => {
-  const { notifications, setNotifications, setActiveTab, showToast } = useApp();
+  const { notifications, markNotificationRead, markAllNotificationsRead, setActiveTab, showToast } = useApp();
 
   const markAllAsRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    markAllNotificationsRead();
     showToast('Tüm bildirimler okundu olarak işaretlendi.');
-  };
-
-  const simulateNewOpportunity = () => {
-    const opportunities = [
-      { title: '⚡ Flaş İndirim: Kadıköy Fırını', message: 'Son 3 adet ekşi mayalı ekmek sepeti %70 indirimle satışta!', type: 'listing' },
-      { title: '🎉 Yeni Başarı: Haftalık Süper Kahraman!', message: 'Bu hafta 5 kg gıda kurtardınız ve +100 puan kazandınız.', type: 'badge' },
-      { title: '🤝 Aşevi Çağrısı: Sıcak Çorba', message: 'Moda Aşevine 25 porsiyon sıcak yemek bağışı teslim alındı.', type: 'order' }
-    ];
-    const picked = opportunities[Math.floor(Math.random() * opportunities.length)];
-    const newNotif = {
-      id: `notif_${Date.now()}`,
-      title: picked.title,
-      message: picked.message,
-      time: 'Şimdi',
-      read: false,
-      type: picked.type
-    };
-    setNotifications(prev => [newNotif, ...prev]);
-    showToast(`Yeni Canlı Bildirim: ${picked.title} 🔔`);
-  };
-
-  const removeNotification = (id) => {
-    setNotifications(prev => prev.filter(n => n.id !== id));
   };
 
   return (
@@ -43,14 +20,6 @@ export const NotificationsView = () => {
         </h1>
 
         <div className="flex items-center gap-1.5">
-          <button
-            onClick={simulateNewOpportunity}
-            className="flex items-center gap-1 px-2 py-1 rounded-xl bg-[#0F5238] text-[9px] font-bold text-white hover:bg-[#2D6A4F] transition shadow-sm"
-          >
-            <Sparkles className="w-3 h-3 text-[#95D5B2]" />
-            <span>Flaş Simüle Et</span>
-          </button>
-
           {notifications.some(n => !n.read) && (
             <button
               onClick={markAllAsRead}
@@ -109,13 +78,15 @@ export const NotificationsView = () => {
                 >
                   <ArrowRight className="w-3 h-3" />
                 </button>
-                <button
-                  onClick={() => removeNotification(notif.id)}
-                  className="p-1.5 rounded-xl text-gray-400 hover:text-red-500 transition"
-                  title="Sil"
-                >
-                  <Trash2 className="w-3 h-3" />
-                </button>
+                {!notif.read && (
+                  <button
+                    onClick={() => markNotificationRead(notif.id)}
+                    className="p-1.5 rounded-xl text-gray-400 hover:text-[#0F5238] transition"
+                    title="Okundu olarak işaretle"
+                  >
+                    <Check className="w-3 h-3" />
+                  </button>
+                )}
               </div>
             </div>
           ))
