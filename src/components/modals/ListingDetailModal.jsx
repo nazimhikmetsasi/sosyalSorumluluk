@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { PaymentModal } from './PaymentModal';
 import {
   X,
   Clock,
@@ -15,18 +16,33 @@ import {
 } from 'lucide-react';
 
 export const ListingDetailModal = () => {
-  const { selectedListing, setSelectedListing, makeReservation, showToast } = useApp();
+  const { selectedListing, setSelectedListing, makeReservation, showToast, canReserve } = useApp();
   const [portionCount, setPortionCount] = useState(1);
   const [isLiked, setIsLiked] = useState(false);
+  const [paying, setPaying] = useState(false);
 
   if (!selectedListing) return null;
 
-  const handleReserve = () => {
-    makeReservation(selectedListing, portionCount);
+  const totalPrice = selectedListing.priceDiscounted * portionCount;
+
+  // Free packages go straight through; paid ones stop at the (demo) payment screen first.
+  const handleReserve = async () => {
+    if (totalPrice > 0) {
+      setPaying(true);
+      return;
+    }
+    await makeReservation(selectedListing, portionCount);
     setSelectedListing(null);
   };
 
-  const totalPrice = selectedListing.priceDiscounted * portionCount;
+  const handlePay = async () => {
+    const reservation = await makeReservation(selectedListing, portionCount);
+    if (!reservation) return false;
+    setPaying(false);
+    setSelectedListing(null);
+    return true;
+  };
+
   const savedPrice = (selectedListing.priceOriginal - selectedListing.priceDiscounted) * portionCount;
 
   return (
@@ -234,16 +250,32 @@ export const ListingDetailModal = () => {
             )}
           </div>
 
-          <button
-            onClick={handleReserve}
-            className="flex-1 max-w-xs flex items-center justify-center gap-2 bg-[#0F5238] hover:bg-[#2D6A4F] text-white py-3.5 px-6 rounded-2xl font-bold shadow-lg shadow-[#0F5238]/30 transition-all hover:scale-[1.02] active:scale-95"
-          >
-            <ShoppingBag className="w-5 h-5 text-[#95D5B2]" />
-            <span>Gıdayı Kurtar</span>
-          </button>
+          {canReserve ? (
+            <button
+              onClick={handleReserve}
+              className="flex-1 max-w-xs flex items-center justify-center gap-2 bg-[#0F5238] hover:bg-[#2D6A4F] text-white py-3.5 px-6 rounded-2xl font-bold shadow-lg shadow-[#0F5238]/30 transition-all hover:scale-[1.02] active:scale-95"
+            >
+              <ShoppingBag className="w-5 h-5 text-[#95D5B2]" />
+              <span>{totalPrice > 0 ? 'Ödemeye Geç' : 'Gıdayı Kurtar'}</span>
+            </button>
+          ) : (
+            <p className="flex-1 max-w-xs text-center text-xs font-bold text-gray-500 bg-gray-100 rounded-2xl py-3.5 px-4">
+              İşletme ve yönetici hesapları rezervasyon yapamaz.
+            </p>
+          )}
         </div>
 
       </div>
+
+      {paying && (
+        <PaymentModal
+          title={selectedListing.title}
+          portionCount={portionCount}
+          total={totalPrice}
+          onPay={handlePay}
+          onClose={() => setPaying(false)}
+        />
+      )}
     </div>
   );
 };

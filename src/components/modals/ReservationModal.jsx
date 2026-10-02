@@ -91,7 +91,7 @@ export const ReservationModal = () => {
 
             <button
               onClick={() => {
-                navigator.clipboard?.writeText(`GıdaKöprüsü Teslimat Kodum: ${selectedReservation.pickupCode}`);
+                navigator.clipboard?.writeText(`sosyalSorumluluk Teslimat Kodum: ${selectedReservation.pickupCode}`);
                 showToast('Teslimat kodu panoya kopyalandı! 📋');
               }}
               className="flex items-center justify-center gap-1.5 py-3 px-4 bg-[#0F5238] hover:bg-[#2D6A4F] text-white font-bold text-xs rounded-xl transition shadow-md shadow-[#0F5238]/20"

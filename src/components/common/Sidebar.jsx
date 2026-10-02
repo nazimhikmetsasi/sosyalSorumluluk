@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 
 export const Sidebar = () => {
-  const { currentRole, activeTab, setActiveTab, myPurchases, notifications, businesses } = useApp();
+  const { currentRole, activeTab, setActiveTab, myPurchases, notifications, businesses, stats } = useApp();
 
   const pendingOrgCount = businesses.filter(b => b.status === 'pending').length;
   const unreadCount = notifications.filter(n => !n.read).length;
@@ -136,12 +136,9 @@ export const Sidebar = () => {
         <div className="relative z-10">
           <span className="text-xl">🌍</span>
           <h4 className="text-xs font-bold text-[#0F5238] mt-1">Platform Etkisi</h4>
-          <p className="text-[11px] text-[#006C48] mt-0.5">Bugün kurtarılan:</p>
-          <p className="text-base font-extrabold text-[#0F5238]">14.850 kg Gıda</p>
-          <div className="mt-2 w-full bg-white/70 h-1.5 rounded-full overflow-hidden">
-            <div className="bg-[#52B788] h-full rounded-full w-[78%]"></div>
-          </div>
-          <p className="text-[9px] text-gray-500 mt-1.5 font-medium">%78 Günlük Hedef Tamamlandı</p>
+          <p className="text-[11px] text-[#006C48] mt-0.5">Toplam kurtarılan:</p>
+          <p className="text-base font-extrabold text-[#0F5238]">{stats.totalFoodSavedKg.toLocaleString('tr-TR')} kg Gıda</p>
+          <p className="text-[9px] text-gray-500 mt-1.5 font-medium">{stats.totalPortions.toLocaleString('tr-TR')} porsiyon</p>
         </div>
       </div>
     </aside>

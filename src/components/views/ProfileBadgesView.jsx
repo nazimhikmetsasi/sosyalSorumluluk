@@ -32,7 +32,7 @@ export const ProfileBadgesView = () => {
 
   const handleShareImpact = () => {
     navigator.clipboard?.writeText(
-      `GıdaKöprüsü ile ${currentUser.savedKg} kg gıda kurtardım ve ${currentUser.co2SavedKg} kg CO₂ salımını engelledim! 🌍🌱 Sen de katıl: https://gidakoprusu.org`
+      `sosyalSorumluluk ile ${currentUser.savedKg} kg gıda kurtardım ve ${currentUser.co2SavedKg} kg CO₂ salımını engelledim! 🌍🌱 Sen de katıl: https://sosyalsorumluluk.org`
     );
     showToast('Sosyal etki kartınız panoya kopyalandı! 🚀');
   };

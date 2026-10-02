@@ -48,7 +48,7 @@ export const Header = () => {
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
       if (outcome === 'accepted') {
-        showToast('GıdaKöprüsü ana ekrana eklendi! 🎉');
+        showToast('sosyalSorumluluk ana ekrana eklendi! 🎉');
       }
       setDeferredPrompt(null);
     } else {
@@ -80,7 +80,7 @@ export const Header = () => {
           <div>
             <div className="flex items-center gap-1.5">
               <span className="font-extrabold text-lg tracking-tight text-[#0F5238]">
-                Gıda<span className="text-[#52B788]">Köprüsü</span>
+                sosyal<span className="text-[#52B788]">Sorumluluk</span>
               </span>
               <span className="hidden sm:inline-block px-2 py-0.5 text-[9px] font-semibold tracking-wide uppercase bg-[#D1FEE5] text-[#006C48] rounded-full">
                 {t('zeroWaste')}

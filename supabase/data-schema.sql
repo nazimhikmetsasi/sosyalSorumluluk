@@ -155,12 +155,13 @@ create policy "reservations: read own side"
   on public.reservations for select
   using (user_id = auth.uid() or organisation_id = public.auth_org());
 
--- Buyers create their own orders only; user_id defaults to auth.uid() and the check
--- rejects any attempt to file one under someone else.
+-- Buyers and NGOs create their own orders only; user_id defaults to auth.uid() and the check
+-- rejects any attempt to file one under someone else. Businesses and admins never buy, so a
+-- business account cannot book its own or a competitor's food through the API either.
 drop policy if exists "reservations: buyer creates own" on public.reservations;
 create policy "reservations: buyer creates own"
   on public.reservations for insert
-  with check (user_id = auth.uid());
+  with check (user_id = auth.uid() and public.auth_role() in ('buyer', 'ngo'));
 
 -- The buyer cancels, the business completes. Both are updates, so both sides are allowed
 -- here and the status transition itself is checked by the trigger below.

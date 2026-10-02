@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { GrantAccessModal } from '../modals/GrantAccessModal';
+import { AddOrganisationModal } from '../modals/AddOrganisationModal';
+import { OrganisationImagesModal } from '../modals/OrganisationImagesModal';
 import {
   Building2,
+  Plus,
   FileText,
   RotateCcw
 } from 'lucide-react';
@@ -11,7 +14,6 @@ export const AdminDashboardView = () => {
   const {
     businesses,
     updateBusinessStatus,
-    updateBusinessTrustScore,
     stats,
     setActiveTab,
     resetDemoData,
@@ -19,6 +21,8 @@ export const AdminDashboardView = () => {
 
   const [filterStatus, setFilterStatus] = useState('all');
   const [grantTarget, setGrantTarget] = useState(null);
+  const [addingOrganisation, setAddingOrganisation] = useState(false);
+  const [imagesTargetId, setImagesTargetId] = useState(null);
 
   const filteredBusinesses = businesses.filter(
     b => filterStatus === 'all' || b.status === filterStatus
@@ -55,25 +59,29 @@ export const AdminDashboardView = () => {
         <div className="bg-white p-3 rounded-2xl border border-gray-100 shadow-sm">
           <p className="text-[10px] font-bold text-gray-400">Toplam Kullanıcı</p>
           <p className="text-lg font-black text-[#0F5238] mt-0.5">{stats.totalUsers.toLocaleString()}</p>
-          <span className="text-[9px] text-[#10B981] font-bold">↑ %14 bu ay</span>
+          <span className="text-[9px] text-[#10B981] font-bold">{stats.activeNgos} aktif STK</span>
         </div>
 
         <div className="bg-white p-3 rounded-2xl border border-gray-100 shadow-sm">
           <p className="text-[10px] font-bold text-gray-400">Aktif İşletmeler</p>
           <p className="text-lg font-black text-[#0F5238] mt-0.5">{stats.activeBusinesses}</p>
-          <span className="text-[9px] text-amber-600 font-bold">3 onay bekliyor</span>
+          <span className="text-[9px] text-amber-600 font-bold">
+            {businesses.filter(b => b.status === 'pending').length} onay bekliyor
+          </span>
         </div>
 
         <div className="bg-white p-3 rounded-2xl border border-gray-100 shadow-sm">
           <p className="text-[10px] font-bold text-gray-400">Kurtarılan Gıda</p>
           <p className="text-lg font-black text-[#0F5238] mt-0.5">{stats.totalFoodSavedKg.toLocaleString()} kg</p>
-          <span className="text-[9px] text-[#52B788] font-bold">37.1t CO₂ önlendi</span>
+          <span className="text-[9px] text-[#52B788] font-bold">
+            {stats.totalCo2SavedKg.toLocaleString('tr-TR')} kg CO₂ önlendi
+          </span>
         </div>
 
         <div className="bg-white p-3 rounded-2xl border border-gray-100 shadow-sm">
-          <p className="text-[10px] font-bold text-gray-400">SLA & Güvenlik</p>
-          <p className="text-lg font-black text-emerald-600 mt-0.5">%99.8</p>
-          <span className="text-[9px] text-emerald-600 font-medium">Sistem Sağlıklı 🟢</span>
+          <p className="text-[10px] font-bold text-gray-400">Kurtarılan Porsiyon</p>
+          <p className="text-lg font-black text-emerald-600 mt-0.5">{stats.totalPortions.toLocaleString('tr-TR')}</p>
+          <span className="text-[9px] text-emerald-600 font-medium">{stats.todayActiveListings} aktif ilan</span>
         </div>
       </div>
 
@@ -84,6 +92,14 @@ export const AdminDashboardView = () => {
             <Building2 className="w-3.5 h-3.5 text-[#2D6A4F]" />
             İşletme Onayları & Güven Skorları
           </h3>
+
+          <button
+            onClick={() => setAddingOrganisation(true)}
+            className="flex items-center gap-1 px-2 py-1 bg-[#0F5238] text-white font-bold text-[9px] rounded-lg shadow flex-shrink-0"
+          >
+            <Plus className="w-3 h-3" />
+            <span>Kurum Ekle</span>
+          </button>
 
           <div className="flex items-center gap-1 bg-[#F8FAFC] p-0.5 rounded-lg border border-gray-200">
             {[
@@ -124,6 +140,13 @@ export const AdminDashboardView = () => {
 
                 <div className="flex items-center gap-1 flex-shrink-0">
                   <button
+                    onClick={() => setImagesTargetId(b.id)}
+                    title="Logo ve kapak görselini düzenle"
+                    className="px-2 py-1 bg-white border border-gray-200 text-gray-700 rounded-lg text-[9px] font-bold hover:border-[#52B788] hover:text-[#0F5238]"
+                  >
+                    Görseller
+                  </button>
+                  <button
                     onClick={() => setGrantTarget(b)}
                     title="Bir kullanıcıyı bu kuruma yetkilendir"
                     className="px-2 py-1 bg-white border border-gray-200 text-gray-700 rounded-lg text-[9px] font-bold hover:border-[#52B788] hover:text-[#0F5238]"
@@ -148,34 +171,23 @@ export const AdminDashboardView = () => {
                 </div>
               </div>
 
-              {/* Trust score control row */}
-              <div className="flex items-center justify-between pt-1 border-t border-gray-100 text-[9px]">
-                <span className="text-gray-500">
+              {/* Computed from orders and reviews by the database; not editable here. */}
+              <div className="flex items-center justify-between pt-1 border-t border-gray-100 text-[9px] text-gray-500">
+                <span>
                   Güven Skoru: <strong className="text-[#10B981]">%{b.trustScore}</strong>
                 </span>
-
-                <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-lg p-0.5 shadow-sm">
-                  <button
-                    onClick={() => updateBusinessTrustScore(b.id, -5)}
-                    className="w-5 h-5 flex items-center justify-center text-gray-600 hover:bg-gray-100 rounded text-[9px] font-bold"
-                    title="-5 Puan"
-                  >
-                    -5
-                  </button>
-                  <span className="w-6 text-center font-black text-[#0F5238]">%{b.trustScore}</span>
-                  <button
-                    onClick={() => updateBusinessTrustScore(b.id, +5)}
-                    className="w-5 h-5 flex items-center justify-center text-gray-600 hover:bg-gray-100 rounded text-[9px] font-bold"
-                    title="+5 Puan"
-                  >
-                    +5
-                  </button>
-                </div>
+                <span>
+                  {b.rating ? <>★ <strong>{b.rating}</strong> ({b.reviewCount} değerlendirme)</> : 'Henüz değerlendirme yok'}
+                </span>
               </div>
             </div>
           ))}
         </div>
       </div>
+
+      {imagesTargetId && <OrganisationImagesModal organisationId={imagesTargetId} onClose={() => setImagesTargetId(null)} />}
+
+      {addingOrganisation && <AddOrganisationModal onClose={() => setAddingOrganisation(false)} />}
 
       {grantTarget && (
         <GrantAccessModal organisation={grantTarget} onClose={() => setGrantTarget(null)} />

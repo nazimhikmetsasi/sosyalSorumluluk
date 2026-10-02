@@ -1,45 +1,106 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useApp } from '../../context/AppContext';
+import { treeEquivalent } from '../../utils/orgStats';
+import { downloadCsv } from '../../utils/csv';
 import {
   Download,
   ChevronLeft,
   FileSpreadsheet
 } from 'lucide-react';
 
+// Everything here comes from platform_stats and the organisations and listings the admin can
+// read. Per-order figures are not used: row level security (rightly) hides other people's
+// orders from the admin, so only the aggregates the database computes are reliable.
 export const AdminReportsView = () => {
-  const { setActiveTab, showToast } = useApp();
-  const [dateRange, setDateRange] = useState('Bu Ay (Eylül 2026)');
+  const { setActiveTab, showToast, stats, businesses, listings } = useApp();
 
-  const ranges = ['Bugün', 'Bu Hafta', 'Bu Ay', 'Bu Yıl'];
+  const orgs = businesses.filter(b => b.kind === 'business');
+  const ngos = businesses.filter(b => b.kind === 'ngo');
+  const averageTrust = orgs.length
+    ? Math.round(orgs.reduce((sum, b) => sum + b.trustScore, 0) / orgs.length)
+    : 0;
+
+  const byCategory = Object.entries(
+    listings.reduce((acc, l) => {
+      const key = l.category || 'Diğer';
+      acc[key] = acc[key] || { listings: 0, portions: 0 };
+      acc[key].listings += 1;
+      acc[key].portions += l.portionsAvailable;
+      return acc;
+    }, {})
+  );
 
   const reports = [
-    { title: 'Kurtarılan Gıda', desc: 'Kg & porsiyon analizi', metric: '14.850 kg', change: '+18%', csv: 'Tarih,Kategori,Kurtarilan_Kg,Tasarruf_TL\n2026-09-01,Unlu Mamuller,4500,45000\n2026-09-15,Meyve Sebze,6200,62000\n2026-09-28,Sicak Yemek,4150,83000' },
-    { title: 'Karbon Salımı', desc: 'CO₂ & ağaç eşdeğeri', metric: '37.1 Ton', change: '+22%', csv: 'Tarih,Onlenen_CO2_Kg,Esdeger_Agac\n2026-09-01,11250,562\n2026-09-15,15500,775\n2026-09-28,10375,518' },
-    { title: 'İşletme Güveni', desc: 'Teslimat başarı oranı', metric: '%98.4', change: '+1.2%', csv: 'Isletme,Guven_Skoru,Teslimat_Orani,Iptal_Sayisi\nModa Firini,98,99.2,1\nKarakoy Corbaci,95,97.5,2\nBesiktas Manav,99,100,0' },
-    { title: 'Kullanıcı Büyüme', desc: 'Yeni kayıt & sipariş', metric: '18.920', change: '+14%', csv: 'Ay,Yeni_Uye,Aktif_Rezervasyon\nTemmuz,14200,8900\nAgustos,16500,11200\nEylul,18920,14850' },
-    { title: 'İsraf Dağılımı', desc: '5 Ana kategori analizi', metric: 'Dengeli', change: 'OK', csv: 'Kategori,Pay_Yuzde,Porsiyon\nUnlu Mamuller,35,15000\nSicak Yemek,28,12000\nMeyve Sebze,22,9500\nSarkuteri,15,5600' },
-    { title: 'Aşevi Dağıtımı', desc: 'Yönlendirilen erzak', metric: '42.100 P.', change: '+30%', csv: 'Asevi,Teslim_Porsiyon,Gonullu_Sayisi\nTIDER Kadikoy,24000,12\nKizilay As Evi,12500,8\nBesiktas Dayanisma,5600,4' },
+    {
+      icon: '🥖',
+      title: 'Kurtarılan Gıda',
+      desc: 'Teslim edilen toplam',
+      metric: `${stats.totalFoodSavedKg.toLocaleString('tr-TR')} kg`,
+      rows: [
+        ['Kurtarilan_Kg', 'Kurtarilan_Porsiyon'],
+        [stats.totalFoodSavedKg, stats.totalPortions],
+      ],
+    },
+    {
+      icon: '🌍',
+      title: 'Karbon Salımı',
+      desc: 'CO₂ & ağaç eşdeğeri',
+      metric: `${stats.totalCo2SavedKg.toLocaleString('tr-TR')} kg`,
+      rows: [
+        ['Onlenen_CO2_Kg', 'Esdeger_Agac'],
+        [stats.totalCo2SavedKg, treeEquivalent(stats.totalCo2SavedKg)],
+      ],
+    },
+    {
+      icon: '🏪',
+      title: 'İşletme Güveni',
+      desc: 'Ortalama güven skoru',
+      metric: orgs.length ? `%${averageTrust}` : '—',
+      rows: [
+        ['Isletme', 'Durum', 'Guven_Skoru', 'Puan', 'Yorum_Sayisi'],
+        ...orgs.map(b => [b.name, b.status, b.trustScore, b.rating ?? '', b.reviewCount]),
+      ],
+    },
+    {
+      icon: '👥',
+      title: 'Kullanıcılar',
+      desc: 'Kayıtlı hesap sayısı',
+      metric: stats.totalUsers.toLocaleString('tr-TR'),
+      rows: [
+        ['Toplam_Uye', 'Aktif_Isletme', 'Aktif_STK'],
+        [stats.totalUsers, stats.activeBusinesses, stats.activeNgos],
+      ],
+    },
+    {
+      icon: '📂',
+      title: 'İlan Dağılımı',
+      desc: 'Aktif ilanların kategorisi',
+      metric: `${byCategory.length} kategori`,
+      rows: [
+        ['Kategori', 'Aktif_Ilan', 'Yayindaki_Porsiyon'],
+        ...byCategory.map(([name, v]) => [name, v.listings, v.portions]),
+      ],
+    },
+    {
+      icon: '🤝',
+      title: 'STK & Aşevleri',
+      desc: 'Kayıtlı kurumlar',
+      metric: `${ngos.length} kurum`,
+      rows: [
+        ['Kurum', 'Durum', 'Guven_Skoru'],
+        ...ngos.map(b => [b.name, b.status, b.trustScore]),
+      ],
+    },
   ];
 
   const handleExportCSV = (rep) => {
-    try {
-      const blob = new Blob([rep.csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.setAttribute('href', url);
-      link.setAttribute('download', `${rep.title.toLowerCase().replace(/\s+/g, '_')}_raporu.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      showToast(`"${rep.title}" CSV dosyası indirildi! 📊`);
-    } catch {
-      showToast(`Dışa aktarıldı: ${rep.title}`, 'info');
-    }
+    downloadCsv(`${rep.title.toLowerCase().replace(/\s+/g, '_')}_raporu.csv`, rep.rows);
+    showToast(`"${rep.title}" CSV dosyası indirildi! 📊`);
   };
 
   return (
     <div className="space-y-3.5 pb-20 lg:pb-10 animate-in fade-in duration-300">
-      
+
       {/* Header */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-2">
@@ -51,13 +112,13 @@ export const AdminReportsView = () => {
           </button>
           <div>
             <h1 className="text-xs font-black text-[#0F5238]">Raporlar & Analitik</h1>
-            <p className="text-[9px] text-gray-400">Çevre ve etki analizi</p>
+            <p className="text-[9px] text-gray-400">Platformun anlık durumu, CSV olarak indirilebilir</p>
           </div>
         </div>
 
         <button
           onClick={() => {
-            reports.forEach(r => handleExportCSV(r));
+            reports.forEach(r => downloadCsv(`${r.title.toLowerCase().replace(/\s+/g, '_')}_raporu.csv`, r.rows));
             showToast('Tüm raporlar CSV olarak indirildi! 📦');
           }}
           className="flex items-center gap-1 px-2.5 py-1.5 bg-[#0F5238] text-white text-[10px] font-bold rounded-xl shadow"
@@ -67,37 +128,17 @@ export const AdminReportsView = () => {
         </button>
       </div>
 
-      {/* Date Range Selector Pills */}
-      <div className="grid grid-cols-4 gap-1 bg-white p-1 rounded-xl border border-gray-100 shadow-sm">
-        {ranges.map(r => (
-          <button
-            key={r}
-            onClick={() => setDateRange(r)}
-            className={`py-1 text-center rounded-lg text-[10px] font-bold transition ${
-              dateRange === r ? 'bg-[#2D6A4F] text-white shadow-sm' : 'text-gray-500'
-            }`}
-          >
-            {r}
-          </button>
-        ))}
-      </div>
-
       {/* Report Cards Grid - 2 columns */}
       <div className="grid grid-cols-2 gap-2.5">
-        {reports.map((rep, idx) => (
+        {reports.map((rep) => (
           <div
-            key={idx}
+            key={rep.title}
             className="bg-white rounded-2xl p-2.5 border border-gray-100 shadow-sm flex flex-col justify-between space-y-2"
           >
             <div>
-              <div className="flex items-center justify-between">
-                <span className="w-6 h-6 rounded-lg bg-[#F0FFF4] text-[#0F5238] flex items-center justify-center font-bold text-xs">
-                  {idx === 0 ? '🥖' : idx === 1 ? '🌍' : idx === 2 ? '🏪' : idx === 3 ? '👥' : idx === 4 ? '📂' : '🤝'}
-                </span>
-                <span className="px-1.5 py-0.2 rounded-md text-[8px] font-extrabold bg-[#D1FEE5] text-[#006C48]">
-                  {rep.change}
-                </span>
-              </div>
+              <span className="w-6 h-6 rounded-lg bg-[#F0FFF4] text-[#0F5238] flex items-center justify-center font-bold text-xs">
+                {rep.icon}
+              </span>
 
               <h3 className="font-bold text-[11px] text-[#0F5238] mt-1.5 truncate">{rep.title}</h3>
               <p className="text-[9px] text-gray-400 truncate">{rep.desc}</p>

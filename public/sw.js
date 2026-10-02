@@ -1,5 +1,5 @@
 // Bumped so the activate handler drops v1, which cached every response indiscriminately.
-const CACHE_NAME = 'gidakoprusu-v2';
+const CACHE_NAME = 'sosyalsorumluluk-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',

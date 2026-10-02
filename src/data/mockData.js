@@ -11,7 +11,7 @@ export const INITIAL_USER = {
   email: '',
   phone: '',
   role: 'buyer',
-  avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=gidakoprusu',
+  avatar: 'https://api.dicebear.com/7.x/bottts/svg?seed=sosyalsorumluluk',
   city: '',
   district: '',
   savedKg: 0,

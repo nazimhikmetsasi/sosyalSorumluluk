@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { relativeTime } from '../../utils/notifications';
 import {
   X,
   ShieldCheck,
@@ -8,7 +9,7 @@ import {
 } from 'lucide-react';
 
 export const BusinessDetailModal = () => {
-  const { businesses, listings, setSelectedListing } = useApp();
+  const { businesses, listings, reviews, setSelectedListing } = useApp();
   const [activeBizModal, setActiveBizModal] = useState(null);
 
   // We can expose an opener via window event or context if needed, or check selected business
@@ -27,11 +28,7 @@ export const BusinessDetailModal = () => {
 
   const bizListings = listings.filter(l => l.businessId === activeBizModal.id);
 
-  const mockReviews = [
-    { author: 'Ahmet D.', date: '3 gün önce', rating: 5, comment: 'Ekmekler ve kruvasanlar sıcacıktı, çalışanlar çok nazikti!' },
-    { author: 'Merve S.', date: '1 hafta önce', rating: 5, comment: 'Muhteşem bir kurtarma paketi, hem bütçeme hem doğaya katkı oldu.' },
-    { author: 'Can T.', date: '2 hafta önce', rating: 4, comment: 'Çok lezzetliydi, paketleme de gayet özenliydi.' }
-  ];
+  const bizReviews = reviews.filter(r => r.organisationId === activeBizModal.id);
 
   return (
     <div className="fixed inset-0 z-[2000] flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
@@ -84,7 +81,7 @@ export const BusinessDetailModal = () => {
             </div>
             <div className="p-3 bg-[#FEF3C7] rounded-2xl border border-amber-200">
               <p className="text-xs font-bold text-gray-500">Değerlendirme</p>
-              <p className="text-base font-black text-amber-600 mt-0.5">★ {activeBizModal.rating} ({activeBizModal.reviewCount})</p>
+              <p className="text-base font-black text-amber-600 mt-0.5">{activeBizModal.rating ? `★ ${activeBizModal.rating} (${activeBizModal.reviewCount})` : 'Henüz yok'}</p>
             </div>
           </div>
 
@@ -135,16 +132,19 @@ export const BusinessDetailModal = () => {
               Müşteri Değerlendirmeleri
             </h3>
             <div className="space-y-2.5">
-              {mockReviews.map((rev, i) => (
-                <div key={i} className="p-3.5 bg-gray-50 rounded-2xl border border-gray-100 space-y-1">
+              {bizReviews.length === 0 && (
+                <p className="text-xs text-gray-400">Bu işletme henüz değerlendirilmedi.</p>
+              )}
+              {bizReviews.map((rev) => (
+                <div key={rev.id} className="p-3.5 bg-gray-50 rounded-2xl border border-gray-100 space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-gray-800">{rev.author}</span>
-                    <span className="text-[10px] text-gray-400">{rev.date}</span>
+                    <span className="text-[10px] text-gray-400">{relativeTime(rev.createdAt)}</span>
                   </div>
                   <div className="flex text-amber-400 text-xs">
                     {'★'.repeat(rev.rating)}
                   </div>
-                  <p className="text-xs text-gray-600">{rev.comment}</p>
+                  {rev.comment && <p className="text-xs text-gray-600">{rev.comment}</p>}
                 </div>
               ))}
             </div>

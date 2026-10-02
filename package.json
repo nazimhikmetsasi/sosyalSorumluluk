@@ -1,7 +1,7 @@
 {
-  "name": "gidakoprusu",
+  "name": "sosyalsorumluluk",
   "version": "1.0.0",
-  "description": "GıdaKöprüsü - İsrafı Önleyen, Dayanışmayı Büyüten Sosyal Sorumluluk Platformu",
+  "description": "sosyalSorumluluk - İsrafı Önleyen, Dayanışmayı Büyüten Sosyal Sorumluluk Platformu",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -15,6 +15,7 @@
     "@supabase/supabase-js": "^2.117.2",
     "canvas-confetti": "^1.9.4",
     "clsx": "^2.1.1",
+    "jsqr": "^1.4.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.48.0",
     "qrcode.react": "^4.2.0",

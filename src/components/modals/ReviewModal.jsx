@@ -4,10 +4,11 @@ import confetti from 'canvas-confetti';
 import { X, Star, Sparkles, ThumbsUp } from 'lucide-react';
 
 export const ReviewModal = () => {
-  const { isReviewModalOpen, setIsReviewModalOpen, reviewListingTarget, showToast } = useApp();
+  const { isReviewModalOpen, setIsReviewModalOpen, reviewListingTarget, submitReview } = useApp();
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
   const [selectedTags, setSelectedTags] = useState(['Taze & Lezzetli', 'Güler Yüzlü']);
+  const [saving, setSaving] = useState(false);
 
   if (!isReviewModalOpen) return null;
 
@@ -26,15 +27,21 @@ export const ReviewModal = () => {
     );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!reviewListingTarget) return;
+    setSaving(true);
+    const ok = await submitReview(reviewListingTarget, { rating, comment, tags: selectedTags });
+    setSaving(false);
+    if (!ok) return;
+    setRating(5);
+    setComment('');
     confetti({
       particleCount: 50,
       spread: 60,
       origin: { y: 0.7 },
       colors: ['#F59E0B', '#10B981', '#2D6A4F']
     });
-    showToast('Değerlendirmeniz ve topluluğa katkınız için teşekkürler! ⭐');
     setIsReviewModalOpen(false);
   };
 
@@ -129,10 +136,11 @@ export const ReviewModal = () => {
 
           <button
             type="submit"
-            className="w-full py-3.5 bg-[#0F5238] hover:bg-[#2D6A4F] text-white font-bold text-xs rounded-2xl shadow-lg shadow-[#0F5238]/20 transition flex items-center justify-center gap-2"
+            disabled={saving}
+            className="w-full py-3.5 bg-[#0F5238] hover:bg-[#2D6A4F] disabled:opacity-60 text-white font-bold text-xs rounded-2xl shadow-lg shadow-[#0F5238]/20 transition flex items-center justify-center gap-2"
           >
             <ThumbsUp className="w-4 h-4 text-[#95D5B2]" />
-            Değerlendirmeyi Gönder (+20 Puan)
+            {saving ? 'Gönderiliyor...' : 'Değerlendirmeyi Gönder'}
           </button>
         </form>
 

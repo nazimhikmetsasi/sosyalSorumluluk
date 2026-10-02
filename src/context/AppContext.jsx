@@ -1,12 +1,13 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import confetti from 'canvas-confetti';
 import { playSoundEffect } from '../utils/audioEffects';
 import { translations } from '../i18n/translations';
 import { INITIAL_USER } from '../data/mockData';
 import { computeImpact, computeBadges } from '../utils/impact';
 import { buildNotifications } from '../utils/notifications';
+import { isListingExpired, canCancelReservation } from '../utils/pickupWindow';
 import { sanitizeText, sanitizeNumber, getHomeTab, randomDigits, ownsRecord, distanceKm, reanchor } from '../utils/security';
-import { supabase, loadVerifiedAccount, signOut, saveProfile, uploadAvatar } from '../lib/supabase';
+import { supabase, loadVerifiedAccount, signOut, saveProfile, uploadAvatar, uploadOrganisationImage } from '../lib/supabase';
 import {
   fetchAll,
   insertListing,
@@ -14,9 +15,12 @@ import {
   archiveListing,
   insertReservation,
   setReservationStatus,
+  completeDeliveryWithQr,
   setOrganisationStatus,
-  setOrganisationTrustScore,
+  insertReview,
   grantOrganisationAccess,
+  fetchOrganisationMembers,
+  insertOrganisation,
 } from '../lib/data';
 
 const AppContext = createContext();
@@ -24,6 +28,8 @@ const AppContext = createContext();
 // Where the seeded listings were authored. Their coordinates are offsets from this point,
 // which is what lets the whole set be moved to wherever the user actually is.
 const SEED_ANCHOR = { lat: 40.9835, lng: 29.0275 }; // Moda, Kadıköy
+// The seeded listings all sit within this distance of the anchor (Kadıköy to Beşiktaş).
+const SEED_CLUSTER_RADIUS_KM = 25;
 
 // Data moved to the database and the session to Supabase. Anyone who used the app before
 // that still has the old copies sitting in their browser; nothing reads them now, so drop
@@ -69,9 +75,11 @@ export const AppProvider = ({ children }) => {
   // Declared first: geolocation, data loading and several actions below report through
   // it, and a later definition would be read before initialisation.
   const [toasts, setToasts] = useState([]);
+  // Date.now() alone repeats when two toasts fire in the same millisecond, which collides React keys.
+  const toastSeq = useRef(0);
 
   const showToast = (message, type = 'success') => {
-    const id = Date.now();
+    const id = `${Date.now()}-${toastSeq.current++}`;
     setToasts(prev => [...prev, { id, message, type }]);
     setTimeout(() => {
       setToasts(prev => prev.filter(t => t.id !== id));
@@ -88,6 +96,9 @@ export const AppProvider = ({ children }) => {
   const [storedProfile, setStoredProfile] = useState(() => loadStorage('USER', INITIAL_USER));
 
   const currentRole = account?.role || 'buyer';
+  // Mirrors the database policy on reservations: businesses fulfil orders and admins moderate,
+  // neither buys. Hiding the button is courtesy; the policy is what actually refuses.
+  const canReserve = currentRole === 'buyer' || currentRole === 'ngo';
   const isAuthenticated = Boolean(account);
 
 
@@ -146,12 +157,21 @@ export const AppProvider = ({ children }) => {
   // Data states with persistence
   // Server-owned from here on. Row level security decides what each query returns, so
   // these arrays hold exactly what this session is allowed to see.
-  const [rawListings, setListings] = useState([]);
+  const [loadedListings, setListings] = useState([]);
+  // Re-evaluated every minute so a listing disappears when its pickup time passes even if
+  // the page stays open; the database archives it the next time data is loaded.
+  const [nowTick, setNowTick] = useState(() => Date.now());
+  useEffect(() => {
+    const timer = setInterval(() => setNowTick(Date.now()), 60 * 1000);
+    return () => clearInterval(timer);
+  }, []);
+  const rawListings = loadedListings.filter(l => !isListingExpired(l, nowTick));
   const [businesses, setBusinesses] = useState([]);
   const [reservations, setReservations] = useState([]);
   const [dataLoading, setDataLoading] = useState(true);
   const [readNotificationIds, setReadNotificationIds] = useState(() => loadStorage('NOTIFICATIONS_READ', []));
   const [leaderboard, setLeaderboard] = useState([]);
+  const [reviews, setReviews] = useState([]);
   // Starts empty rather than at invented figures: a placeholder like "18.920 users" would
   // be on screen as fact until the real numbers land.
   const [stats, setStats] = useState({
@@ -249,6 +269,7 @@ export const AppProvider = ({ children }) => {
     setListings(payload.listings);
     setReservations(payload.reservations);
     setLeaderboard(payload.leaderboard);
+    setReviews(payload.reviews);
     if (payload.stats) setStats(payload.stats);
     setDataLoading(false);
   }, []);
@@ -293,8 +314,14 @@ export const AppProvider = ({ children }) => {
   // latitude; without it the cluster would stretch or squash as it moves north or south.
   //
   // Derived, never written back: revoking the permission restores the seeded coordinates.
+  //
+  // Only the seeded cluster is moved. A listing anywhere else was posted at its real place
+  // and must stay there, or a Bursa bakery would be dragged 100 km from a Bursa user.
   const listingsWithDistance = userPosition
     ? rawListings.map(item => {
+        if (distanceKm(SEED_ANCHOR, item) > SEED_CLUSTER_RADIUS_KM) {
+          return { ...item, distanceKm: +distanceKm(userPosition, item).toFixed(1) };
+        }
         const { lat, lng } = reanchor(SEED_ANCHOR, userPosition, item);
         return {
           ...item,
@@ -425,6 +452,10 @@ export const AppProvider = ({ children }) => {
       showToast('Rezervasyon için giriş yapmalısınız.', 'error');
       return false;
     }
+    if (!canReserve) {
+      showToast('İşletme ve yönetici hesapları rezervasyon yapamaz.', 'error');
+      return false;
+    }
     if (listing.portionsAvailable < portionCount) {
       playSoundEffect('error');
       showToast('Yeterli porsiyon kalmadı!', 'error');
@@ -494,6 +525,11 @@ export const AppProvider = ({ children }) => {
     const target = myPurchases.find(r => r.id === resId);
     if (!target) {
       showToast('Bu rezervasyon üzerinde yetkiniz yok.', 'error');
+      return;
+    }
+
+    if (!canCancelReservation(target)) {
+      showToast('Teslim saatine 30 dakikadan az kaldığı için iptal edilemez.', 'error');
       return;
     }
 
@@ -605,22 +641,25 @@ export const AppProvider = ({ children }) => {
     setActiveTab('business_dash');
   };
 
-  // Business: Complete delivery by code or QR
-  const completeDelivery = async (pickupCode) => {
-    if (!pickupCode || typeof pickupCode !== 'string') {
-      showToast('Lütfen geçerli bir kod girin.', 'error');
+  // Business: confirm a handover. Only the buyer's QR code counts; there is no typed code
+  // and no "mark as delivered" button, so a delivery cannot be claimed without the buyer
+  // having shown the code on their own phone.
+  const completeDelivery = async (qrToken) => {
+    if (!qrToken || typeof qrToken !== 'string') {
+      showToast('QR kod okunamadı.', 'error');
       return false;
     }
-    const cleanCode = sanitizeText(pickupCode, 30).toUpperCase().replace(/[^A-Z0-9-]/g, '');
+    const token = sanitizeText(qrToken, 60);
 
-    // Only the business the order belongs to may confirm it. Admins are deliberately
-    // excluded: confirming a handover is an operational act, not a moderation one.
+    // Admins are deliberately excluded: confirming a handover is an operational act, not a
+    // moderation one. Matching our own orders first gives a readable message; the database
+    // function repeats the check.
     const target = reservations.find(
-      r => r.pickupCode.toUpperCase() === cleanCode && ownsRecord(currentRole, myOrganisationId, r)
+      r => r.qrToken === token && ownsRecord(currentRole, myOrganisationId, r)
     );
     if (!target) {
       playSoundEffect('error');
-      showToast('Geçersiz veya bulunamayan teslimat kodu!', 'error');
+      showToast('Geçersiz QR kod ya da bu işletmeye ait bir sipariş değil!', 'error');
       return false;
     }
     if (target.status === 'completed') {
@@ -628,9 +667,9 @@ export const AppProvider = ({ children }) => {
       return false;
     }
 
-    // The database trigger is the real gate: only the owning organisation may move an
-    // order to completed, so a forged request fails here even if the UI was bypassed.
-    const { error } = await setReservationStatus(target.id, 'completed');
+    // The database function is the real gate: it needs the qr_token and the owning
+    // organisation, so a forged request fails here even if the UI was bypassed.
+    const { error } = await completeDeliveryWithQr(token);
     if (error) {
       console.error('Teslimat onaylanamadı', error);
       playSoundEffect('error');
@@ -671,28 +710,28 @@ export const AppProvider = ({ children }) => {
     showToast(`İşletme durumu güncellendi: ${newStatus.toUpperCase()}`);
   };
 
-  // Admin: Update business trust score
-  const updateBusinessTrustScore = async (id, delta) => {
-    if (currentRole !== 'admin') {
-      showToast('Bu işlem için yönetici yetkisi gerekiyor.', 'error');
-      return;
-    }
-    const organisation = businesses.find(b => b.id === id);
-    if (!organisation) return;
-
-    const { error } = await setOrganisationTrustScore(
-      id,
-      Math.min(100, Math.max(50, organisation.trustScore + delta))
-    );
+  // A buyer rates a completed order. The trust score is recomputed by the database from
+  // reviews and completed orders, so there is nothing to update here beyond re-reading.
+  const submitReview = async (reservation, { rating, comment, tags }) => {
+    const { error } = await insertReview({
+      reservationId: reservation.id,
+      organisationId: reservation.businessId,
+      rating,
+      comment: sanitizeText(comment, 500),
+      tags,
+    });
     if (error) {
-      console.error('Skor güncellenemedi', error);
-      showToast(`Skor güncellenemedi: ${error.message || 'bilinmeyen hata'}`, 'error');
-      return;
+      console.error('Değerlendirme kaydedilemedi', error);
+      const duplicate = error.code === '23505';
+      showToast(
+        duplicate ? 'Bu sipariş zaten değerlendirilmiş.' : `Değerlendirme kaydedilemedi: ${error.message || 'bilinmeyen hata'}`,
+        'error'
+      );
+      return false;
     }
-
     await refreshData();
-    playSoundEffect('pop');
-    showToast('İşletme güven skoru güncellendi.', 'info');
+    showToast('Değerlendirmeniz ve topluluğa katkınız için teşekkürler! ⭐');
+    return true;
   };
 
   // Binds a signed-up user to an organisation. The role itself lives in app_metadata,
@@ -713,6 +752,62 @@ export const AppProvider = ({ children }) => {
 
     playSoundEffect('success');
     showToast(`${email} hesabı yetkilendirildi. Kullanıcı yeniden giriş yapmalı.`);
+    return true;
+  };
+
+  // Admin: register a new business or NGO. It starts active because an admin is adding it
+  // by hand; the owner account is bound afterwards through "Yetkilendir".
+  const addOrganisation = async (fields) => {
+    if (currentRole !== 'admin') {
+      showToast('Bu işlem için yönetici yetkisi gerekiyor.', 'error');
+      return false;
+    }
+    const name = sanitizeText(fields.name, 80);
+    if (!name) {
+      showToast('Kurum adı gerekli.', 'error');
+      return false;
+    }
+    const encoded = encodeURIComponent(name);
+    const { error } = await insertOrganisation({
+      id: `org_${crypto.randomUUID().slice(0, 8)}`,
+      name,
+      kind: fields.kind === 'ngo' ? 'ngo' : 'business',
+      type: sanitizeText(fields.type, 60) || null,
+      address: sanitizeText(fields.address, 160) || null,
+      phone: sanitizeText(fields.phone, 30) || null,
+      lat: sanitizeNumber(fields.lat, -90, 90, SEED_ANCHOR.lat),
+      lng: sanitizeNumber(fields.lng, -180, 180, SEED_ANCHOR.lng),
+      avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${encoded}`,
+      cover: null,
+    });
+    if (error) {
+      console.error('Kurum eklenemedi', error);
+      showToast(`Kurum eklenemedi: ${error.message || 'bilinmeyen hata'}`, 'error');
+      return false;
+    }
+    await refreshData();
+    playSoundEffect('success');
+    showToast(`${name} eklendi. Şimdi bir hesabı yetkilendirin.`);
+    return true;
+  };
+
+  // Logo or cover of an organisation: the admin may change any, a business or NGO only its
+  // own. The database enforces the same rule; this just fails fast with a clear message.
+  const changeOrganisationImage = async (organisationId, kind, file) => {
+    const allowed = currentRole === 'admin' ||
+      ((currentRole === 'business' || currentRole === 'ngo') && myOrganisationId === organisationId);
+    if (!allowed) {
+      showToast('Bu kurumun görselini değiştirme yetkiniz yok.', 'error');
+      return false;
+    }
+    const { error } = await uploadOrganisationImage(organisationId, kind, file);
+    if (error) {
+      console.error('Kurum görseli yüklenemedi', error);
+      showToast(`Görsel yüklenemedi: ${error.message || 'bilinmeyen hata'}`, 'error');
+      return false;
+    }
+    await refreshData();
+    showToast(kind === 'avatar' ? 'Logo güncellendi.' : 'Kapak görseli güncellendi.');
     return true;
   };
 
@@ -738,6 +833,7 @@ export const AppProvider = ({ children }) => {
         currentUser,
         setCurrentUser,
         currentRole,
+        canReserve,
         logout,
         authLoading,
         updateProfile,
@@ -768,6 +864,7 @@ export const AppProvider = ({ children }) => {
         geoStatus,
         requestLocation,
         myListings,
+        nowTick,
         myReservations,
         myPurchases,
         myOrganisationId,
@@ -804,8 +901,12 @@ export const AppProvider = ({ children }) => {
         addNewListing,
         completeDelivery,
         updateBusinessStatus,
-        updateBusinessTrustScore,
+        reviews,
+        submitReview,
         grantAccess,
+        addOrganisation,
+        changeOrganisationImage,
+        listOrganisationMembers: fetchOrganisationMembers,
         resetDemoData,
       }}
     >

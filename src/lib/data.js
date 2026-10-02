@@ -21,6 +21,17 @@ const toOrganisation = (row) => ({
   phone: row.phone,
 });
 
+const toReview = (row) => ({
+  id: row.id,
+  reservationId: row.reservation_id,
+  organisationId: row.organisation_id,
+  author: row.author_name,
+  rating: row.rating,
+  comment: row.comment || '',
+  tags: row.tags || [],
+  createdAt: row.created_at,
+});
+
 const toListing = (row) => ({
   id: row.id,
   businessId: row.organisation_id,
@@ -120,6 +131,15 @@ export const fetchLeaderboard = async (rowLimit = 10) => {
   };
 };
 
+export const fetchReviews = async () => {
+  const { data, error } = await supabase
+    .from('reviews')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(300);
+  return { data: (data || []).map(toReview), error };
+};
+
 export const fetchPlatformStats = async () => {
   const { data, error } = await supabase.rpc('platform_stats');
   const row = data?.[0];
@@ -142,12 +162,17 @@ export const fetchPlatformStats = async () => {
 // Pure fetch with no side effects, so the caller can decide whether a late response is
 // still wanted before it touches any state.
 export const fetchAll = async () => {
-  const [organisations, listings, reservations, leaderboard, stats] = await Promise.all([
+  // Lazy archiving of listings whose pickup time has passed. Awaited first so the reads
+  // below do not return them; a failure (function not installed yet) must not block loading.
+  await supabase.rpc('archive_expired_listings');
+
+  const [organisations, listings, reservations, leaderboard, stats, reviews] = await Promise.all([
     fetchOrganisations(),
     fetchListings(),
     fetchReservations(),
     fetchLeaderboard(),
     fetchPlatformStats(),
+    fetchReviews(),
   ]);
 
   return {
@@ -156,8 +181,9 @@ export const fetchAll = async () => {
     reservations: reservations.data,
     leaderboard: leaderboard.data,
     stats: stats.data,
+    reviews: reviews.data,
     error: organisations.error || listings.error || reservations.error
-      || leaderboard.error || stats.error,
+      || leaderboard.error || stats.error || reviews.error,
   };
 };
 
@@ -216,6 +242,11 @@ export const insertReservation = async (reservation) => {
   return { data: data ? toReservation(data) : null, error };
 };
 
+// Completing an order needs the secret from the buyer's QR code; the function checks it
+// belongs to the caller's organisation. A plain status UPDATE to `completed` is refused.
+export const completeDeliveryWithQr = (qrToken) =>
+  supabase.rpc('complete_delivery', { qr: qrToken });
+
 // The status trigger decides whether these are allowed; the client just asks.
 export const setReservationStatus = (reservationId, status) =>
   supabase.from('reservations').update({ status }).eq('id', reservationId);
@@ -223,8 +254,15 @@ export const setReservationStatus = (reservationId, status) =>
 export const setOrganisationStatus = (organisationId, status) =>
   supabase.from('organisations').update({ status }).eq('id', organisationId);
 
-export const setOrganisationTrustScore = (organisationId, trustScore) =>
-  supabase.from('organisations').update({ trust_score: trustScore }).eq('id', organisationId);
+// The database checks the order is the caller's, completed, and not reviewed yet.
+export const insertReview = (review) =>
+  supabase.from('reviews').insert({
+    reservation_id: review.reservationId,
+    organisation_id: review.organisationId,
+    rating: review.rating,
+    comment: review.comment || null,
+    tags: review.tags,
+  });
 
 // Writes app_metadata, which no client key can touch directly. The function re-checks that
 // the caller is an admin before doing anything.
@@ -233,4 +271,24 @@ export const grantOrganisationAccess = (email, organisationId, role) =>
     target_email: email,
     target_organisation_id: organisationId,
     target_role: role,
+  });
+
+// Accounts currently bound to an organisation. Admin-only; the function refuses anyone else.
+export const fetchOrganisationMembers = (organisationId) =>
+  supabase.rpc('organisation_members', { target_organisation_id: organisationId });
+
+// The admin-only write policy on organisations is what lets this through.
+export const insertOrganisation = (organisation) =>
+  supabase.from('organisations').insert({
+    id: organisation.id,
+    name: organisation.name,
+    kind: organisation.kind,
+    status: 'active',
+    type: organisation.type,
+    avatar: organisation.avatar,
+    cover: organisation.cover,
+    address: organisation.address,
+    phone: organisation.phone,
+    lat: organisation.lat,
+    lng: organisation.lng,
   });
