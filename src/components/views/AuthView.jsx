@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { sendOtp, verifyOtp, isSupabaseConfigured } from '../../lib/supabase';
+import { fetchPlatformStats } from '../../lib/data';
 import {
   Leaf,
   Mail,
@@ -29,6 +30,21 @@ export const AuthView = () => {
   const [cooldown, setCooldown] = useState(0);
 
   const inputRefs = useRef([]);
+
+  // Real platform totals. Null until loaded, or when the lookup is not allowed yet, in which
+  // case the cards show a dash instead of an invented number.
+  const [platform, setPlatform] = useState(null);
+  useEffect(() => {
+    if (!isSupabaseConfigured) return undefined;
+    let cancelled = false;
+    fetchPlatformStats().then(({ data }) => {
+      if (!cancelled) setPlatform(data);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+  const fmt = (n, unit = '') => (platform ? `${n.toLocaleString('tr-TR')}${unit}` : '—');
 
   useEffect(() => {
     if (cooldown <= 0) return;
@@ -126,7 +142,7 @@ export const AuthView = () => {
               <Leaf className="w-6 h-6" />
             </div>
             <div>
-              <span className="font-black text-2xl text-[#0F5238]">Gıda<span className="text-[#52B788]">Köprüsü</span></span>
+              <span className="font-black text-2xl text-[#0F5238]">sosyal<span className="text-[#52B788]">Sorumluluk</span></span>
               <p className="text-[11px] text-gray-500 font-medium">Sosyal Sorumluluk & Sıfır Atık</p>
             </div>
           </div>
@@ -244,7 +260,7 @@ export const AuthView = () => {
 
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/70 backdrop-blur-md border border-[#52B788]/40 text-xs font-bold text-[#0F5238]">
             <Sparkles className="w-4 h-4 text-[#52B788]" />
-            <span>Türkiye'nin İlk Bütünleşik Gıda Kurtarma Platformu</span>
+            <span>Bütünleşik Gıda Kurtarma Platformu</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl font-black text-[#0F5238] leading-tight">
@@ -253,9 +269,9 @@ export const AuthView = () => {
 
           <div className="space-y-3 pt-2">
             {[
-              { icon: '🌿', val: '14.850 kg', label: 'Gıda Kurtarıldı' },
-              { icon: '🌍', val: '37.125 kg', label: 'CO₂ Salımı Önlendi' },
-              { icon: '🍽️', val: '42.100', label: 'Porsiyon İhtiyaç Sahibine Ulaştırıldı' },
+              { icon: '🌿', val: fmt(platform?.totalFoodSavedKg, ' kg'), label: 'Gıda Kurtarıldı' },
+              { icon: '🌍', val: fmt(platform?.totalCo2SavedKg, ' kg'), label: 'CO₂ Salımı Önlendi' },
+              { icon: '🍽️', val: fmt(platform?.totalPortions), label: 'Porsiyon Kurtarıldı' },
             ].map((stat, i) => (
               <div key={i} className="flex items-center gap-3.5 p-3.5 bg-white/80 backdrop-blur-md rounded-2xl border border-white shadow-sm">
                 <span className="text-2xl">{stat.icon}</span>

@@ -3,7 +3,6 @@ import { useApp } from '../../context/AppContext';
 import { ScannerModal } from '../modals/ScannerModal';
 import {
   QrCode,
-  CheckCircle2,
   Search,
   Check,
   Smartphone
@@ -12,10 +11,8 @@ import {
 export const BusinessOrdersView = () => {
   const {
     myReservations,
-    completeDelivery,
     } = useApp();
 
-  const [inputCode, setInputCode] = useState('');
   const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [orderFilter, setOrderFilter] = useState('pending'); // 'pending' | 'completed' | 'all'
   const [searchQuery, setSearchQuery] = useState('');
@@ -35,13 +32,6 @@ export const BusinessOrdersView = () => {
     }
     return true;
   });
-
-  const handleCodeSubmit = (e) => {
-    e.preventDefault();
-    if (!inputCode.trim()) return;
-    completeDelivery(inputCode);
-    setInputCode('');
-  };
 
   return (
     <div className="space-y-4 pb-20 lg:pb-10 animate-in fade-in duration-300 max-w-4xl mx-auto">
@@ -68,31 +58,12 @@ export const BusinessOrdersView = () => {
               <Smartphone className="w-4 h-4 text-[#92F7C3]" />
             </div>
             <div>
-              <h3 className="font-bold text-sm">Hızlı Kod Doğrulama</h3>
-              <p className="text-[10px] text-white/70">Müşterinin telefonundaki teslimat kodunu girin</p>
+              <h3 className="font-bold text-sm">QR ile Teslimat Onayı</h3>
+              <p className="text-[10px] text-white/70">Müşterinin telefonundaki QR kodu okutun</p>
             </div>
           </div>
           <span className="px-2 py-0.5 rounded-lg bg-white/20 text-[9px] font-bold">Personel Girişi</span>
         </div>
-
-        <form onSubmit={handleCodeSubmit} className="space-y-2">
-          <div className="flex gap-2">
-            <input
-              type="text"
-              maxLength={9}
-              value={inputCode}
-              onChange={(e) => setInputCode(e.target.value.toUpperCase())}
-              placeholder="Örn: GK-482193"
-              className="flex-1 bg-white/15 border border-white/30 rounded-2xl px-4 py-3 text-center text-lg font-black tracking-widest text-white placeholder:text-white/40 focus:outline-none focus:border-[#52B788]"
-            />
-            <button
-              type="submit"
-              className="px-5 py-3 bg-[#52B788] hover:bg-[#40916C] text-[#002114] font-black text-xs rounded-2xl transition shadow-md"
-            >
-              Doğrula & Teslim Et
-            </button>
-          </div>
-        </form>
 
         <button
           onClick={() => setIsScannerOpen(true)}
@@ -177,13 +148,10 @@ export const BusinessOrdersView = () => {
 
               <div className="flex-shrink-0">
                 {ord.status === 'confirmed' ? (
-                  <button
-                    onClick={() => completeDelivery(ord.pickupCode)}
-                    className="px-3 py-2 bg-[#0F5238] hover:bg-[#2D6A4F] text-white font-bold text-[10px] rounded-xl shadow transition flex items-center gap-1"
-                  >
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#95D5B2]" />
-                    <span>Teslim Et</span>
-                  </button>
+                  <span className="px-3 py-2 bg-gray-100 text-gray-500 font-bold text-[10px] rounded-xl flex items-center gap-1">
+                    <QrCode className="w-3.5 h-3.5" />
+                    <span>QR bekleniyor</span>
+                  </span>
                 ) : (
                   <span className="text-[10px] font-bold text-[#10B981] flex items-center gap-0.5">
                     <Check className="w-3.5 h-3.5" />

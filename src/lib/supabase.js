@@ -94,6 +94,37 @@ export const uploadAvatar = async (userId, file) => {
   return saveError ? { error: saveError } : { publicUrl };
 };
 
+// Same limits as the bucket enforces; checking here just saves the round trip.
+// Files go to organisation-images/<organisation id>/, the folder the storage policy matches
+// against the caller's token. The URL is then stored through a definer function, because a
+// business may change its pictures but not the rest of its own row.
+export const uploadOrganisationImage = async (organisationId, kind, file) => {
+  if (!ALLOWED_AVATAR_TYPES.includes(file.type)) {
+    return { error: { message: 'Yalnızca JPG, PNG veya WebP yükleyebilirsiniz.' } };
+  }
+  if (file.size > MAX_AVATAR_BYTES) {
+    return { error: { message: 'Görsel 2 MB sınırını aşıyor.' } };
+  }
+
+  const extension = file.type.split('/')[1].replace('jpeg', 'jpg');
+  const path = `${organisationId}/${kind}.${extension}`;
+
+  const { error } = await supabase.storage
+    .from('organisation-images')
+    .upload(path, file, { upsert: true, contentType: file.type });
+  if (error) return { error };
+
+  const { data } = supabase.storage.from('organisation-images').getPublicUrl(path);
+  const publicUrl = `${data.publicUrl}?v=${Date.now()}`;
+
+  const { error: saveError } = await supabase.rpc('set_organisation_image', {
+    target_organisation_id: organisationId,
+    image_kind: kind,
+    image_url: publicUrl,
+  });
+  return saveError ? { error: saveError } : { publicUrl };
+};
+
 export const sendOtp = (email) =>
   supabase.auth.signInWithOtp({
     email,

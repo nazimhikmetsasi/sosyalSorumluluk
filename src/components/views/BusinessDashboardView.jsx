@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { ScannerModal } from '../modals/ScannerModal';
+import { OrganisationImagesModal } from '../modals/OrganisationImagesModal';
+import { computeOrgStats } from '../../utils/orgStats';
 import {
   PlusCircle,
+  ImagePlus,
   QrCode,
   TrendingUp,
   PackageCheck,
@@ -11,8 +14,7 @@ import {
   ArrowUpRight,
   Plus,
   Minus,
-  Trash2,
-  CheckCircle2
+  Trash2
 } from 'lucide-react';
 
 export const BusinessDashboardView = () => {
@@ -20,24 +22,20 @@ export const BusinessDashboardView = () => {
     myListings,
     myReservations,
     setActiveTab,
-    completeDelivery,
     currentUser,
     updateListingPortions,
     deleteListing,
+    businesses,
+    myOrganisationId,
   } = useApp();
 
-  const [inputCode, setInputCode] = useState('');
   const [isScannerOpen, setIsScannerOpen] = useState(false);
+  const [isImagesOpen, setIsImagesOpen] = useState(false);
+  const myOrganisation = businesses.find(b => b.id === myOrganisationId);
+  const orgStats = computeOrgStats(myReservations);
   const [activeTabSub, setActiveTabSub] = useState('listings'); // 'listings' | 'orders'
 
   const pendingOrders = myReservations.filter(r => r.status === 'confirmed');
-
-  const handleCodeSubmit = (e) => {
-    e.preventDefault();
-    if (!inputCode.trim()) return;
-    completeDelivery(inputCode);
-    setInputCode('');
-  };
 
   return (
     <div className="space-y-3.5 pb-20 lg:pb-10 animate-in fade-in duration-300">
@@ -45,9 +43,13 @@ export const BusinessDashboardView = () => {
       {/* Top Welcome Card */}
       <div className="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between gap-3">
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0F5238] to-[#52B788] text-white flex items-center justify-center text-xl shadow flex-shrink-0">
-            🏪
-          </div>
+          {myOrganisation?.avatar ? (
+            <img src={myOrganisation.avatar} alt={myOrganisation.name} className="w-10 h-10 rounded-xl object-cover shadow flex-shrink-0" />
+          ) : (
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0F5238] to-[#52B788] text-white flex items-center justify-center text-xl shadow flex-shrink-0">
+              🏪
+            </div>
+          )}
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
               <h1 className="text-xs font-black text-[#0F5238] truncate">{currentUser.name}</h1>
@@ -57,11 +59,22 @@ export const BusinessDashboardView = () => {
               </span>
             </div>
             <p className="text-[10px] text-gray-500 truncate mt-0.5">
-              Kadıköy • Güven: <strong>%98</strong> • 640 kg Kurtarıldı
+              {myOrganisation?.type || 'Kurum'} • Güven: <strong>%{myOrganisation?.trustScore ?? '—'}</strong> • {orgStats.savedKg} kg Kurtarıldı
             </p>
           </div>
         </div>
 
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+        {myOrganisation && (
+          <button
+            onClick={() => setIsImagesOpen(true)}
+            title="Logo ve kapak görselini düzenle"
+            className="flex items-center gap-1 px-2.5 py-2 bg-white border border-gray-200 text-gray-700 font-bold text-[10px] rounded-xl hover:border-[#52B788] transition"
+          >
+            <ImagePlus className="w-3.5 h-3.5" />
+            <span>Görseller</span>
+          </button>
+        )}
         <button
           onClick={() => setActiveTab('business_new_listing')}
           className="flex items-center gap-1 px-2.5 py-2 bg-[#0F5238] hover:bg-[#2D6A4F] text-white font-bold text-[10px] rounded-xl shadow transition flex-shrink-0"
@@ -69,7 +82,12 @@ export const BusinessDashboardView = () => {
           <PlusCircle className="w-3.5 h-3.5 text-[#95D5B2]" />
           <span>Yeni İlan</span>
         </button>
+        </div>
       </div>
+
+      {isImagesOpen && myOrganisation && (
+        <OrganisationImagesModal organisationId={myOrganisation.id} onClose={() => setIsImagesOpen(false)} />
+      )}
 
       {/* 4 Stat Cards in 2x2 Grid */}
       <div className="grid grid-cols-2 gap-2.5">
@@ -93,15 +111,15 @@ export const BusinessDashboardView = () => {
 
         <div className="bg-white p-3 rounded-2xl border border-gray-100 shadow-sm">
           <p className="text-[10px] font-bold text-gray-400">Kurtarılan Toplam</p>
-          <p className="text-lg font-black text-[#0F5238] mt-0.5">640 kg</p>
+          <p className="text-lg font-black text-[#0F5238] mt-0.5">{orgStats.savedKg} kg</p>
           <span className="text-[9px] text-[#006C48] font-bold flex items-center gap-0.5 mt-0.5">
-            🌿 1.600 kg CO₂
+            🌿 {orgStats.co2Kg} kg CO₂
           </span>
         </div>
 
         <div className="bg-white p-3 rounded-2xl border border-gray-100 shadow-sm">
           <p className="text-[10px] font-bold text-gray-400">Geri Kazanım</p>
-          <p className="text-lg font-black text-[#0F5238] mt-0.5">14.250 ₺</p>
+          <p className="text-lg font-black text-[#0F5238] mt-0.5">{orgStats.revenue.toLocaleString('tr-TR')} ₺</p>
           <span className="text-[9px] text-[#10B981] font-bold flex items-center gap-0.5 mt-0.5">
             <TrendingUp className="w-3 h-3" />
             Sıfır atık geliri
@@ -118,25 +136,6 @@ export const BusinessDashboardView = () => {
           </div>
           <span className="px-1.5 py-0.5 rounded-md bg-white/20 text-[9px] font-bold">Personel Girişi</span>
         </div>
-
-        <form onSubmit={handleCodeSubmit} className="space-y-2">
-          <div className="flex gap-2">
-            <input
-              type="text"
-              maxLength={7}
-              value={inputCode}
-              onChange={(e) => setInputCode(e.target.value.toUpperCase())}
-              placeholder="Örn: GK-7482"
-              className="flex-1 bg-white/15 border border-white/30 rounded-xl px-3 py-2 text-center text-sm font-black tracking-widest text-white placeholder:text-white/40 focus:outline-none focus:border-[#52B788]"
-            />
-            <button
-              type="submit"
-              className="px-3 py-2 bg-[#52B788] hover:bg-[#40916C] text-[#002114] font-black text-xs rounded-xl transition shadow"
-            >
-              Onayla
-            </button>
-          </div>
-        </form>
 
         <button
           onClick={() => setIsScannerOpen(true)}
@@ -262,13 +261,10 @@ export const BusinessDashboardView = () => {
                   </p>
                 </div>
 
-                <button
-                  onClick={() => completeDelivery(ord.pickupCode)}
-                  className="px-2.5 py-1.5 bg-[#0F5238] hover:bg-[#2D6A4F] text-white font-bold text-[9px] rounded-lg shadow flex items-center gap-1 flex-shrink-0"
-                >
-                  <CheckCircle2 className="w-3 h-3 text-[#95D5B2]" />
-                  <span>Teslim Et</span>
-                </button>
+                <span className="px-2.5 py-1.5 bg-gray-100 text-gray-500 font-bold text-[9px] rounded-lg flex items-center gap-1 flex-shrink-0">
+                  <QrCode className="w-3 h-3" />
+                  <span>QR bekleniyor</span>
+                </span>
               </div>
             ))
           )}

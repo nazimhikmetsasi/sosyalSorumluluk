@@ -1,11 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
-import { X, Mail, KeyRound, ShieldCheck } from 'lucide-react';
+import { X, Mail, KeyRound, ShieldCheck, UserCheck } from 'lucide-react';
 
 export const GrantAccessModal = ({ organisation, onClose }) => {
-  const { grantAccess } = useApp();
+  const { grantAccess, listOrganisationMembers } = useApp();
   const [email, setEmail] = useState('');
   const [saving, setSaving] = useState(false);
+  // null while loading; an array once known. A failed lookup falls back to the plain form.
+  const [members, setMembers] = useState(null);
+  const [addingAnother, setAddingAnother] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    listOrganisationMembers(organisation.id).then(({ data, error }) => {
+      if (cancelled) return;
+      if (error) console.error('Yetkililer okunamadı', error);
+      setMembers(error ? [] : data || []);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [organisation.id, listOrganisationMembers]);
+
+  const hasMembers = Boolean(members?.length);
+  const showForm = members !== null && (!hasMembers || addingAnother);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,6 +61,32 @@ export const GrantAccessModal = ({ organisation, onClose }) => {
             </p>
           </div>
 
+          {members === null && <p className="text-[11px] text-gray-500 text-center">Yetkililer yükleniyor...</p>}
+
+          {hasMembers && (
+            <div className="p-3 rounded-2xl bg-[#F0FFF4] border border-[#A8E7C5]/60 space-y-1.5">
+              <p className="text-[10px] text-[#0F5238] font-bold uppercase tracking-wider flex items-center gap-1">
+                <UserCheck className="w-3.5 h-3.5" /> Yetkilendirilmiş hesaplar
+              </p>
+              {members.map(m => (
+                <p key={m.email} className="text-xs font-semibold text-gray-800 flex justify-between gap-2">
+                  <span className="truncate">{m.email}</span>
+                  <span className="text-[10px] font-bold text-[#2D6A4F]">{m.role === 'ngo' ? 'STK' : 'İşletme'}</span>
+                </p>
+              ))}
+              {!addingAnother && (
+                <button
+                  type="button"
+                  onClick={() => setAddingAnother(true)}
+                  className="text-[10px] font-bold text-[#0F5238] underline pt-1"
+                >
+                  Başka hesap yetkilendir
+                </button>
+              )}
+            </div>
+          )}
+
+          {showForm && (<>
           <div>
             <label className="text-xs font-bold text-gray-700 block mb-1">
               Yetkilendirilecek Kullanıcının E-postası
@@ -75,6 +119,7 @@ export const GrantAccessModal = ({ organisation, onClose }) => {
           >
             {saving ? 'Yetki veriliyor...' : 'Yetkiyi Ver'}
           </button>
+          </>)}
         </form>
 
       </div>

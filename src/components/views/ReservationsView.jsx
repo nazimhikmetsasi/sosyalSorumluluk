@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { canCancelReservation } from '../../utils/pickupWindow';
 import {
   QrCode,
   Clock,
@@ -13,6 +14,8 @@ export const ReservationsView = () => {
     cancelReservation,
     setActiveTab,
     setIsReviewModalOpen,
+    reviews,
+    nowTick,
     setReviewListingTarget,
   } = useApp();
 
@@ -179,7 +182,7 @@ export const ReservationsView = () => {
                             Vazgeç
                           </button>
                         </div>
-                      ) : (
+                      ) : canCancelReservation(res, nowTick) ? (
                         <button
                           onClick={() => setCancellingId(res.id)}
                           className="text-[9px] text-red-500 hover:text-red-700 font-semibold px-1.5 py-1"
@@ -187,6 +190,13 @@ export const ReservationsView = () => {
                         >
                           İptal
                         </button>
+                      ) : (
+                        <span
+                          className="text-[9px] text-gray-400 font-semibold px-1.5 py-1"
+                          title="Teslim saatine 30 dakikadan az kaldı"
+                        >
+                          İptal süresi doldu
+                        </span>
                       )}
 
                       <button
@@ -203,16 +213,23 @@ export const ReservationsView = () => {
                     <span className="text-[10px] text-[#10B981] font-bold">
                       🌱 Gıda Kurtarıldı
                     </span>
-                    <button
-                      onClick={() => {
-                        setReviewListingTarget(res);
-                        setIsReviewModalOpen(true);
-                      }}
-                      className="flex items-center gap-1 px-3 py-1.5 bg-amber-50 text-amber-700 border border-amber-200 font-bold text-[10px] rounded-xl transition"
-                    >
-                      <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
-                      <span>Değerlendir</span>
-                    </button>
+                    {reviews.some(r => r.reservationId === res.id) ? (
+                      <span className="flex items-center gap-1 text-[10px] font-bold text-amber-600">
+                        <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+                        Değerlendirildi
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          setReviewListingTarget(res);
+                          setIsReviewModalOpen(true);
+                        }}
+                        className="flex items-center gap-1 px-3 py-1.5 bg-amber-50 text-amber-700 border border-amber-200 font-bold text-[10px] rounded-xl transition"
+                      >
+                        <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+                        <span>Değerlendir</span>
+                      </button>
+                    )}
                   </>
                 ) : (
                   <span className="text-[10px] text-red-400 font-medium">
