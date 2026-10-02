@@ -1,7 +1,7 @@
 export const translations = {
   tr: {
     // Brand
-    brandName: 'GıdaKöprüsü',
+    brandName: 'sosyalSorumluluk',
     brandTagline: 'Fazla gıdayı dayanışmayla buluştur',
     zeroWaste: 'Sıfır İsraf',
     

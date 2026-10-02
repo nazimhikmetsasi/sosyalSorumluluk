@@ -20,7 +20,7 @@ export const ImpactCertificateModal = ({ isOpen, onClose }) => {
   };
 
   const handleShare = () => {
-    navigator.clipboard?.writeText(`GıdaKöprüsü ile bugüne kadar tam ${currentUser.savedKg} kg gıda kurtardım ve ${currentUser.co2SavedKg} kg CO₂ salımını engelledim! 🌿 Sen de katıl: https://gidakoprusu.org`);
+    navigator.clipboard?.writeText(`sosyalSorumluluk ile bugüne kadar tam ${currentUser.savedKg} kg gıda kurtardım ve ${currentUser.co2SavedKg} kg CO₂ salımını engelledim! 🌿 Sen de katıl: https://sosyalsorumluluk.org`);
     showToast('Paylaşım metni panoya kopyalandı! 📋');
   };
 
@@ -69,7 +69,7 @@ export const ImpactCertificateModal = ({ isOpen, onClose }) => {
                 <div className="w-6 h-6 rounded-lg bg-[#0F5238] text-white flex items-center justify-center text-xs shadow">
                   🌿
                 </div>
-                <span className="text-[10px] font-black tracking-widest uppercase text-[#0F5238]">GıdaKöprüsü</span>
+                <span className="text-[10px] font-black tracking-widest uppercase text-[#0F5238]">sosyalSorumluluk</span>
               </div>
 
               <h2 className="text-xs font-black text-[#0F5238] tracking-tight uppercase">
@@ -134,7 +134,7 @@ export const ImpactCertificateModal = ({ isOpen, onClose }) => {
 
               <div className="flex items-center justify-between text-[9px] text-white/70">
                 <span className="font-bold">@{currentUser.name.toLowerCase().replace(/\s+/g, '')}</span>
-                <span className="text-[#95D5B2] font-black">gidakoprusu.org</span>
+                <span className="text-[#95D5B2] font-black">sosyalsorumluluk.org</span>
               </div>
             </div>
           )}

@@ -56,7 +56,7 @@ export const MobileFrame = ({ children }) => {
         {/* Mobile Header Bar */}
         <div className="px-4 py-2.5 bg-white border-b border-gray-100 flex items-center justify-between z-30">
           <div className="flex items-center gap-2">
-            <span className="font-black text-base text-[#0F5238]">Gıda<span className="text-[#52B788]">Köprüsü</span></span>
+            <span className="font-black text-base text-[#0F5238]">sosyal<span className="text-[#52B788]">Sorumluluk</span></span>
           </div>
 
           <div className="flex items-center gap-2">
