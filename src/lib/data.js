@@ -70,6 +70,12 @@ const toReservation = (row) => ({
   pickupCode: row.pickup_code,
   qrToken: row.qr_token,
   createdAt: row.created_at,
+  // Snapshotted when the order was placed, so editing the listing later cannot rewrite
+  // what someone already rescued.
+  savedKg: Number(row.saved_kg || 0),
+  co2Kg: Number(row.co2_kg || 0),
+  savedAmount: Number(row.saved_amount || 0),
+  listingCreatedAt: row.listing_created_at,
 });
 
 // Row level security does the filtering, so these queries are deliberately unscoped:
@@ -99,20 +105,59 @@ export const fetchReservations = async () => {
   return { data: (data || []).map(toReservation), error };
 };
 
+export const fetchLeaderboard = async (rowLimit = 10) => {
+  const { data, error } = await supabase.rpc('leaderboard', { row_limit: rowLimit });
+  return {
+    data: (data || []).map(row => ({
+      rank: row.rank,
+      name: row.name,
+      avatar: row.avatar,
+      kg: Number(row.kg),
+      points: row.points,
+      isCurrentUser: row.is_current_user,
+    })),
+    error,
+  };
+};
+
+export const fetchPlatformStats = async () => {
+  const { data, error } = await supabase.rpc('platform_stats');
+  const row = data?.[0];
+  return {
+    data: row
+      ? {
+          totalFoodSavedKg: Number(row.total_food_saved_kg),
+          totalCo2SavedKg: Number(row.total_co2_saved_kg),
+          totalPortions: Number(row.total_portions),
+          activeBusinesses: Number(row.active_businesses),
+          activeNgos: Number(row.active_ngos),
+          totalUsers: Number(row.total_users),
+          todayActiveListings: Number(row.today_active_listings),
+        }
+      : null,
+    error,
+  };
+};
+
 // Pure fetch with no side effects, so the caller can decide whether a late response is
 // still wanted before it touches any state.
 export const fetchAll = async () => {
-  const [organisations, listings, reservations] = await Promise.all([
+  const [organisations, listings, reservations, leaderboard, stats] = await Promise.all([
     fetchOrganisations(),
     fetchListings(),
     fetchReservations(),
+    fetchLeaderboard(),
+    fetchPlatformStats(),
   ]);
 
   return {
     organisations: organisations.data,
     listings: listings.data,
     reservations: reservations.data,
-    error: organisations.error || listings.error || reservations.error,
+    leaderboard: leaderboard.data,
+    stats: stats.data,
+    error: organisations.error || listings.error || reservations.error
+      || leaderboard.error || stats.error,
   };
 };
 
