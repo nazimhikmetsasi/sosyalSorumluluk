@@ -18,6 +18,8 @@
 
 ---
 
+> **Not:** Backend artık Supabase değil, `api/` klasöründeki .NET 9 API. Kurulum ve uç listesi için [api/README.md](api/README.md). Aşağıdaki Supabase bölümleri projenin ilk sürümünü anlatır.
+
 ## 📌 Amaç
 
 Türkiye'de her yıl yaklaşık **26 milyon ton** gıda israf ediliyor. Platform, fırın, restoran, manav ve otellerde günün sonunda kalan taze gıdayı:

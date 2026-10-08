@@ -7,7 +7,7 @@ import { computeImpact, computeBadges } from '../utils/impact';
 import { buildNotifications } from '../utils/notifications';
 import { isListingExpired, canCancelReservation } from '../utils/pickupWindow';
 import { sanitizeText, sanitizeNumber, getHomeTab, randomDigits, ownsRecord, distanceKm, reanchor } from '../utils/security';
-import { supabase, loadVerifiedAccount, signOut, saveProfile, uploadAvatar, uploadOrganisationImage } from '../lib/supabase';
+import { isSupabaseConfigured, onAuthChange, loadVerifiedAccount, signOut, saveProfile, uploadAvatar, uploadOrganisationImage } from '../lib/supabase';
 import {
   fetchAll,
   insertListing,
@@ -91,7 +91,7 @@ export const AppProvider = ({ children }) => {
   // organisation always come from `account`, which the auth server signed.
   const [account, setAccount] = useState(null);
   // Nothing to verify when Supabase is absent, so the app renders signed out immediately.
-  const [authLoading, setAuthLoading] = useState(Boolean(supabase));
+  const [authLoading, setAuthLoading] = useState(isSupabaseConfigured);
 
   const [storedProfile, setStoredProfile] = useState(() => loadStorage('USER', INITIAL_USER));
 
@@ -214,7 +214,7 @@ export const AppProvider = ({ children }) => {
   // validates the JWT against Supabase, so a hand-written session in localStorage simply
   // fails to resolve and the app falls back to signed out.
   useEffect(() => {
-    if (!supabase) return undefined;
+    if (!isSupabaseConfigured) return undefined;
 
     let cancelled = false;
 
@@ -250,10 +250,10 @@ export const AppProvider = ({ children }) => {
 
     sync();
 
-    const { data } = supabase.auth.onAuthStateChange(() => sync());
+    const unsubscribe = onAuthChange(() => sync());
     return () => {
       cancelled = true;
-      data.subscription.unsubscribe();
+      unsubscribe();
     };
   }, []);
 
@@ -277,14 +277,14 @@ export const AppProvider = ({ children }) => {
   // Re-read after a mutation so the UI shows what the database actually accepted rather
   // than an optimistic guess a policy may have rejected.
   const refreshData = useCallback(async () => {
-    if (!supabase || !account) return;
+    if (!isSupabaseConfigured || !account) return;
     applyData(await fetchAll());
   }, [account, applyData]);
 
   // The cancellation flag drops a response that lands after the account changed, which
   // would otherwise flash the previous account's rows on screen.
   useEffect(() => {
-    if (!supabase || !account) return undefined;
+    if (!isSupabaseConfigured || !account) return undefined;
 
     let cancelled = false;
     (async () => {
