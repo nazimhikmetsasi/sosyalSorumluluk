@@ -1,0 +1,39 @@
+# Local development stack: Postgres plus the API. Passwords and the JWT secret here are for
+# this machine only; set JWT_SECRET and real SMTP settings anywhere else.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: gidakoprusu
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - gk_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d gidakoprusu"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # Development: OTP codes go to the log and the Bursa demo data is loaded.
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Default: Host=db;Port=5432;Database=gidakoprusu;Username=postgres;Password=postgres
+      Jwt__Secret: ${JWT_SECRET:-dev-only-secret-change-me-0123456789abcdef}
+      Seed__AdminEmail: ${ADMIN_EMAIL:-admin@gidakoprusu.local}
+      Uploads__Root: /app/uploads
+    ports:
+      - "5080:8080"
+    volumes:
+      - gk_uploads:/app/uploads
+
+volumes:
+  gk_pgdata:
+  gk_uploads:

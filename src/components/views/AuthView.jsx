@@ -54,7 +54,7 @@ export const AuthView = () => {
 
   const issueOtp = async () => {
     if (!isSupabaseConfigured) {
-      showToast('Supabase yapılandırılmamış: .env dosyasındaki VITE_SUPABASE_* değerlerini doldurun.', 'error');
+      showToast('API adresi yapılandırılmamış: .env dosyasına VITE_API_URL ekleyin.', 'error');
       return false;
     }
 
